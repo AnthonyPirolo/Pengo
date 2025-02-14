@@ -5,8 +5,10 @@
 
 dae::GameObject::~GameObject() = default;
 
-void dae::GameObject::Update(){}
-
+void dae::GameObject::Update(float deltaTime) 
+{
+    (void)deltaTime; // Suppress the unused parameter warning
+}
 void dae::GameObject::Render() const
 {
 	const auto& pos = m_transform.GetPosition();

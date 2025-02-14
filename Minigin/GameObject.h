@@ -7,10 +7,10 @@ namespace dae
 	class Texture2D;
 
 	// todo: this should become final.
-	class GameObject 
+	class GameObject final
 	{
 	public:
-		virtual void Update();
+		virtual void Update(float deltaTime);
 		virtual void Render() const;
 
 		void SetTexture(const std::string& filename);
