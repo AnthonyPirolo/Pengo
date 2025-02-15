@@ -25,7 +25,6 @@ namespace dae
 
 	private:
 		Transform m_transform{};
-		// todo: mmm, every gameobject has a texture? Is that correct?
-		std::shared_ptr<Texture2D> m_texture{};
+		
 	};
 }
