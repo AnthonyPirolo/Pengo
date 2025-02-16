@@ -42,3 +42,7 @@ void Scene::Render() const
 	}
 }
 
+std::vector<std::shared_ptr<GameObject>> Scene::GetGameObjects() const
+{
+	return m_objects;
+}

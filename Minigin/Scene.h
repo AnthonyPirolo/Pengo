@@ -11,6 +11,7 @@ namespace dae
 		void Add(std::shared_ptr<GameObject> object);
 		void Remove(std::shared_ptr<GameObject> object);
 		void RemoveAll();
+		std::vector<std::shared_ptr<GameObject>> GetGameObjects() const;
 
 		void Update(float deltaTime);
 		void Render() const;

@@ -11,7 +11,7 @@ namespace dae
 	{
 	public:
 		Scene& CreateScene(const std::string& name);
-
+		Scene& GetActiveScene();
 		void Update(float deltaTime);
 		void Render();
 	private:

@@ -13,6 +13,7 @@ namespace dae
 		void Update(float DeltaTime) override;
 		void Render() const override;
 
+		void SetTexture(const std::string& filename);
 		void SetPosition(float x, float y) override;
 
 		TextureComponent(const std::string& path);

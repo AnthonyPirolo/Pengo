@@ -1,20 +1,29 @@
 #pragma once
 #include <memory>
+#include <vector>
 #include "Transform.h"
+#include "BaseComponent.h"
+#include "Font.h"
 
 namespace dae
 {
 	class Texture2D;
 
-	// todo: this should become final.
 	class GameObject final
 	{
 	public:
 		virtual void Update(float deltaTime);
 		virtual void Render() const;
 
-		void SetTexture(const std::string& filename);
 		void SetPosition(float x, float y);
+
+		void AddTextComponent(const std::string& text, std::shared_ptr<Font> font);
+		void AddTextureComponent(const std::string& texture);
+
+		void RemoveAllComponents() { m_pComponents.clear(); }
+
+		void RemoveTextComponent();
+		void RemoveTextureComponent();
 
 		GameObject() = default;
 		virtual ~GameObject();
@@ -25,6 +34,6 @@ namespace dae
 
 	private:
 		Transform m_transform{};
-		
+		std::vector<std::unique_ptr<BaseComponent>> m_pComponents;
 	};
 }
