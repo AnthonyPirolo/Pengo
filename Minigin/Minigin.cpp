@@ -12,8 +12,9 @@
 #include "Scene.h"
 #include "Renderer.h"
 #include "ResourceManager.h"
+#include "Time.h"
 #include <chrono>
-#include <thread> // Added for std::this_thread::sleep_for
+#include <thread> 
 #include "imgui.h"
 #include "imgui_impl_sdl2.h"
 #include "imgui_impl_opengl3.h"
@@ -115,6 +116,7 @@ void dae::Minigin::Run(const std::function<void()>& load)
     auto& renderer = Renderer::GetInstance();
     auto& sceneManager = SceneManager::GetInstance();
     auto& input = InputManager::GetInstance();
+	auto& time = Time::GetInstance();
 
     constexpr float fixed_time_step = 0.016f; // Assuming 60 FPS
     constexpr int ms_per_frame = 16;          // Assuming 16 ms per frame
@@ -127,6 +129,7 @@ void dae::Minigin::Run(const std::function<void()>& load)
     {
         const auto current_time = std::chrono::high_resolution_clock::now();
         const float delta_time = std::chrono::duration<float>(current_time - last_time).count();
+		time.SetDeltaTime(delta_time);
         last_time = current_time;
         lag += delta_time;
 
@@ -149,9 +152,11 @@ void dae::Minigin::Run(const std::function<void()>& load)
         // --- UPDATE LOGIC ---
         while (lag >= fixed_time_step)
         {
-            sceneManager.Update(fixed_time_step);
+            sceneManager.FixedUpdate(fixed_time_step);
             lag -= fixed_time_step;
         }
+		sceneManager.Update();
+		sceneManager.LateUpdate();
 
 		//Render Game Objects
         renderer.Render();

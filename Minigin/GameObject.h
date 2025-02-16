@@ -8,22 +8,50 @@
 namespace dae
 {
 	class Texture2D;
-
-	class GameObject final
+	class GameObject final : public std::enable_shared_from_this<GameObject>
 	{
 	public:
-		virtual void Update(float deltaTime);
-		virtual void Render() const;
+
+		void Update();
+		void FixedUpdate(float deltaTime);
+		void LateUpdate();
+		void Render() const;
 
 		void SetPosition(float x, float y);
+		Transform GetPosition() const { return m_transform; }
 
-		void AddTextComponent(const std::string& text, std::shared_ptr<Font> font);
-		void AddTextureComponent(const std::string& texture);
+		template <typename T>
+		std::shared_ptr<T> GetComponent()
+		{
+			for (const auto& component : m_pComponents)
+			{
+				if (dynamic_cast<T*>(component.get()))
+				{
+					return std::static_pointer_cast<T>(component);
+				}
+			}
+			return nullptr;
+		}
 
-		void RemoveAllComponents() { m_pComponents.clear(); }
+        template <typename T, typename... Args>
+        std::shared_ptr<T> AddComponent(Args&&... args)
+        {
+            static_assert(std::is_base_of<BaseComponent, T>::value, "T must derive from BaseComponent");
+            const auto newComponent = std::make_shared<T>(std::forward<Args>(args)...);
+            newComponent->SetOwner(shared_from_this());
+            m_pComponents.push_back(newComponent);
+            return newComponent;
+        }
 
-		void RemoveTextComponent();
-		void RemoveTextureComponent();
+		template <typename T>
+		void RemoveComponent()
+		{
+			m_pComponents.erase(std::remove_if(m_pComponents.begin(), m_pComponents.end(),
+				[](const std::unique_ptr<BaseComponent>& component)
+				{
+					return dynamic_cast<T*>(component.get());
+				}), m_pComponents.end());
+		}
 
 		GameObject() = default;
 		virtual ~GameObject();
@@ -34,6 +62,6 @@ namespace dae
 
 	private:
 		Transform m_transform{};
-		std::vector<std::unique_ptr<BaseComponent>> m_pComponents;
+		std::vector<std::shared_ptr<BaseComponent>> m_pComponents;
 	};
 }

@@ -4,14 +4,19 @@
 #include "Renderer.h"
 #include "Font.h"
 #include "Texture2D.h"
+#include "GameObject.h"
 
 dae::TextComponent::TextComponent(const std::string& text, std::shared_ptr<Font> font)
 	: m_needsUpdate(true), m_text(text), m_font(std::move(font)), m_textTexture(nullptr)
 { }
 
-void dae::TextComponent::Update(float DeltaTime)
+void dae::TextComponent::FixedUpdate(float DeltaTime)
 {
 	(void)DeltaTime; // Suppress unused parameter warning
+}
+
+void dae::TextComponent::Update()
+{
 
 	if (m_needsUpdate)
 	{
@@ -32,11 +37,16 @@ void dae::TextComponent::Update(float DeltaTime)
 	}
 }
 
+void dae::TextComponent::LateUpdate()
+{
+
+}
+
 void dae::TextComponent::Render() const
 {
 	if (m_textTexture != nullptr)
 	{
-		const auto& pos = m_transform.GetPosition();
+		const auto& pos = m_pOwner->GetPosition().GetPosition();
 		Renderer::GetInstance().RenderTexture(*m_textTexture, pos.x, pos.y);
 	}
 }
@@ -48,9 +58,5 @@ void dae::TextComponent::SetText(const std::string& text)
 	m_needsUpdate = true;
 }
 
-void dae::TextComponent::SetPosition(const float x, const float y)
-{
-	m_transform.SetPosition(x, y, 0.0f);
-}
 
 

@@ -10,11 +10,12 @@ namespace dae
 	class TextureComponent final : public BaseComponent
 	{
 	public:
-		void Update(float DeltaTime) override;
+		void FixedUpdate(float DeltaTime) override;
+		void Update() override;
+		void LateUpdate() override;
 		void Render() const override;
 
 		void SetTexture(const std::string& filename);
-		void SetPosition(float x, float y) override;
 
 		TextureComponent(const std::string& path);
 		virtual ~TextureComponent() = default;

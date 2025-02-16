@@ -11,11 +11,12 @@ namespace dae
 	class TextComponent final : public BaseComponent
 	{
 	public:
-		void Update(float DeltaTime) override;
+		void FixedUpdate(float DeltaTime) override;
+		void Update() override;
+		void LateUpdate() override;
 		void Render() const override;
 
 		void SetText(const std::string& text);
-		void SetPosition(float x, float y) override;
 
 		TextComponent(const std::string& text, std::shared_ptr<Font> font);
 		virtual ~TextComponent() = default;
