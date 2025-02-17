@@ -3,7 +3,8 @@
 #include "Renderer.h"
 #include "GameObject.h"
 
-dae::TextureComponent::TextureComponent(const std::string& path)
+dae::TextureComponent::TextureComponent(GameObject* owner, const std::string& path):
+	BaseComponent(owner)
 {
 	SetTexture(path);
 }
@@ -30,6 +31,7 @@ void dae::TextureComponent::SetTexture(const std::string& filename)
 
 void dae::TextureComponent::Render() const
 {
-	const auto& pos = m_pOwner->GetPosition().GetPosition();
+	if (!m_texture) return;
+	const auto& pos = BaseComponent::GetOwner()->GetPosition().GetPosition();
 	Renderer::GetInstance().RenderTexture(*m_texture, pos.x, pos.y);
 }

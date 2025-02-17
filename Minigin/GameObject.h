@@ -2,13 +2,15 @@
 #include <memory>
 #include <vector>
 #include "Transform.h"
-#include "BaseComponent.h"
 #include "Font.h"
+#include "BaseComponent.h"
 
 namespace dae
+
 {
 	class Texture2D;
-	class GameObject final : public std::enable_shared_from_this<GameObject>
+	class BaseComponent;
+	class GameObject final
 	{
 	public:
 
@@ -38,7 +40,7 @@ namespace dae
         {
             static_assert(std::is_base_of<BaseComponent, T>::value, "T must derive from BaseComponent");
             const auto newComponent = std::make_shared<T>(std::forward<Args>(args)...);
-            newComponent->SetOwner(shared_from_this());
+            newComponent->SetOwner(this);
             m_pComponents.push_back(newComponent);
             return newComponent;
         }
@@ -46,15 +48,17 @@ namespace dae
 		template <typename T>
 		void RemoveComponent()
 		{
+			//Remark: Mark component for deletion, then delete it in the next update loop 
+			//Put it in another list than erase list and comp in other list
 			m_pComponents.erase(std::remove_if(m_pComponents.begin(), m_pComponents.end(),
-				[](const std::unique_ptr<BaseComponent>& component)
+				[](const std::shared_ptr<BaseComponent>& component)
 				{
 					return dynamic_cast<T*>(component.get());
 				}), m_pComponents.end());
 		}
 
 		GameObject() = default;
-		virtual ~GameObject();
+		~GameObject();
 		GameObject(const GameObject& other) = delete;
 		GameObject(GameObject&& other) = delete;
 		GameObject& operator=(const GameObject& other) = delete;

@@ -6,8 +6,8 @@ namespace dae
 	class FpsComponent final : public BaseComponent
 	{
 	public:
-		FpsComponent();
-		~FpsComponent() = default;
+		FpsComponent(GameObject* owner);
+		virtual ~FpsComponent() override = default;
 
 		FpsComponent(const FpsComponent& other) = delete;
 		FpsComponent(FpsComponent&& other) = delete;

@@ -4,7 +4,8 @@
 #include "TextComponent.h"
 #include "Time.h"
 
-dae::FpsComponent::FpsComponent() {
+dae::FpsComponent::FpsComponent(GameObject* owner) :
+	BaseComponent(owner) {
 
 }
 
@@ -22,12 +23,12 @@ void dae::FpsComponent::Update()
 
 void dae::FpsComponent::LateUpdate()
 {
-	m_pOwner->GetComponent<TextComponent>()->SetText("FPS: " + std::to_string(m_FPS));
+	BaseComponent::GetOwner()->GetComponent<TextComponent>()->SetText("FPS: " + std::to_string(m_FPS));
 }
 
 void dae::FpsComponent::Render() const
 {
-	
+	//Stays empty
 }
 
 void dae::FpsComponent::CalculateFPS(float deltaTime)

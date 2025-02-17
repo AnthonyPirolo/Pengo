@@ -6,8 +6,8 @@
 #include "Texture2D.h"
 #include "GameObject.h"
 
-dae::TextComponent::TextComponent(const std::string& text, std::shared_ptr<Font> font)
-	: m_needsUpdate(true), m_text(text), m_font(std::move(font)), m_textTexture(nullptr)
+dae::TextComponent::TextComponent(GameObject* owner, const std::string& text, std::shared_ptr<Font> font)
+	: m_needsUpdate(true), m_text(text), m_font(std::move(font)), m_textTexture(nullptr), BaseComponent(owner)
 { }
 
 void dae::TextComponent::FixedUpdate(float DeltaTime)
@@ -46,7 +46,7 @@ void dae::TextComponent::Render() const
 {
 	if (m_textTexture != nullptr)
 	{
-		const auto& pos = m_pOwner->GetPosition().GetPosition();
+		const auto& pos = BaseComponent::GetOwner()->GetPosition().GetPosition();
 		Renderer::GetInstance().RenderTexture(*m_textTexture, pos.x, pos.y);
 	}
 }
