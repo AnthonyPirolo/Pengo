@@ -112,7 +112,7 @@ void dae::Minigin::Run(const std::function<void()>& load)
 	auto& time = Time::GetInstance();
 
     constexpr float fixed_time_step = 0.016f; // Assuming 60 FPS
-    constexpr int ms_per_frame = 16;          // Assuming 16 ms per frame
+    constexpr int ms_per_frame = 8;          // Assuming 16 ms per frame
 
     bool doContinue = true;
     auto last_time = std::chrono::high_resolution_clock::now();
