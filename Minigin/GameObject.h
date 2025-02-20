@@ -27,7 +27,6 @@ namespace dae
 		void SetLocalPosition(glm::vec3 location);
 		const glm::vec3& GetWorldPosition();
 		void UpdateWorldPosition();
-		Transform GetPosition() const { return m_transform; }
 		void SetPositionDirty();
 
 		//---------------------------------
@@ -107,11 +106,9 @@ namespace dae
 		//---------------------------------
 		//Location related variables
 		//---------------------------------
-		Transform m_transform{};
-		Transform m_WorldLocation{};
 		glm::vec3 m_WorldPosition{};
 		glm::vec3 m_LocalPosition{};
-		bool m_PositionIsDirty{};
+		bool m_PositionIsDirty{true};
 
 		//---------------------------------
 		//Component related variables

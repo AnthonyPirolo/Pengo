@@ -41,16 +41,15 @@ void dae::GameObject::Render() const
 
 void dae::GameObject::SetLocalPosition(glm::vec3 location)
 {
-	float xLoc = location.x;
-	float yLoc = location.y;
-	m_transform.SetPosition(xLoc, yLoc, 0.0f);
+	m_LocalPosition = location;
+	SetPositionDirty();
 }
 
 const glm::vec3& dae::GameObject::GetWorldPosition()
 {
 	if (m_PositionIsDirty)
 		UpdateWorldPosition();
-	return m_WorldLocation.GetPosition();
+	return m_WorldPosition;
 }
 
 void dae::GameObject::UpdateWorldPosition()

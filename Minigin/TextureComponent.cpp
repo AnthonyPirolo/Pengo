@@ -32,6 +32,6 @@ void dae::TextureComponent::SetTexture(const std::string& filename)
 void dae::TextureComponent::Render() const
 {
 	if (!m_texture) return;
-	const auto& pos = BaseComponent::GetOwner()->GetPosition().GetPosition();
+	const auto& pos = BaseComponent::GetOwner()->GetWorldPosition();
 	Renderer::GetInstance().RenderTexture(*m_texture, pos.x, pos.y);
 }
