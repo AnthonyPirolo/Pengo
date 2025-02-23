@@ -26,12 +26,10 @@ namespace dae
 		RotationComponent(RotationComponent&& other) = delete;
 		RotationComponent& operator=(const RotationComponent& other) = delete;
 		RotationComponent& operator=(RotationComponent&& other) = delete;
-		
-		//---------------------------------
-		//Rotation related functions
-		//---------------------------------
-		
 	private:
+		//---------------------------------
+		//Rotation Related Variables
+		//---------------------------------
 		float m_RotationSpeed{ 0.0f };
 		glm::vec3 m_RotationCenter{ 0.0f, 0.0f, 0.0f };
 		GameObject* m_pTarget;

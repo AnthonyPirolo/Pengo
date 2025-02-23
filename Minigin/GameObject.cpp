@@ -25,6 +25,12 @@ void dae::GameObject::Update()
 
 void dae::GameObject::LateUpdate()
 {
+	for (const auto& component : m_pDeleteComponents)
+	{
+		m_pComponents.erase(std::remove(m_pComponents.begin(), m_pComponents.end(), component), m_pComponents.end());
+	}
+	m_pDeleteComponents.clear();
+
 	for (const auto& component : m_pComponents)
 	{
 		component->LateUpdate();
@@ -83,9 +89,12 @@ void dae::GameObject::SetParent(GameObject* parent, bool keepWorldPosition)
 
 void dae::GameObject::RemoveChild(GameObject* child)
 {
-	auto it = std::find(m_pChildren.begin(), m_pChildren.end(), child);
-	if (it != m_pChildren.end())
-		m_pChildren.erase(it);
+	if (child)
+	{
+		auto it = std::find(m_pChildren.begin(), m_pChildren.end(), child);
+		if (it != m_pChildren.end())
+			m_pChildren.erase(it);
+	}
 }
 
 bool dae::GameObject::IsChild(GameObject* parent) const

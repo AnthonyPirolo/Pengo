@@ -6,7 +6,6 @@
 #include "BaseComponent.h"
 
 namespace dae
-
 {
 	class Texture2D;
 	class BaseComponent;
@@ -39,39 +38,41 @@ namespace dae
 		//Templated component functions
 		//---------------------------------
 		template <typename T>
-		std::shared_ptr<T> GetComponent()
+		T* GetComponent()
 		{
 			for (const auto& component : m_pComponents)
 			{
 				if (dynamic_cast<T*>(component.get()))
 				{
-					return std::static_pointer_cast<T>(component);
+					return static_cast<T*>(component.get());
 				}
 			}
 			return nullptr;
 		}
 
 		template <typename T, typename... Args>
-		std::shared_ptr<T> AddComponent(Args&&... args)
+		T* AddComponent(Args&&... args)
 		{
 			static_assert(std::is_base_of<BaseComponent, T>::value, "T must derive from BaseComponent");
-			const auto newComponent = std::make_shared<T>(std::forward<Args>(args)...);
+			auto newComponent = std::make_unique<T>(std::forward<Args>(args)...);
 			newComponent->SetOwner(this);
-			m_pComponents.push_back(newComponent);
-			return newComponent;
+			T* newComponentPtr = newComponent.get();
+			m_pComponents.push_back(std::move(newComponent));
+			return newComponentPtr;
 		}
 
-		template <typename T>
-		void RemoveComponent()
-		{
-			//Remark: Mark component for deletion, then delete it in the next update loop 
-			//Put it in another list than erase list and comp in other list
-			m_pComponents.erase(std::remove_if(m_pComponents.begin(), m_pComponents.end(),
-				[](const std::shared_ptr<BaseComponent>& component)
+        template <typename T>
+        void RemoveComponent()
+        {
+			for (auto it = m_pComponents.begin(); it != m_pComponents.end(); ++it)
+			{
+				if (dynamic_cast<T*>(it->get()))
 				{
-					return dynamic_cast<T*>(component.get());
-				}), m_pComponents.end());
-		}
+					m_pDeleteComponents.push_back(std::move(*it));
+                    break;
+                }
+            }
+        }
 
 		//---------------------------------
 		//Parent related functions
@@ -113,7 +114,8 @@ namespace dae
 		//---------------------------------
 		//Component related variables
 		//---------------------------------
-		std::vector<std::shared_ptr<BaseComponent>> m_pComponents;
+		std::vector<std::unique_ptr<BaseComponent>> m_pComponents;
+		std::vector<std::unique_ptr<BaseComponent>> m_pDeleteComponents;
 
 		//---------------------------------
 		//Parent related variables
@@ -129,6 +131,5 @@ namespace dae
 		//Scale related variables
 		//---------------------------------
 		float m_Scale = 1.0f;
-
 	};
 };
