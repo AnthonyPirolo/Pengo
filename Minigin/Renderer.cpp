@@ -5,8 +5,6 @@
 #include "imgui.h"
 #include "imgui_impl_sdl2.h"
 #include "imgui_impl_opengl3.h"
-#include "imgui_plot.h"
-#include "imgui_plot.cpp"
 
 int GetOpenGLDriverIndex()
 {
@@ -45,10 +43,6 @@ void dae::Renderer::Render() const
 
 	SceneManager::GetInstance().Render();
 
-	ImGui_ImplOpenGL3_NewFrame();
-	ImGui_ImplSDL2_NewFrame();
-	ImGui::NewFrame();
-	ImGui::ShowDemoWindow();
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 

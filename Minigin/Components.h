@@ -2,3 +2,4 @@
 #include "TextureComponent.h"
 #include "FpsComponent.h"
 #include "RotationComponent.h"
+#include "ImGuiPlotComponent.h"

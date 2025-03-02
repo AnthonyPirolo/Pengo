@@ -105,6 +105,9 @@
     <ClInclude Include="..\3rdParty\imgui-1.91.8\backends\imgui_impl_sdl2.h">
       <Filter>imgui</Filter>
     </ClInclude>
+    <ClInclude Include="ImGuiPlotComponent.h">
+      <Filter>Components\Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ResourceManager.cpp">
@@ -178,6 +181,9 @@
     </ClCompile>
     <ClCompile Include="..\3rdParty\imgui-1.91.8\backends\imgui_impl_sdl2.cpp">
       <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGuiPlotComponent.cpp">
+      <Filter>Components\Source</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
