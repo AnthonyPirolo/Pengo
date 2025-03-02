@@ -36,7 +36,7 @@ namespace dae
 			newPos -= owner->GetParent()->GetWorldPosition();
 		}
 
-		owner->SetLocalPosition(newPos);
+		owner->SetLocalPosition(newPos); 
 	}
 
 	void RotationComponent::LateUpdate()

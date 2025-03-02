@@ -13,9 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="ImGui">
-      <UniqueIdentifier>{1df959fa-afcb-4cea-86ac-da3a2d46798e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Components">
       <UniqueIdentifier>{791c8f70-d7ad-45c5-81fa-c278efa5dff7}</UniqueIdentifier>
     </Filter>
@@ -24,6 +21,9 @@
     </Filter>
     <Filter Include="Components\Source">
       <UniqueIdentifier>{495f8072-e45b-4555-882a-1da15e43b16d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="imgui">
+      <UniqueIdentifier>{cddd79a5-a09f-4375-b3a1-4fb085b07ab8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -60,33 +60,6 @@
     <ClInclude Include="Minigin.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="imconfig.h">
-      <Filter>ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui.h">
-      <Filter>ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui_impl_opengl3.h">
-      <Filter>ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui_impl_opengl3_loader.h">
-      <Filter>ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui_impl_sdl2.h">
-      <Filter>ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui_internal.h">
-      <Filter>ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="imstb_rectpack.h">
-      <Filter>ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="imstb_textedit.h">
-      <Filter>ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="imstb_truetype.h">
-      <Filter>ImGui</Filter>
-    </ClInclude>
     <ClInclude Include="Time.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -107,6 +80,30 @@
     </ClInclude>
     <ClInclude Include="Components.h">
       <Filter>Components\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rdParty\imgui-1.91.8\imconfig.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rdParty\imgui-1.91.8\imgui.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rdParty\imgui-1.91.8\imgui_internal.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rdParty\imgui-1.91.8\imstb_rectpack.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rdParty\imgui-1.91.8\imstb_textedit.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rdParty\imgui-1.91.8\imstb_truetype.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rdParty\imgui-1.91.8\backends\imgui_impl_opengl3.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\3rdParty\imgui-1.91.8\backends\imgui_impl_sdl2.h">
+      <Filter>imgui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -143,24 +140,6 @@
     <ClCompile Include="Minigin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="imgui.cpp">
-      <Filter>ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui_draw.cpp">
-      <Filter>ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui_impl_opengl3.cpp">
-      <Filter>ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui_impl_sdl2.cpp">
-      <Filter>ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui_tables.cpp">
-      <Filter>ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui_widgets.cpp">
-      <Filter>ImGui</Filter>
-    </ClCompile>
     <ClCompile Include="Time.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -178,6 +157,27 @@
     </ClCompile>
     <ClCompile Include="RotationComponent.cpp">
       <Filter>Components\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rdParty\imgui-1.91.8\imgui.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rdParty\imgui-1.91.8\imgui_demo.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rdParty\imgui-1.91.8\imgui_draw.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rdParty\imgui-1.91.8\imgui_tables.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rdParty\imgui-1.91.8\imgui_widgets.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rdParty\imgui-1.91.8\backends\imgui_impl_opengl3.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\3rdParty\imgui-1.91.8\backends\imgui_impl_sdl2.cpp">
+      <Filter>imgui</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

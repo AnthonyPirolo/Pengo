@@ -5,7 +5,7 @@
 #include "BaseComponent.h"
 #include <algorithm>
 
-dae::GameObject::~GameObject() = default;
+dae::GameObject::~GameObject() = default; //Still has to be changed to a proper destructor
 
 void dae::GameObject::FixedUpdate(float deltaTime) 
 {

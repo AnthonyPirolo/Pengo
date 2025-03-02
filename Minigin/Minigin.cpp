@@ -48,7 +48,6 @@ void PrintSDLVersion()
 dae::Minigin::Minigin(const std::string& dataPath)
 {
     PrintSDLVersion();
-    //SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
     if (SDL_Init(SDL_INIT_VIDEO) != 0)
     {
@@ -75,16 +74,7 @@ dae::Minigin::Minigin(const std::string& dataPath)
         throw std::runtime_error(std::string("SDL_GL_CreateContext Error: ") + SDL_GetError());
     }
 
-    //SDL_GL_MakeCurrent(g_window, g_glContext);
-    //SDL_GL_SetSwapInterval(1); // Enable vsync
 
- /*   IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
-    ImGui::StyleColorsDark();
-
-    ImGui_ImplSDL2_InitForOpenGL(g_window, g_glContext);
-    ImGui_ImplOpenGL3_Init("#version 130");*/
 
     Renderer::GetInstance().Init(g_window);
     ResourceManager::GetInstance().Init(dataPath);
@@ -92,11 +82,7 @@ dae::Minigin::Minigin(const std::string& dataPath)
 
 dae::Minigin::~Minigin()
 {
-   /* ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplSDL2_Shutdown();
-    ImGui::DestroyContext();*/
 	Renderer::GetInstance().Destroy();
-    //SDL_GL_DeleteContext(g_glContext);
     SDL_DestroyWindow(g_window);
     g_window = nullptr;
     SDL_Quit();

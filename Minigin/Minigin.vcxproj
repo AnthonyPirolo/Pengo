@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -117,7 +117,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Howest\Prog4\3rdParty\imgui-1.91.8\backends;C:\Howest\Prog4\3rdParty\imgui-1.91.8;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
@@ -125,6 +125,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent />
   </ItemDefinitionGroup>
@@ -173,20 +174,20 @@
     <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\3rdParty\imgui-1.91.8\backends\imgui_impl_opengl3.h" />
+    <ClInclude Include="..\3rdParty\imgui-1.91.8\backends\imgui_impl_sdl2.h" />
+    <ClInclude Include="..\3rdParty\imgui-1.91.8\imconfig.h" />
+    <ClInclude Include="..\3rdParty\imgui-1.91.8\imgui.h" />
+    <ClInclude Include="..\3rdParty\imgui-1.91.8\imgui_internal.h" />
+    <ClInclude Include="..\3rdParty\imgui-1.91.8\imstb_rectpack.h" />
+    <ClInclude Include="..\3rdParty\imgui-1.91.8\imstb_textedit.h" />
+    <ClInclude Include="..\3rdParty\imgui-1.91.8\imstb_truetype.h" />
     <ClInclude Include="BaseComponent.h" />
     <ClInclude Include="Components.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="FpsComponent.h" />
     <ClInclude Include="GameObject.h" />
-    <ClInclude Include="imconfig.h" />
-    <ClInclude Include="imgui.h" />
-    <ClInclude Include="imgui_impl_opengl3.h" />
-    <ClInclude Include="imgui_impl_opengl3_loader.h" />
-    <ClInclude Include="imgui_impl_sdl2.h" />
-    <ClInclude Include="imgui_internal.h" />
-    <ClInclude Include="imstb_rectpack.h" />
-    <ClInclude Include="imstb_textedit.h" />
-    <ClInclude Include="imstb_truetype.h" />
+    <ClInclude Include="ImGuiPlotComponent.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Minigin.h" />
     <ClInclude Include="Renderer.h" />
@@ -202,16 +203,18 @@
     <ClInclude Include="Transform.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\3rdParty\imgui-1.91.8\backends\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="..\3rdParty\imgui-1.91.8\backends\imgui_impl_sdl2.cpp" />
+    <ClCompile Include="..\3rdParty\imgui-1.91.8\imgui.cpp" />
+    <ClCompile Include="..\3rdParty\imgui-1.91.8\imgui_demo.cpp" />
+    <ClCompile Include="..\3rdParty\imgui-1.91.8\imgui_draw.cpp" />
+    <ClCompile Include="..\3rdParty\imgui-1.91.8\imgui_tables.cpp" />
+    <ClCompile Include="..\3rdParty\imgui-1.91.8\imgui_widgets.cpp" />
     <ClCompile Include="BaseComponent.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="FpsComponent.cpp" />
     <ClCompile Include="GameObject.cpp" />
-    <ClCompile Include="imgui.cpp" />
-    <ClCompile Include="imgui_draw.cpp" />
-    <ClCompile Include="imgui_impl_opengl3.cpp" />
-    <ClCompile Include="imgui_impl_sdl2.cpp" />
-    <ClCompile Include="imgui_tables.cpp" />
-    <ClCompile Include="imgui_widgets.cpp" />
+    <ClCompile Include="ImGuiPlotComponent.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Minigin.cpp" />

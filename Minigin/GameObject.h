@@ -26,7 +26,6 @@ namespace dae
 		void SetLocalPosition(glm::vec3 location);
 		const glm::vec3& GetWorldPosition();
 		void UpdateWorldPosition();
-		void SetPositionDirty();
 
 		//---------------------------------
 		//Scale related functions
@@ -85,9 +84,6 @@ namespace dae
 		//---------------------------------
 		int GetChildCount() const { return int(m_pChildren.size()); }
 		GameObject* GetChild(int index) const { return m_pChildren.at(index); }
-		void AddChild(GameObject* child) { m_pChildren.push_back(child); }
-		void RemoveChild(GameObject* child);
-		bool IsChild(GameObject* parent) const;
 
 		//---------------------------------
 		//Constructor & Destructor
@@ -100,6 +96,15 @@ namespace dae
 		GameObject& operator=(GameObject&& other) = delete;
 
 	private:
+		//---------------------------------
+		//Private Member fUnctions
+		//---------------------------------
+		void AddChild(GameObject* child) { m_pChildren.push_back(child); }
+		void RemoveChild(GameObject* child);
+		bool IsChild(GameObject* parent) const;
+
+		void SetPositionDirty();
+
 		//---------------------------------
 		//Private Member Variables
 		//---------------------------------
