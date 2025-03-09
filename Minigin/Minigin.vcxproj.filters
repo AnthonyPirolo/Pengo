@@ -108,6 +108,12 @@
     <ClInclude Include="ImGuiPlotComponent.h">
       <Filter>Components\Header</Filter>
     </ClInclude>
+    <ClInclude Include="Command.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveComponent.h">
+      <Filter>Components\Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ResourceManager.cpp">
@@ -183,6 +189,12 @@
       <Filter>imgui</Filter>
     </ClCompile>
     <ClCompile Include="ImGuiPlotComponent.cpp">
+      <Filter>Components\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Command.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MoveComponent.cpp">
       <Filter>Components\Source</Filter>
     </ClCompile>
   </ItemGroup>

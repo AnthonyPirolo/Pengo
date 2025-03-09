@@ -60,18 +60,18 @@ namespace dae
 			return newComponentPtr;
 		}
 
-        template <typename T>
-        void RemoveComponent()
-        {
+		template <typename T>
+		void RemoveComponent()
+		{
 			for (auto it = m_pComponents.begin(); it != m_pComponents.end(); ++it)
 			{
 				if (dynamic_cast<T*>(it->get()))
 				{
 					m_pDeleteComponents.push_back(std::move(*it));
-                    break;
-                }
-            }
-        }
+					break;
+				}
+			}
+		}
 
 		//---------------------------------
 		//Parent related functions
@@ -105,6 +105,8 @@ namespace dae
 
 		void SetPositionDirty();
 
+
+
 		//---------------------------------
 		//Private Member Variables
 		//---------------------------------
@@ -114,7 +116,7 @@ namespace dae
 		//---------------------------------
 		glm::vec3 m_WorldPosition{};
 		glm::vec3 m_LocalPosition{};
-		bool m_PositionIsDirty{true};
+		bool m_PositionIsDirty{ true };
 
 		//---------------------------------
 		//Component related variables

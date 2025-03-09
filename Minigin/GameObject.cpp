@@ -7,7 +7,7 @@
 
 dae::GameObject::~GameObject() = default; //Still has to be changed to a proper destructor
 
-void dae::GameObject::FixedUpdate(float deltaTime) 
+void dae::GameObject::FixedUpdate(float deltaTime)
 {
 	for (const auto& component : m_pComponents)
 	{
@@ -108,5 +108,3 @@ void dae::GameObject::SetPositionDirty()
 	for (auto child : m_pChildren)
 		child->SetPositionDirty();
 }
-
-
