@@ -23,29 +23,50 @@ private:
 	dae::GameObject* m_actor;
 };
 
-class MoveCommand : public GameObjectCommand
-{
+class MoveCommand : public GameObjectCommand {
 public:
-	MoveCommand(dae::GameObject* owner, float speed = 50.0f) :
-		GameObjectCommand(owner), m_Speed(speed)
-	{
-		m_Direction = {};
-	};
+    MoveCommand(dae::GameObject* owner, float speed = 50.0f)
+        : GameObjectCommand(owner), m_Speed(speed) {
+    }
 
-	void SetDirection(glm::vec3 direction)
-	{
-		m_Direction = direction;
-	}
+    // Rule of five
+    ~MoveCommand() = default;
 
-	virtual void Execute() override
-	{		
-		dae::GameObject* owner = GetGameObject();
-		if (owner) owner->SetLocalPosition(owner->GetWorldPosition() + m_Direction * m_Speed * dae::Time::GetInstance().GetDeltaTime());
-	}
+    MoveCommand(const MoveCommand& other)
+        : GameObjectCommand(other), m_Speed(other.m_Speed), m_Direction(other.m_Direction) {
+    }
+
+    MoveCommand& operator=(const MoveCommand& other) {
+        if (this == &other) return *this;
+        GameObjectCommand::operator=(other);
+        m_Speed = other.m_Speed;
+        m_Direction = other.m_Direction;
+        return *this;
+    }
+
+    MoveCommand(MoveCommand&& other) noexcept
+        : GameObjectCommand(std::move(other)), m_Speed(other.m_Speed), m_Direction(std::move(other.m_Direction)) {
+        other.m_Speed = 0.0f;
+    }
+
+    MoveCommand& operator=(MoveCommand&& other) noexcept {
+        if (this == &other) return *this;
+        GameObjectCommand::operator=(std::move(other));
+        m_Speed = other.m_Speed;
+        m_Direction = std::move(other.m_Direction);
+        other.m_Speed = 0.0f;
+        return *this;
+    }
+
+    void SetDirection(glm::vec3 direction) { m_Direction = direction; }
+
+    virtual void Execute() override
+    {
+        dae::GameObject* owner = GetGameObject();
+        if (owner) owner->SetLocalPosition(owner->GetWorldPosition() + m_Direction * m_Speed * dae::Time::GetInstance().GetDeltaTime());
+    }
 
 private:
-	glm::vec3 m_Direction{ 0.f, 0.f, 0.f };
-	float m_Speed{ };
+    glm::vec3 m_Direction{ 0.f, 0.f, 0.f };
+    float m_Speed{ };
 };
-
-
