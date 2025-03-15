@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include "GameObject.h"
+#include "Observer.h"
 
 namespace dae
 {
@@ -33,5 +34,18 @@ namespace dae
         BaseComponent(BaseComponent&& other) = delete;
         BaseComponent& operator=(const BaseComponent& other) = delete;
         BaseComponent& operator=(BaseComponent&& other) = delete;
+
+		//---------------------------------
+		//Observer related functions
+		//---------------------------------
+        void AttachObserver(Observer* observer);
+        void RemoveObserver(Observer* observerToRemove);
+
+    protected:
+        //---------------------------------
+        //Observer related functions
+        //---------------------------------
+        virtual void Notify(Observer::Event event) = 0;
+        std::vector<Observer> m_Observers;
     };
 }
