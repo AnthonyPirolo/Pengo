@@ -184,6 +184,7 @@
     <ClInclude Include="HealthComponent.h" />
     <ClInclude Include="ImGuiPlotComponent.h" />
     <ClInclude Include="InputManager.h" />
+    <ClInclude Include="LivesDisplay.h" />
     <ClInclude Include="Minigin.h" />
     <ClInclude Include="MoveComponent.h" />
     <ClInclude Include="Observer.h" />

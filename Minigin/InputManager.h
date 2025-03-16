@@ -2,36 +2,32 @@
 #include "Singleton.h"
 #include "Command.h"
 #include <SDL.h>
-#define _X86_
-#include <Xinput.h>
-#include "Gamepad.h"
+#include <unordered_map>
+#include <memory>
 
 namespace dae
 {
-	class InputManager final : public Singleton<InputManager>
-	{
-	public:
-		enum class Direction
-		{
-			Up, Down, Left, Right
-		};
+    class InputManager final : public Singleton<InputManager>
+    {
+    public:
+        enum class KeyState
+        {
+            Pressed,
+            Released,
+            Held
+        };
 
-		struct KeyMappings
-		{
-			SDL_KeyCode m_KeyUp{};
-			SDL_KeyCode m_KeyRight{};
-			SDL_KeyCode m_KeyLeft{};
-			SDL_KeyCode m_KeyDown{};
-		};
+        struct InputBinding
+        {
+            std::shared_ptr<Command> command; // Use shared_ptr instead of unique_ptr
+            KeyState state;
+        };
 
-		std::vector<std::pair<std::unique_ptr<MoveCommand>, KeyMappings>> m_MovementControllers;
+        void BindCommand(SDL_KeyCode key, KeyState state, std::shared_ptr<Command> command); // Update to shared_ptr
+        bool ProcessInput();
 
-		bool ProcessInput();
-
-		void MakeMoveCommandWithOwner(GameObject* object, float speed = 50.0f);
-		void BindMoveCommand(SDL_KeyCode key, Direction direction, GameObject* object);
-	private:
-		//Gamepad m_GamePad;
-	};
-
+    private:
+        std::unordered_map<SDL_KeyCode, InputBinding> m_KeyBindings;
+        std::unordered_map<SDL_KeyCode, bool> m_PreviousKeyStates;
+    };
 }

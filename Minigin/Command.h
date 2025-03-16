@@ -1,6 +1,7 @@
 #pragma once
 #include "GameObject.h"
 #include "Time.h"
+#include <iostream>
 
 class Command
 {
@@ -46,7 +47,7 @@ public:
 
     MoveCommand(MoveCommand&& other) noexcept
         : GameObjectCommand(std::move(other)), m_Speed(other.m_Speed), m_Direction(std::move(other.m_Direction)) {
-        other.m_Speed = 0.0f;
+        other.m_Speed = 50.0f;
     }
 
     MoveCommand& operator=(MoveCommand&& other) noexcept {
@@ -54,7 +55,7 @@ public:
         GameObjectCommand::operator=(std::move(other));
         m_Speed = other.m_Speed;
         m_Direction = std::move(other.m_Direction);
-        other.m_Speed = 0.0f;
+        other.m_Speed = 50.0f;
         return *this;
     }
 
@@ -63,10 +64,62 @@ public:
     virtual void Execute() override
     {
         dae::GameObject* owner = GetGameObject();
-        if (owner) owner->SetLocalPosition(owner->GetWorldPosition() + m_Direction * m_Speed * dae::Time::GetInstance().GetDeltaTime());
+        if (owner) {
+            owner->SetLocalPosition(owner->GetWorldPosition() + m_Direction * m_Speed * dae::Time::GetInstance().GetDeltaTime());
+        }
+        else {
+            std::cout << "MoveCommand executed but owner is null!" << std::endl;
+        }
     }
 
 private:
     glm::vec3 m_Direction{ 0.f, 0.f, 0.f };
     float m_Speed{ };
+};
+
+class AttackCommand : public GameObjectCommand
+{
+public:
+    AttackCommand(dae::GameObject* owner, float attackRange, float damage)
+        : GameObjectCommand(owner), m_AttackRange(attackRange), m_Damage(damage) {
+    }
+
+    // Rule of five
+    ~AttackCommand() = default;
+
+    AttackCommand(const AttackCommand& other)
+        : GameObjectCommand(other), m_AttackRange(other.m_AttackRange), m_Damage(other.m_Damage) {
+    }
+
+    AttackCommand& operator=(const AttackCommand& other) {
+        if (this == &other) return *this;
+        GameObjectCommand::operator=(other);
+        m_AttackRange = other.m_AttackRange;
+        m_Damage = other.m_Damage;
+        return *this;
+    }
+
+    AttackCommand(AttackCommand&& other) noexcept
+        : GameObjectCommand(std::move(other)), m_AttackRange(other.m_AttackRange), m_Damage(other.m_Damage) {
+        other.m_AttackRange = 0.f;
+        other.m_Damage = 0;
+    }
+
+    AttackCommand& operator=(AttackCommand&& other) noexcept {
+        if (this == &other) return *this;
+        GameObjectCommand::operator=(std::move(other));
+        m_AttackRange = other.m_AttackRange;
+        m_Damage = other.m_Damage;
+        other.m_AttackRange = 0.f;
+        other.m_Damage = 0;
+        return *this;
+    }
+
+    virtual void Execute() override;
+
+private:
+    float m_AttackRange;
+    float m_Damage;
+
+    dae::GameObject* FindClosestEnemy();
 };
