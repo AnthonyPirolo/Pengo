@@ -117,7 +117,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)3rdParty\imgui-1.91.8;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
@@ -174,14 +174,6 @@
     <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\3rdParty\imgui-1.91.8\backends\imgui_impl_opengl3.h" />
-    <ClInclude Include="..\3rdParty\imgui-1.91.8\backends\imgui_impl_sdl2.h" />
-    <ClInclude Include="..\3rdParty\imgui-1.91.8\imconfig.h" />
-    <ClInclude Include="..\3rdParty\imgui-1.91.8\imgui.h" />
-    <ClInclude Include="..\3rdParty\imgui-1.91.8\imgui_internal.h" />
-    <ClInclude Include="..\3rdParty\imgui-1.91.8\imstb_rectpack.h" />
-    <ClInclude Include="..\3rdParty\imgui-1.91.8\imstb_textedit.h" />
-    <ClInclude Include="..\3rdParty\imgui-1.91.8\imstb_truetype.h" />
     <ClInclude Include="BaseComponent.h" />
     <ClInclude Include="Command.h" />
     <ClInclude Include="Components.h" />
@@ -208,13 +200,6 @@
     <ClInclude Include="Transform.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\3rdParty\imgui-1.91.8\backends\imgui_impl_opengl3.cpp" />
-    <ClCompile Include="..\3rdParty\imgui-1.91.8\backends\imgui_impl_sdl2.cpp" />
-    <ClCompile Include="..\3rdParty\imgui-1.91.8\imgui.cpp" />
-    <ClCompile Include="..\3rdParty\imgui-1.91.8\imgui_demo.cpp" />
-    <ClCompile Include="..\3rdParty\imgui-1.91.8\imgui_draw.cpp" />
-    <ClCompile Include="..\3rdParty\imgui-1.91.8\imgui_tables.cpp" />
-    <ClCompile Include="..\3rdParty\imgui-1.91.8\imgui_widgets.cpp" />
     <ClCompile Include="BaseComponent.cpp" />
     <ClCompile Include="Command.cpp" />
     <ClCompile Include="Font.cpp" />

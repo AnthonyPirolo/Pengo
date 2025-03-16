@@ -22,9 +22,6 @@
     <Filter Include="Components\Source">
       <UniqueIdentifier>{495f8072-e45b-4555-882a-1da15e43b16d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="imgui">
-      <UniqueIdentifier>{cddd79a5-a09f-4375-b3a1-4fb085b07ab8}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Singleton.h">
@@ -80,30 +77,6 @@
     </ClInclude>
     <ClInclude Include="Components.h">
       <Filter>Components\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="..\3rdParty\imgui-1.91.8\imconfig.h">
-      <Filter>imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\3rdParty\imgui-1.91.8\imgui.h">
-      <Filter>imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\3rdParty\imgui-1.91.8\imgui_internal.h">
-      <Filter>imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\3rdParty\imgui-1.91.8\imstb_rectpack.h">
-      <Filter>imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\3rdParty\imgui-1.91.8\imstb_textedit.h">
-      <Filter>imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\3rdParty\imgui-1.91.8\imstb_truetype.h">
-      <Filter>imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\3rdParty\imgui-1.91.8\backends\imgui_impl_opengl3.h">
-      <Filter>imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\3rdParty\imgui-1.91.8\backends\imgui_impl_sdl2.h">
-      <Filter>imgui</Filter>
     </ClInclude>
     <ClInclude Include="ImGuiPlotComponent.h">
       <Filter>Components\Header</Filter>
@@ -175,27 +148,6 @@
     </ClCompile>
     <ClCompile Include="RotationComponent.cpp">
       <Filter>Components\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\3rdParty\imgui-1.91.8\imgui.cpp">
-      <Filter>imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\3rdParty\imgui-1.91.8\imgui_demo.cpp">
-      <Filter>imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\3rdParty\imgui-1.91.8\imgui_draw.cpp">
-      <Filter>imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\3rdParty\imgui-1.91.8\imgui_tables.cpp">
-      <Filter>imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\3rdParty\imgui-1.91.8\imgui_widgets.cpp">
-      <Filter>imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\3rdParty\imgui-1.91.8\backends\imgui_impl_opengl3.cpp">
-      <Filter>imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\3rdParty\imgui-1.91.8\backends\imgui_impl_sdl2.cpp">
-      <Filter>imgui</Filter>
     </ClCompile>
     <ClCompile Include="ImGuiPlotComponent.cpp">
       <Filter>Components\Source</Filter>
