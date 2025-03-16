@@ -1,4 +1,5 @@
 #include "BaseComponent.h"
+#include "Observer.h"
 
 namespace dae
 {
@@ -20,9 +21,17 @@ namespace dae
 
 	void BaseComponent::RemoveObserver(Observer* observer)
 	{
-		std::erase_if(
-			m_Observers,
-			[observer](Observer* observer) {return observer == observer; }
+		m_Observers.erase(
+			std::remove_if(
+				m_Observers.begin(),
+				m_Observers.end(),
+				[observer](Observer* obs) { return obs == observer; }
+			),
+			m_Observers.end()
 		);
+	}
+	void BaseComponent::Notify(Observer::Event event) const
+	{
+		(void)event;
 	}
 }

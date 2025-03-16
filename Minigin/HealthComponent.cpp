@@ -11,7 +11,7 @@ dae::HealthComponent::HealthComponent(GameObject* owner) :
 
 void dae::HealthComponent::FixedUpdate(float deltaTime) 
 {
-
+	(void)deltaTime;
 }
 
 void dae::HealthComponent::Update() 

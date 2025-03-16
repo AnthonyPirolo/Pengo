@@ -1,26 +1,29 @@
 #pragma once
 #include <vector>
-class Observer
+
+namespace dae
 {
 	class BaseComponent;
-public:
-
-	enum class Event
+	class Observer
 	{
-		enemyDied,
-		playerDied,
-		enemyHit,
-		playerHit,
-		subjectAttached,
-		subjectDetached
+	public:
+
+		enum class Event
+		{
+			enemyDied,
+			playerDied,
+			enemyHit,
+			playerHit,
+			subjectAttached,
+			subjectDetached
+		};
+
+		virtual ~Observer();
+		virtual void OnNotify(BaseComponent* entity, Event event) = 0;
+
+		void AddSubject(BaseComponent* subject);
+
+	private:
+		std::vector<BaseComponent*> m_Subjects;
 	};
-
-	virtual ~Observer() = default;
-	virtual void OnNotify(dae::BaseComponent* entity, Event event) = 0;
-
-	void AddSubject(dae::BaseComponent* subject);
-
-private:
-	std::vector<dae::BaseComponent*> m_Subjects;
-};
-
+}

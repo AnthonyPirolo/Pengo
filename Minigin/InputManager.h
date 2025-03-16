@@ -2,6 +2,9 @@
 #include "Singleton.h"
 #include "Command.h"
 #include <SDL.h>
+#define _X86_
+#include <Xinput.h>
+#include "Gamepad.h"
 
 namespace dae
 {
@@ -28,7 +31,7 @@ namespace dae
 		void MakeMoveCommandWithOwner(GameObject* object, float speed = 50.0f);
 		void BindMoveCommand(SDL_KeyCode key, Direction direction, GameObject* object);
 	private:
-
+		//Gamepad m_GamePad;
 	};
 
 }

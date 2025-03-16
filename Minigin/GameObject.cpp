@@ -3,6 +3,7 @@
 #include "ResourceManager.h"
 #include "Renderer.h"
 #include "BaseComponent.h"
+#include "Observer.h"
 #include <algorithm>
 
 dae::GameObject::~GameObject() = default; //Still has to be changed to a proper destructor
