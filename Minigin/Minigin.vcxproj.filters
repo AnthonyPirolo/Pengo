@@ -99,6 +99,12 @@
     <ClInclude Include="LivesDisplay.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PointsDisplay.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PointsComponent.h">
+      <Filter>Components\Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ResourceManager.cpp">
@@ -169,6 +175,9 @@
     </ClCompile>
     <ClCompile Include="Observer.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PointsComponent.cpp">
+      <Filter>Components\Source</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

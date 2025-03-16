@@ -5,7 +5,8 @@
 	{
 		for (BaseComponent* subject : m_Subjects)
 		{
-			subject->RemoveObserver(this);
+			if (subject)
+				subject->RemoveObserver(this);
 		}
 	}
 

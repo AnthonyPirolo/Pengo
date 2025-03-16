@@ -38,6 +38,8 @@ namespace dae
 		void SetHealth(float amount);
 		float GetHealth() const;
 
+		
+
 	private:
 		//---------------------------------
 		//Health Related Variables
@@ -45,6 +47,8 @@ namespace dae
 		float m_Lives{ 3.0f };
 		float m_MaxLives{ 3.0f };
 		float m_StartLives{ 3.0f };
+
+		virtual void Notify(Observer::Event event) const;
 
 	};
 }

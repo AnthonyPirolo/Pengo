@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "Time.h"
 #include <iostream>
+#include "PointsComponent.h"
 
 class Command
 {
@@ -24,20 +25,24 @@ private:
 	dae::GameObject* m_actor;
 };
 
-class MoveCommand : public GameObjectCommand {
+class MoveCommand : public GameObjectCommand 
+{
 public:
     MoveCommand(dae::GameObject* owner, float speed = 50.0f)
-        : GameObjectCommand(owner), m_Speed(speed) {
+        : GameObjectCommand(owner), m_Speed(speed) 
+    {
     }
 
     // Rule of five
     ~MoveCommand() = default;
 
     MoveCommand(const MoveCommand& other)
-        : GameObjectCommand(other), m_Speed(other.m_Speed), m_Direction(other.m_Direction) {
+        : GameObjectCommand(other), m_Speed(other.m_Speed), m_Direction(other.m_Direction) 
+    {
     }
 
-    MoveCommand& operator=(const MoveCommand& other) {
+    MoveCommand& operator=(const MoveCommand& other) 
+    {
         if (this == &other) return *this;
         GameObjectCommand::operator=(other);
         m_Speed = other.m_Speed;
@@ -46,11 +51,13 @@ public:
     }
 
     MoveCommand(MoveCommand&& other) noexcept
-        : GameObjectCommand(std::move(other)), m_Speed(other.m_Speed), m_Direction(std::move(other.m_Direction)) {
+        : GameObjectCommand(std::move(other)), m_Speed(other.m_Speed), m_Direction(std::move(other.m_Direction)) 
+    {
         other.m_Speed = 50.0f;
     }
 
-    MoveCommand& operator=(MoveCommand&& other) noexcept {
+    MoveCommand& operator=(MoveCommand&& other) noexcept 
+    {
         if (this == &other) return *this;
         GameObjectCommand::operator=(std::move(other));
         m_Speed = other.m_Speed;
@@ -81,17 +88,20 @@ class AttackCommand : public GameObjectCommand
 {
 public:
     AttackCommand(dae::GameObject* owner, float attackRange, float damage)
-        : GameObjectCommand(owner), m_AttackRange(attackRange), m_Damage(damage) {
+        : GameObjectCommand(owner), m_AttackRange(attackRange), m_Damage(damage) 
+    {
     }
 
     // Rule of five
     ~AttackCommand() = default;
 
     AttackCommand(const AttackCommand& other)
-        : GameObjectCommand(other), m_AttackRange(other.m_AttackRange), m_Damage(other.m_Damage) {
+        : GameObjectCommand(other), m_AttackRange(other.m_AttackRange), m_Damage(other.m_Damage) 
+    {
     }
 
-    AttackCommand& operator=(const AttackCommand& other) {
+    AttackCommand& operator=(const AttackCommand& other) 
+    {
         if (this == &other) return *this;
         GameObjectCommand::operator=(other);
         m_AttackRange = other.m_AttackRange;
@@ -100,12 +110,14 @@ public:
     }
 
     AttackCommand(AttackCommand&& other) noexcept
-        : GameObjectCommand(std::move(other)), m_AttackRange(other.m_AttackRange), m_Damage(other.m_Damage) {
+        : GameObjectCommand(std::move(other)), m_AttackRange(other.m_AttackRange), m_Damage(other.m_Damage) 
+    {
         other.m_AttackRange = 0.f;
         other.m_Damage = 0;
     }
 
-    AttackCommand& operator=(AttackCommand&& other) noexcept {
+    AttackCommand& operator=(AttackCommand&& other) noexcept 
+    {
         if (this == &other) return *this;
         GameObjectCommand::operator=(std::move(other));
         m_AttackRange = other.m_AttackRange;
@@ -122,4 +134,58 @@ private:
     float m_Damage;
 
     dae::GameObject* FindClosestEnemy();
+};
+
+class AddPointsCommand : public GameObjectCommand
+{
+public:
+    AddPointsCommand(dae::GameObject* owner, int points)
+        : GameObjectCommand(owner), m_Points(points) 
+    {
+    }
+
+    ~AddPointsCommand() = default;
+
+    AddPointsCommand(const AddPointsCommand& other)
+        : GameObjectCommand(other), m_Points(other.m_Points) 
+    {
+    }
+
+    AddPointsCommand& operator=(const AddPointsCommand& other) 
+    {
+        if (this == &other) return *this;
+        GameObjectCommand::operator=(other);
+        m_Points = other.m_Points;
+        return *this;
+    }
+
+    AddPointsCommand(AddPointsCommand&& other) noexcept
+        : GameObjectCommand(std::move(other)), m_Points(other.m_Points) 
+    {
+        other.m_Points = 0;
+    }
+
+    AddPointsCommand& operator=(AddPointsCommand&& other) noexcept 
+    {
+        if (this == &other) return *this;
+        GameObjectCommand::operator=(std::move(other));
+        m_Points = other.m_Points;
+        other.m_Points = 0;
+        return *this;
+    }
+
+    virtual void Execute() override
+    {
+        dae::GameObject* owner = GetGameObject();
+        if (owner) 
+        {
+			owner->GetComponent<dae::PointsComponent>()->AddPoints();
+        }
+        else {
+            std::cout << "AddPointsCommand executed but owner is null!" << std::endl;
+        }
+    }
+
+private:
+    int m_Points;
 };

@@ -13,6 +13,10 @@ namespace dae
 
         void OnNotify(BaseComponent* entity, Event event) override
         {
+            if (event == Event::subjectAttached)
+            {
+                AddSubject(entity);
+            }
             if (event == Event::playerDied)
             {
                 UpdateDisplay(entity);
@@ -26,11 +30,13 @@ namespace dae
     private:
         void UpdateDisplay(BaseComponent* entity)
         {
+
             auto healthComponent = dynamic_cast<HealthComponent*>(entity);
             if (healthComponent)
             {
                 int remainingLives = static_cast<int>(healthComponent->GetHealth());
-                m_TextComponent->SetText("Lives: " + std::to_string(remainingLives));
+				if (remainingLives == 0) m_TextComponent->SetText("Player died!");
+                else m_TextComponent->SetText("Lives: " + std::to_string(remainingLives));
             }
         }
 

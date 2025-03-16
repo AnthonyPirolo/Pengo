@@ -1,10 +1,11 @@
 #pragma once
 #include <vector>
+#include <memory> 
 
 namespace dae
 {
 	class BaseComponent;
-	class Observer
+	class Observer : public std::enable_shared_from_this<Observer>
 	{
 	public:
 
@@ -15,7 +16,9 @@ namespace dae
 			enemyHit,
 			playerHit,
 			subjectAttached,
-			subjectDetached
+			subjectDetached,
+
+			addPoints
 		};
 
 		virtual ~Observer();

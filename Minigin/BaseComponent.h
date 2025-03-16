@@ -41,7 +41,7 @@ namespace dae
         //---------------------------------
         //Observer related functions
         //---------------------------------
-        void AttachObserver(Observer* observer);
+        void AttachObserver(std::shared_ptr<Observer> observer);
         void RemoveObserver(Observer* observerToRemove);
 
     protected:
@@ -49,6 +49,6 @@ namespace dae
         //Observer related functions
         //---------------------------------
         virtual void Notify(Observer::Event event) const;
-        std::vector<Observer*> m_Observers;
+        std::vector<std::shared_ptr<Observer>> m_Observers;
     };
 }

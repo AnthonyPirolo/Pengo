@@ -36,8 +36,15 @@ void dae::HealthComponent::Render() const
 void dae::HealthComponent::DecreaseHealth(float amount)
 {
 	m_Lives -= amount;
-	if (m_Lives <= 0) m_Lives = 0;
+	if (m_Lives <= 0)
+	{
+		m_Lives = 0;
+	}
+
+	// Notify observers that health has changed (e.g., player took damage)
+	Notify(Observer::Event::playerHit);
 }
+
 
 void dae::HealthComponent::IncreaseHealth(float amount)
 {
@@ -59,3 +66,17 @@ float dae::HealthComponent::GetHealth() const
 {
 	return m_Lives;
 }
+
+void dae::HealthComponent::Notify(Observer::Event event) const
+{
+	for (auto observer : m_Observers)
+	{
+		if (observer)
+		{
+			observer->OnNotify(const_cast<HealthComponent*>(this), event);
+		}
+	}
+}
+
+
+

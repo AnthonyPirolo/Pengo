@@ -13,7 +13,7 @@ namespace dae
 		return m_pOwner;
 	}
 
-	void BaseComponent::AttachObserver(Observer* observer)
+	void BaseComponent::AttachObserver(std::shared_ptr<Observer> observer)
 	{
 		m_Observers.emplace_back(observer);
 		observer->OnNotify(this, Observer::Event::subjectAttached);
@@ -25,11 +25,12 @@ namespace dae
 			std::remove_if(
 				m_Observers.begin(),
 				m_Observers.end(),
-				[observer](Observer* obs) { return obs == observer; }
+				[observer](const std::shared_ptr<Observer>& obs) { return obs.get() == observer; }
 			),
 			m_Observers.end()
 		);
 	}
+
 	void BaseComponent::Notify(Observer::Event event) const
 	{
 		(void)event;
