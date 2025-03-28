@@ -1,4 +1,4 @@
-#include "Time.h"
+#include "GameTime.h"
 #include "GameObject.h"
 #include "MoveComponent.h"
 
@@ -12,7 +12,7 @@ dae::MoveComponent::MoveComponent(GameObject* owner, float maxMovementSpeed) :
 
 void dae::MoveComponent::Update()
 {
-	glm::vec3 newPosition = GetOwner()->GetWorldPosition() + m_Direction * Time::GetInstance().GetDeltaTime();
+	glm::vec3 newPosition = GetOwner()->GetWorldPosition() + m_Direction * GameTime::GetInstance().GetDeltaTime();
 	GetOwner()->SetLocalPosition(newPosition);
 }
 

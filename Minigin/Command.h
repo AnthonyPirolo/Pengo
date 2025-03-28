@@ -1,6 +1,6 @@
 #pragma once
 #include "GameObject.h"
-#include "Time.h"
+#include "GameTime.h"
 #include <iostream>
 #include "PointsComponent.h"
 
@@ -72,7 +72,7 @@ public:
     {
         dae::GameObject* owner = GetGameObject();
         if (owner) {
-            owner->SetLocalPosition(owner->GetWorldPosition() + m_Direction * m_Speed * dae::Time::GetInstance().GetDeltaTime());
+            owner->SetLocalPosition(owner->GetWorldPosition() + m_Direction * m_Speed * dae::GameTime::GetInstance().GetDeltaTime());
         }
         else {
             std::cout << "MoveCommand executed but owner is null!" << std::endl;

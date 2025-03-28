@@ -95,7 +95,7 @@ void dae::Minigin::Run(const std::function<void()>& load)
     auto& renderer = Renderer::GetInstance();
     auto& sceneManager = SceneManager::GetInstance();
     auto& input = InputManager::GetInstance();
-	auto& time = Time::GetInstance();
+	auto& time = GameTime::GetInstance();
 
     constexpr float fixed_time_step = 0.016f; // Assuming 60 FPS
     constexpr int ms_per_frame = 16;          // Assuming 16 ms per frame

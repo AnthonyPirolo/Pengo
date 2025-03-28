@@ -2,7 +2,7 @@
 #include "Renderer.h"
 #include "GameObject.h"
 #include "TextComponent.h"
-#include "Time.h"
+#include "GameTime.h"
 
 dae::FpsComponent::FpsComponent(GameObject* owner) :
 	BaseComponent(owner) {
@@ -16,7 +16,7 @@ void dae::FpsComponent::FixedUpdate(float deltaTime)
 
 void dae::FpsComponent::Update() 
 {
-	auto& time = dae::Time::GetInstance();
+	auto& time = dae::GameTime::GetInstance();
 	float deltaTime = time.GetDeltaTime();
 	CalculateFPS(deltaTime);
 }

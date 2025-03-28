@@ -1,6 +1,6 @@
 #include "RotationComponent.h"
 #include "GameObject.h"
-#include "Time.h"
+#include "GameTime.h"
 #include <iostream>
 
 namespace dae
@@ -19,7 +19,7 @@ namespace dae
 
 		glm::vec3 offset = currWorldPos - m_RotationCenter;
 
-		float angleInRadians = glm::radians(m_RotationSpeed * Time::GetInstance().GetDeltaTime());
+		float angleInRadians = glm::radians(m_RotationSpeed * GameTime::GetInstance().GetDeltaTime());
 
 		float cosAngle = cos(angleInRadians);
 		float sinAngle = sin(angleInRadians);
