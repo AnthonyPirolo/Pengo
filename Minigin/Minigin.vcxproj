@@ -180,9 +180,7 @@
     <ClInclude Include="Font.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Gamepad.h" />
-    <ClInclude Include="ImGuiPlotComponent.h" />
     <ClInclude Include="InputManager.h" />
-    <ClInclude Include="LivesDisplay.h" />
     <ClInclude Include="Minigin.h" />
     <ClInclude Include="Observer.h" />
     <ClInclude Include="Renderer.h" />
@@ -202,7 +200,6 @@
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Gamepad.cpp" />
-    <ClCompile Include="ImGuiPlotComponent.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="Minigin.cpp" />
     <ClCompile Include="Observer.cpp" />

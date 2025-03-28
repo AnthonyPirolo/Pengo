@@ -165,6 +165,7 @@
   <ItemGroup>
     <ClInclude Include="..\Minigin\FpsComponent.h" />
     <ClInclude Include="..\Minigin\HealthComponent.h" />
+    <ClInclude Include="..\Minigin\LivesDisplay.h" />
     <ClInclude Include="..\Minigin\MoveComponent.h" />
     <ClInclude Include="..\Minigin\PointsComponent.h" />
     <ClInclude Include="..\Minigin\PointsDisplay.h" />
