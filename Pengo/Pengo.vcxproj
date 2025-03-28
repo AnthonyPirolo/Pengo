@@ -147,7 +147,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Minigin\FpsComponent.cpp" />
+    <ClCompile Include="..\Minigin\HealthComponent.cpp" />
+    <ClCompile Include="..\Minigin\MoveComponent.cpp" />
+    <ClCompile Include="..\Minigin\PointsComponent.cpp" />
+    <ClCompile Include="..\Minigin\RotationComponent.cpp" />
     <ClCompile Include="Pengo.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Minigin\FpsComponent.h" />
+    <ClInclude Include="..\Minigin\HealthComponent.h" />
+    <ClInclude Include="..\Minigin\MoveComponent.h" />
+    <ClInclude Include="..\Minigin\PointsComponent.h" />
+    <ClInclude Include="..\Minigin\PointsDisplay.h" />
+    <ClInclude Include="..\Minigin\RotationComponent.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
