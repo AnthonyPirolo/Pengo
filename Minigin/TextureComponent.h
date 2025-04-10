@@ -23,6 +23,7 @@ namespace dae
 		//Texture Related Functions
 		//---------------------------------
 		void SetTexture(const std::string& filename);
+		void SetScale(const float xScale, const float yScale);
 
 		//---------------------------------
 		//Constructor & Destructor
@@ -39,5 +40,9 @@ namespace dae
 		//---------------------------------
 		bool m_needsUpdate;
 		std::shared_ptr<Texture2D> m_texture;
+
+		glm::vec2 m_scale{ 1.f, 1.f };
+
+		glm::vec2 m_scaledSize{ 0.f, 0.f };
 	};
 }

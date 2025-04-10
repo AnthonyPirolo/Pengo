@@ -28,23 +28,13 @@ void MakePointsDisplay(std::shared_ptr<dae::GameObject> actor, std::shared_ptr<d
 void load()
 {
 	auto& scene = dae::SceneManager::GetInstance().CreateScene("Demo");
-
-	// W01 - W02
-	auto background = std::make_shared<dae::GameObject>();
-	background->AddComponent<dae::TextureComponent>(background.get(), "background.tga");
-	scene.Add(background);
-
-	auto logo = std::make_shared<dae::GameObject>();
-	logo->AddComponent<dae::TextureComponent>(logo.get(), "logo.tga");
-	logo->SetLocalPosition(glm::vec3(216, 180, 0));
-	scene.Add(logo);
-
 	auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
-	auto text = std::make_shared<dae::GameObject>();
-	text->AddComponent<dae::TextComponent>(text.get(), "Programming 4 Assignment", font);
-	text->AddComponent<dae::TextComponent>(text.get(), "Deletion", font);
-	text->SetLocalPosition(glm::vec3(180, 20, 0));
-	scene.Add(text);
+
+	auto background = std::make_shared<dae::GameObject>();
+	background->AddComponent<dae::TextureComponent>(background.get(), "LevelBG.png");
+	background->GetComponent<dae::TextureComponent>()->SetScale(2.f, 2.f);
+	background->SetLocalPosition(glm::vec3(0, 45, 0));
+	scene.Add(background);
 
 	auto fps = std::make_shared<dae::GameObject>();
 	fps->AddComponent<dae::TextComponent>(fps.get(), "FPS: 0", font);
@@ -52,18 +42,19 @@ void load()
 	fps->SetLocalPosition(glm::vec3(10, 20, 0));
 	scene.Add(fps);
 
-	auto rot = std::make_shared<dae::GameObject>();
-	rot->AddComponent<dae::TextureComponent>(rot.get(), "SinglePenguin.png");
-	rot->SetLocalPosition(glm::vec3(500, 300, 0));
-	scene.Add(rot);
-	auto rot1Health = rot->AddComponent<dae::HealthComponent>(rot.get());
-	rot1Health->SetHealth(3);
-	auto rotPoints = rot->AddComponent<dae::PointsComponent>(rot.get());
+	auto P1 = std::make_shared<dae::GameObject>();
+	P1->AddComponent<dae::TextureComponent>(P1.get(), "SinglePenguin.png");
+	P1->GetComponent<dae::TextureComponent>()->SetScale(2.f, 2.f);
+	P1->SetLocalPosition(glm::vec3(500, 300, 0));
+	scene.Add(P1);
+	auto P1Health = P1->AddComponent<dae::HealthComponent>(P1.get());
+	P1Health->SetHealth(3);
+	auto P1Points = P1->AddComponent<dae::PointsComponent>(P1.get());
 	//rot->AddComponent<dae::RotationComponent>(rot.get(), 360.f , glm::vec3(300, 300, 0));
 
-	BindMovementCommands(rot, SDLK_w, SDLK_d, SDLK_a, SDLK_s);
-	BindAttackCommmand(rot, SDLK_SPACE);
-	BindAddPointsCommand(rot, SDLK_p);
+	BindMovementCommands(P1, SDLK_w, SDLK_d, SDLK_a, SDLK_s);
+	BindAttackCommmand(P1, SDLK_SPACE);
+	BindAddPointsCommand(P1, SDLK_p);
 
 
 	auto rot2 = std::make_shared<dae::GameObject>();
@@ -83,7 +74,7 @@ void load()
 
 	auto livesDisplayObj1 = std::make_shared<dae::GameObject>();
 	livesDisplayObj1->SetLocalPosition(glm::vec3(50, 200, 0));
-	MakeLivesDisplay(rot, livesDisplayObj1, rot1Health, &scene);
+	MakeLivesDisplay(P1, livesDisplayObj1, P1Health, &scene);
 
 	auto livesDisplayObj2 = std::make_shared<dae::GameObject>();
 	livesDisplayObj2->SetLocalPosition(glm::vec3(500, 200, 0));
@@ -101,7 +92,7 @@ void load()
 
 	auto pointsDisplayObj1 = std::make_shared<dae::GameObject>();
 	pointsDisplayObj1->SetLocalPosition(glm::vec3(50, 230, 0));
-	MakePointsDisplay(rot, pointsDisplayObj1, rotPoints, &scene);
+	MakePointsDisplay(P1, pointsDisplayObj1, P1Points, &scene);
 
 	auto pointsDisplayObj2 = std::make_shared<dae::GameObject>();
 	pointsDisplayObj2->SetLocalPosition(glm::vec3(500, 230, 0));
