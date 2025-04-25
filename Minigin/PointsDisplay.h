@@ -10,7 +10,7 @@ namespace dae
     {
     public:
         PointsDisplay(TextComponent* textComponent)
-            : m_TextComponent(textComponent) {
+            : m_TextComponent(textComponent), m_Points(0) {
         }
 
         void OnNotify(BaseComponent* entity, Event event) override

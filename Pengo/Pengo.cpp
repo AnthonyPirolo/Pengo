@@ -17,23 +17,30 @@
 #include <SDL.h>
 #include "LivesDisplay.h"
 #include "PointsDisplay.h"
+#include "ServiceLocator.h"
+#include "SDLSoundSystem.h"
 
 void BindMovementCommands(std::shared_ptr<dae::GameObject> actor, SDL_KeyCode up, SDL_KeyCode right, SDL_KeyCode left, SDL_KeyCode down);
 void BindAttackCommmand(std::shared_ptr<dae::GameObject> actor, SDL_KeyCode attackKey);
 void BindAddPointsCommand(std::shared_ptr<dae::GameObject> actor, SDL_KeyCode addPointsKey);
 void MakeLivesDisplay(std::shared_ptr<dae::GameObject> actor, std::shared_ptr<dae::GameObject> livesDisplayObj, dae::HealthComponent* healthComponent, dae::Scene* scene);
 void MakePointsDisplay(std::shared_ptr<dae::GameObject> actor, std::shared_ptr<dae::GameObject> pointsDisplayObj, dae::PointsComponent* pointsComponent, dae::Scene* scene);
-
+void BindSoundTestCommand();
 
 void load()
 {
 	auto& scene = dae::SceneManager::GetInstance().CreateScene("Demo");
 	auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
 
+	auto& soundSystem = ServiceLocator::GetSoundSystem();
+	soundSystem.LoadSound("TestSound.mp3", 1); // Load sound with ID 1
+
+	BindSoundTestCommand();
+
 	auto background = std::make_shared<dae::GameObject>();
 	background->AddComponent<dae::TextureComponent>(background.get(), "LevelBG.png");
 	background->GetComponent<dae::TextureComponent>()->SetScale(2.f, 2.f);
-	background->SetLocalPosition(glm::vec3(0, 45, 0));
+	background->SetLocalPosition(glm::vec3(0, 47, 0));
 	scene.Add(background);
 
 	auto fps = std::make_shared<dae::GameObject>();
@@ -162,4 +169,11 @@ void MakePointsDisplay(std::shared_ptr<dae::GameObject> actor, std::shared_ptr<d
 	auto pointsDisplay = std::make_shared<dae::PointsDisplay>(rotPointsText);
 	pointsComponent->AttachObserver(pointsDisplay);
 	scene->Add(pointsDisplayObj);
+}
+
+void BindSoundTestCommand()
+{
+	auto& input = dae::InputManager::GetInstance();
+	auto soundCommand = std::make_shared<SoundCommand>(1, 1.0f); // Sound ID 1, full volume
+	input.BindCommand(SDLK_s, dae::InputManager::KeyState::Pressed, soundCommand);
 }

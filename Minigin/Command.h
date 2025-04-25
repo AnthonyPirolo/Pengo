@@ -3,6 +3,9 @@
 #include "GameTime.h"
 #include <iostream>
 #include "PointsComponent.h"
+#include "ServiceLocator.h"
+#include "ISoundSystem.h"
+#include "SDLSoundSystem.h"
 
 class Command
 {
@@ -185,7 +188,25 @@ public:
             std::cout << "AddPointsCommand executed but owner is null!" << std::endl;
         }
     }
-
 private:
     int m_Points;
+};
+
+class SoundCommand : public Command
+{
+public:
+    SoundCommand(sound_id id, float volume)
+        : m_SoundId(id), m_Volume(volume) {
+    }
+
+    virtual ~SoundCommand() = default;
+
+    virtual void Execute() override
+    {
+        ServiceLocator::GetSoundSystem().Play(m_SoundId, m_Volume);
+    }
+
+private:
+    sound_id m_SoundId;
+    float m_Volume;
 };

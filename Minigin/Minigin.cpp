@@ -13,6 +13,8 @@
 #include "Time.h"
 #include <chrono>
 #include <thread> 
+#include "SDLSoundSystem.h"
+#include "ServiceLocator.h"
 
 SDL_Window* g_window{};
 SDL_GLContext g_glContext{};
@@ -91,11 +93,13 @@ dae::Minigin::~Minigin()
 void dae::Minigin::Run(const std::function<void()>& load)
 {
     load();
+    ServiceLocator::RegisterSoundSystem(std::make_unique<SDLSoundSystem>());
 
     auto& renderer = Renderer::GetInstance();
     auto& sceneManager = SceneManager::GetInstance();
     auto& input = InputManager::GetInstance();
 	auto& time = GameTime::GetInstance();
+
 
     constexpr float fixed_time_step = 0.016f; // Assuming 60 FPS
     constexpr int ms_per_frame = 16;          // Assuming 16 ms per frame
