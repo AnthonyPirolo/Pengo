@@ -12,8 +12,8 @@ namespace dae
         {
             auto& soundSystem = ServiceLocator::GetSoundSystem();
             std::cout << "Registered Sound System at: " << &ServiceLocator::GetSoundSystem() << std::endl;
-            soundSystem.LoadSound("TestSound.wav", 1);
-            soundSystem.LoadSound("TestSound2.wav", 2);
+            soundSystem.LoadSound("TestSound.wav", 2);
+            soundSystem.LoadSound("TestSound2.wav", 3);
         }
 
         void OnNotify(BaseComponent* entity, Event event) override
@@ -25,12 +25,12 @@ namespace dae
             if (event == Event::pointsPickup)
             {
                 auto& soundSystem = ServiceLocator::GetSoundSystem();
-                soundSystem.Play(1, 1.0f);
+                soundSystem.Play(2, 1.0f);
             }
             if (event == Event::playerDied)
             {
                 auto& soundSystem = ServiceLocator::GetSoundSystem();
-                soundSystem.Play(1, 1.0f);
+                soundSystem.Play(3, 1.0f);
             }
         }
 

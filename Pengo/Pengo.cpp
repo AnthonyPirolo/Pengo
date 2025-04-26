@@ -26,18 +26,15 @@ void BindAttackCommmand(std::shared_ptr<dae::GameObject> actor, SDL_KeyCode atta
 void BindAddPointsCommand(std::shared_ptr<dae::GameObject> actor, SDL_KeyCode addPointsKey);
 void MakeLivesDisplay(std::shared_ptr<dae::GameObject> actor, std::shared_ptr<dae::GameObject> livesDisplayObj, dae::HealthComponent* healthComponent, dae::Scene* scene);
 void MakePointsDisplay(std::shared_ptr<dae::GameObject> actor, std::shared_ptr<dae::GameObject> pointsDisplayObj, dae::PointsComponent* pointsComponent, dae::Scene* scene);
-void BindSoundTestCommand(std::shared_ptr<dae::GameObject> actor, SDL_KeyCode soundKey, int ID);
 
 void load()
 {	auto& scene = dae::SceneManager::GetInstance().CreateScene("Demo");
 	auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
+	/*auto musicPlayer = ServiceLocator::GetSoundSystem();
+	musicPlayer.LoadSound("MainSound.mp3", 1);
+	musicPlayer.Play(1, 0.5f);*/
 
 	auto soundPlayer = std::make_shared < dae::SoundPlayer>();
-	/*auto& soundSystem = ServiceLocator::GetSoundSystem();
-	std::cout << "Registered Sound System at: " << &ServiceLocator::GetSoundSystem() << std::endl;
-	soundSystem.LoadSound("TestSound.wav", 1);
-	soundSystem.LoadSound("TestSound2.wav", 2);*/
-
 	auto background = std::make_shared<dae::GameObject>();
 	background->AddComponent<dae::TextureComponent>(background.get(), "LevelBG.png");
 	background->GetComponent<dae::TextureComponent>()->SetScale(2.f, 2.f);
@@ -64,9 +61,6 @@ void load()
 	BindMovementCommands(P1, SDLK_w, SDLK_d, SDLK_a, SDLK_s);
 	BindAttackCommmand(P1, SDLK_SPACE);
 	BindAddPointsCommand(P1, SDLK_p);
-	BindSoundTestCommand(P1, SDLK_k, 1); //test
-	BindSoundTestCommand(P1, SDLK_l, 2); //test
-
 
 	auto rot2 = std::make_shared<dae::GameObject>();
 	rot2->SetLocalPosition(glm::vec3(50, 300, 0));
@@ -94,12 +88,12 @@ void load()
 
 	auto instructions = std::make_shared<dae::GameObject>();
 	instructions->SetLocalPosition(glm::vec3(10, 430, 0));
-	instructions->AddComponent<dae::TextComponent>(instructions.get(), "Player 1: WASD to move, Space to attack. Press p to add points", font2);
+	instructions->AddComponent<dae::TextComponent>(instructions.get(), "Player 1: WASD to move, Space to attack.\nPress p to add points -> makes sound", font2);
 	scene.Add(instructions);
 
 	auto instructions2 = std::make_shared<dae::GameObject>();
-	instructions2->SetLocalPosition(glm::vec3(10, 450, 0));
-	instructions2->AddComponent<dae::TextComponent>(instructions2.get(), "Player 2: Arrow keys to move, Enter to attack. Press o to add points", font2);
+	instructions2->SetLocalPosition(glm::vec3(10, 480, 0));
+	instructions2->AddComponent<dae::TextComponent>(instructions2.get(), "Player 2: Arrow keys to move, Enter to attack.\nPress o to add points -> makes sound", font2);
 	scene.Add(instructions2);
 
 	auto pointsDisplayObj1 = std::make_shared<dae::GameObject>();
@@ -176,9 +170,3 @@ void MakePointsDisplay(std::shared_ptr<dae::GameObject> actor, std::shared_ptr<d
 	scene->Add(pointsDisplayObj);
 }
 
-void BindSoundTestCommand(std::shared_ptr<dae::GameObject> actor, SDL_KeyCode soundKey, int ID)
-{
-	auto& input = dae::InputManager::GetInstance();
-	auto soundCommand = std::make_shared<SoundCommand>(actor.get(), ID, 1.0f); // Sound ID 1, full volume
-	input.BindCommand(soundKey, dae::InputManager::KeyState::Pressed, soundCommand);
-}
