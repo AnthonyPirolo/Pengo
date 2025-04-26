@@ -63,47 +63,38 @@
     <ClInclude Include="BaseComponent.h">
       <Filter>Components\Header</Filter>
     </ClInclude>
-    <ClInclude Include="FpsComponent.h">
-      <Filter>Components\Header</Filter>
-    </ClInclude>
     <ClInclude Include="TextComponent.h">
       <Filter>Components\Header</Filter>
     </ClInclude>
     <ClInclude Include="TextureComponent.h">
       <Filter>Components\Header</Filter>
     </ClInclude>
-    <ClInclude Include="RotationComponent.h">
-      <Filter>Components\Header</Filter>
-    </ClInclude>
     <ClInclude Include="Components.h">
-      <Filter>Components\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGuiPlotComponent.h">
       <Filter>Components\Header</Filter>
     </ClInclude>
     <ClInclude Include="Command.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MoveComponent.h">
-      <Filter>Components\Header</Filter>
-    </ClInclude>
     <ClInclude Include="Gamepad.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="HealthComponent.h">
-      <Filter>Components\Header</Filter>
     </ClInclude>
     <ClInclude Include="Observer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LivesDisplay.h">
+    <ClInclude Include="TestOverlap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PointsDisplay.h">
+    <ClInclude Include="ISoundSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PointsComponent.h">
-      <Filter>Components\Header</Filter>
+    <ClInclude Include="ServiceLocator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SDLSoundSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadTask.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -143,38 +134,32 @@
     <ClCompile Include="BaseComponent.cpp">
       <Filter>Components\Source</Filter>
     </ClCompile>
-    <ClCompile Include="FpsComponent.cpp">
-      <Filter>Components\Source</Filter>
-    </ClCompile>
     <ClCompile Include="TextComponent.cpp">
       <Filter>Components\Source</Filter>
     </ClCompile>
     <ClCompile Include="TextureComponent.cpp">
       <Filter>Components\Source</Filter>
     </ClCompile>
-    <ClCompile Include="RotationComponent.cpp">
-      <Filter>Components\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="ImGuiPlotComponent.cpp">
-      <Filter>Components\Source</Filter>
-    </ClCompile>
     <ClCompile Include="Command.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MoveComponent.cpp">
-      <Filter>Components\Source</Filter>
     </ClCompile>
     <ClCompile Include="Gamepad.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="HealthComponent.cpp">
-      <Filter>Components\Source</Filter>
-    </ClCompile>
     <ClCompile Include="Observer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PointsComponent.cpp">
-      <Filter>Components\Source</Filter>
+    <ClCompile Include="TestOverlap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SDLSoundSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ServiceLocator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadTask.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

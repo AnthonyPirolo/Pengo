@@ -192,21 +192,35 @@ private:
     int m_Points;
 };
 
-class SoundCommand : public Command
+class SoundCommand : public GameObjectCommand
 {
 public:
-    SoundCommand(sound_id id, float volume)
-        : m_SoundId(id), m_Volume(volume) {
+    SoundCommand(dae::GameObject* owner, sound_id id, float volume)
+        : GameObjectCommand(owner), m_SoundId(id), m_Volume(volume) {
     }
 
     virtual ~SoundCommand() = default;
 
     virtual void Execute() override
     {
-        ServiceLocator::GetSoundSystem().Play(m_SoundId, m_Volume);
+        std::cout << "Playing using Sound System at: " << &ServiceLocator::GetSoundSystem() << std::endl;
+        dae::GameObject* owner = GetGameObject();
+        if (owner)
+        {
+            // Fetch the sound system from ServiceLocator
+            auto& soundSystem = ServiceLocator::GetSoundSystem();
+            soundSystem.Play(m_SoundId, m_Volume);
+            std::cout << "Executing SoundCommand with ID: " << m_SoundId << " and Volume: " << m_Volume << std::endl;
+        }
+        else
+        {
+            std::cout << "SoundCommand executed but owner is null!" << std::endl;
+        }
     }
 
 private:
     sound_id m_SoundId;
     float m_Volume;
 };
+
+

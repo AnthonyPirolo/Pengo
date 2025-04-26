@@ -93,7 +93,6 @@ dae::Minigin::~Minigin()
 void dae::Minigin::Run(const std::function<void()>& load)
 {
     load();
-    ServiceLocator::RegisterSoundSystem(std::make_unique<SDLSoundSystem>());
 
     auto& renderer = Renderer::GetInstance();
     auto& sceneManager = SceneManager::GetInstance();

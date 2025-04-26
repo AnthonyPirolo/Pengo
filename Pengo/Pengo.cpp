@@ -25,17 +25,18 @@ void BindAttackCommmand(std::shared_ptr<dae::GameObject> actor, SDL_KeyCode atta
 void BindAddPointsCommand(std::shared_ptr<dae::GameObject> actor, SDL_KeyCode addPointsKey);
 void MakeLivesDisplay(std::shared_ptr<dae::GameObject> actor, std::shared_ptr<dae::GameObject> livesDisplayObj, dae::HealthComponent* healthComponent, dae::Scene* scene);
 void MakePointsDisplay(std::shared_ptr<dae::GameObject> actor, std::shared_ptr<dae::GameObject> pointsDisplayObj, dae::PointsComponent* pointsComponent, dae::Scene* scene);
-void BindSoundTestCommand();
+void BindSoundTestCommand(std::shared_ptr<dae::GameObject> actor, SDL_KeyCode soundKey, int ID);
 
 void load()
 {
+	ServiceLocator::RegisterSoundSystem(std::make_unique<SDLSoundSystem>());
 	auto& scene = dae::SceneManager::GetInstance().CreateScene("Demo");
 	auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
 
 	auto& soundSystem = ServiceLocator::GetSoundSystem();
-	soundSystem.LoadSound("TestSound.mp3", 1); // Load sound with ID 1
-
-	BindSoundTestCommand();
+	std::cout << "Registered Sound System at: " << &ServiceLocator::GetSoundSystem() << std::endl;
+	soundSystem.LoadSound("C:/Howest/Pengo-main/Data/TestSound.wav", 1);
+	soundSystem.LoadSound("C:/Howest/Pengo-main/Data/TestSound2.wav", 2);
 
 	auto background = std::make_shared<dae::GameObject>();
 	background->AddComponent<dae::TextureComponent>(background.get(), "LevelBG.png");
@@ -62,6 +63,8 @@ void load()
 	BindMovementCommands(P1, SDLK_w, SDLK_d, SDLK_a, SDLK_s);
 	BindAttackCommmand(P1, SDLK_SPACE);
 	BindAddPointsCommand(P1, SDLK_p);
+	BindSoundTestCommand(P1, SDLK_k, 1); //test
+	BindSoundTestCommand(P1, SDLK_l, 2); //test
 
 
 	auto rot2 = std::make_shared<dae::GameObject>();
@@ -171,9 +174,9 @@ void MakePointsDisplay(std::shared_ptr<dae::GameObject> actor, std::shared_ptr<d
 	scene->Add(pointsDisplayObj);
 }
 
-void BindSoundTestCommand()
+void BindSoundTestCommand(std::shared_ptr<dae::GameObject> actor, SDL_KeyCode soundKey, int ID)
 {
 	auto& input = dae::InputManager::GetInstance();
-	auto soundCommand = std::make_shared<SoundCommand>(1, 1.0f); // Sound ID 1, full volume
-	input.BindCommand(SDLK_s, dae::InputManager::KeyState::Pressed, soundCommand);
+	auto soundCommand = std::make_shared<SoundCommand>(actor.get(), ID, 1.0f); // Sound ID 1, full volume
+	input.BindCommand(soundKey, dae::InputManager::KeyState::Pressed, soundCommand);
 }

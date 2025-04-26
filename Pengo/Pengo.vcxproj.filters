@@ -13,47 +13,62 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Components">
+      <UniqueIdentifier>{02137c64-11a1-479a-80bf-5e292a53760e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\Header Files">
+      <UniqueIdentifier>{af44ff23-74b2-4bb5-ac8f-2a9151b432ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Components\Source Files">
+      <UniqueIdentifier>{8c846426-521a-44b7-b226-130d83d654fc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Pengo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Minigin\FpsComponent.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Components\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Minigin\HealthComponent.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Components\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Minigin\MoveComponent.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Components\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Minigin\PointsComponent.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Components\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Minigin\RotationComponent.cpp">
+      <Filter>Components\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WallCreator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Minigin\FpsComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Minigin\HealthComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Minigin\LivesDisplay.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Minigin\MoveComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Minigin\PointsComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Minigin\PointsDisplay.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Minigin\MoveComponent.h">
+      <Filter>Components\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Minigin\PointsComponent.h">
+      <Filter>Components\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Minigin\HealthComponent.h">
+      <Filter>Components\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Minigin\FpsComponent.h">
+      <Filter>Components\Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\Minigin\RotationComponent.h">
+      <Filter>Components\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WallCreator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
