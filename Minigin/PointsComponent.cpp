@@ -30,6 +30,7 @@ void dae::PointsComponent::AddPoints()
 {
 	m_Points += 100;
 	Notify(Observer::Event::addPoints);
+	Notify(Observer::Event::pointsPickup);
 }
 
 void dae::PointsComponent::Notify(Observer::Event event) const

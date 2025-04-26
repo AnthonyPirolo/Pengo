@@ -183,6 +183,7 @@
     <ClInclude Include="..\Minigin\PointsComponent.h" />
     <ClInclude Include="..\Minigin\PointsDisplay.h" />
     <ClInclude Include="..\Minigin\RotationComponent.h" />
+    <ClInclude Include="SoundPlayer.h" />
     <ClInclude Include="WallCreator.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

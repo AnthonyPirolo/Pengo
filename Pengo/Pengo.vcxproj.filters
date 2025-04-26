@@ -71,5 +71,8 @@
     <ClInclude Include="WallCreator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SoundPlayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

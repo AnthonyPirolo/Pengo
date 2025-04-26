@@ -19,6 +19,7 @@
 #include "PointsDisplay.h"
 #include "ServiceLocator.h"
 #include "SDLSoundSystem.h"
+#include "SoundPlayer.h"
 
 void BindMovementCommands(std::shared_ptr<dae::GameObject> actor, SDL_KeyCode up, SDL_KeyCode right, SDL_KeyCode left, SDL_KeyCode down);
 void BindAttackCommmand(std::shared_ptr<dae::GameObject> actor, SDL_KeyCode attackKey);
@@ -28,15 +29,14 @@ void MakePointsDisplay(std::shared_ptr<dae::GameObject> actor, std::shared_ptr<d
 void BindSoundTestCommand(std::shared_ptr<dae::GameObject> actor, SDL_KeyCode soundKey, int ID);
 
 void load()
-{
-	ServiceLocator::RegisterSoundSystem(std::make_unique<SDLSoundSystem>());
-	auto& scene = dae::SceneManager::GetInstance().CreateScene("Demo");
+{	auto& scene = dae::SceneManager::GetInstance().CreateScene("Demo");
 	auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
 
-	auto& soundSystem = ServiceLocator::GetSoundSystem();
+	auto soundPlayer = std::make_shared < dae::SoundPlayer>();
+	/*auto& soundSystem = ServiceLocator::GetSoundSystem();
 	std::cout << "Registered Sound System at: " << &ServiceLocator::GetSoundSystem() << std::endl;
-	soundSystem.LoadSound("C:/Howest/Pengo-main/Data/TestSound.wav", 1);
-	soundSystem.LoadSound("C:/Howest/Pengo-main/Data/TestSound2.wav", 2);
+	soundSystem.LoadSound("TestSound.wav", 1);
+	soundSystem.LoadSound("TestSound2.wav", 2);*/
 
 	auto background = std::make_shared<dae::GameObject>();
 	background->AddComponent<dae::TextureComponent>(background.get(), "LevelBG.png");
@@ -58,6 +58,7 @@ void load()
 	auto P1Health = P1->AddComponent<dae::HealthComponent>(P1.get());
 	P1Health->SetHealth(3);
 	auto P1Points = P1->AddComponent<dae::PointsComponent>(P1.get());
+	P1Points->AttachObserver(soundPlayer);
 	//rot->AddComponent<dae::RotationComponent>(rot.get(), 360.f , glm::vec3(300, 300, 0));
 
 	BindMovementCommands(P1, SDLK_w, SDLK_d, SDLK_a, SDLK_s);
@@ -74,6 +75,7 @@ void load()
 	auto rot2Health = rot2->AddComponent<dae::HealthComponent>(rot2.get());
 	rot2Health->SetHealth(3);
 	auto rot2Points = rot2->AddComponent<dae::PointsComponent>(rot2.get());
+	rot2Points->AttachObserver(soundPlayer);
 	//rot2->AddComponent<dae::RotationComponent>(rot2.get(), -180.f, rot.get());
 
 	BindMovementCommands(rot2, SDLK_UP, SDLK_RIGHT, SDLK_LEFT, SDLK_DOWN);

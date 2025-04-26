@@ -18,7 +18,11 @@ namespace dae
 			subjectAttached,
 			subjectDetached,
 
-			addPoints
+			addPoints,
+
+			breakWall,
+			moveWall,
+			pointsPickup
 		};
 
 		virtual ~Observer();

@@ -5,6 +5,7 @@
 #include <iostream>
 #include <string>
 #include "ThreadTask.h"
+#include "ResourceManager.h"
 
 class SDLSoundSystem::Impl {
 public:
@@ -27,6 +28,7 @@ public:
         Mix_CloseAudio();
     }
 
+	//Lots of debugging to make sure soundsystem worked properly
     void Play(const sound_id id, const float volume)
     {
         m_TaskQueue.Enqueue([this, id, volume]()
@@ -57,19 +59,20 @@ public:
 
     void LoadSound(const std::string& filePath, const sound_id id)
     {
-        std::cout << "Loading sound from file: " << filePath << " with ID: " << id << std::endl;
-        Mix_Chunk* chunk = Mix_LoadWAV(filePath.data());
-        if (!chunk)
-        {
-            throw std::runtime_error("Failed to load sound: " + filePath + " - " + Mix_GetError());
-        }
-        m_SoundMap[id] = chunk;
-        std::cout << "Sound loaded and added to m_SoundMap with ID: " << id << std::endl;
+        m_TaskQueue.Enqueue([this, filePath, id]()
+            {
+                const auto& dataPath = dae::ResourceManager::GetInstance().GetDataPath();
+                const auto fullPath = dataPath / filePath;
 
-        for (const auto& [key, value] : m_SoundMap)
-        {
-            std::cout << "m_SoundMap contains ID: " << key << std::endl;
-        }
+                Mix_Chunk* chunk = Mix_LoadWAV(fullPath.string().c_str());
+                if (!chunk)
+                {
+                    std::cerr << "Failed to load sound: " << filePath << " - " << Mix_GetError() << std::endl;
+                    return;
+                }
+
+                m_SoundMap.emplace(id, chunk);
+            });
     }
 
 private:
