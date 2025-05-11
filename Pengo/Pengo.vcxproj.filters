@@ -22,6 +22,15 @@
     <Filter Include="Components\Source Files">
       <UniqueIdentifier>{8c846426-521a-44b7-b226-130d83d654fc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Character">
+      <UniqueIdentifier>{c5379136-3517-4603-9121-f941c79b28e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Character\Header Files">
+      <UniqueIdentifier>{c0f08940-17cb-485c-91ea-6184eaaf9c73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Character\Source Files">
+      <UniqueIdentifier>{0ba7e771-5318-4fab-b495-6c3ea8056f68}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Pengo.cpp">
@@ -43,6 +52,24 @@
       <Filter>Components\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="WallCreator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IdleState.cpp">
+      <Filter>Character\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RunningState.cpp">
+      <Filter>Character\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PushingState.cpp">
+      <Filter>Character\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DeadState.cpp">
+      <Filter>Character\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameCommands.h">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameCommands.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -73,6 +100,27 @@
     </ClInclude>
     <ClInclude Include="SoundPlayer.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameComponents.h">
+      <Filter>Components\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterComponent.h">
+      <Filter>Character\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterState.h">
+      <Filter>Character\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DeadState.h">
+      <Filter>Character\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IdleState.h">
+      <Filter>Character\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PushingState.h">
+      <Filter>Character\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RunningState.h">
+      <Filter>Character\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

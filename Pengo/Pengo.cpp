@@ -20,6 +20,8 @@
 #include "ServiceLocator.h"
 #include "SDLSoundSystem.h"
 #include "SoundPlayer.h"
+#include "CharacterComponent.h"
+#include "GameCommands.h"
 
 void BindMovementCommands(std::shared_ptr<dae::GameObject> actor, SDL_KeyCode up, SDL_KeyCode right, SDL_KeyCode left, SDL_KeyCode down);
 void BindAttackCommmand(std::shared_ptr<dae::GameObject> actor, SDL_KeyCode attackKey);
@@ -108,6 +110,13 @@ void load()
 	/*auto imguiPlot = std::make_shared<dae::GameObject>();
 	imguiPlot->AddComponent<dae::ImGuiPlotComponent>(imguiPlot.get());
 	scene.Add(imguiPlot);*/
+
+	auto characterComponentP1 = std::make_shared<dae::CharacterComponent>(P1.get());
+	P1->AddComponent<dae::CharacterComponent>(P1.get());
+
+	auto characterComponentRot2 = std::make_shared<dae::CharacterComponent>(rot2.get());
+	rot2->AddComponent<dae::CharacterComponent>(rot2.get());
+
 
 }
 

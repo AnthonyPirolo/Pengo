@@ -1,0 +1,7 @@
+#include "FpsComponent.h"
+#include "TextureComponent.h"
+#include "TextComponent.h"
+#include "RotationComponent.h"
+#include "HealthComponent.h"
+#include "PointsComponent.h"
+#include "BaseComponent.h"

@@ -15,6 +15,7 @@
 #include <thread> 
 #include "SDLSoundSystem.h"
 #include "ServiceLocator.h"
+#include "GameTime.h"
 
 SDL_Window* g_window{};
 SDL_GLContext g_glContext{};
