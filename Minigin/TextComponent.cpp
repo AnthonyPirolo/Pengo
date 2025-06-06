@@ -12,7 +12,7 @@ dae::TextComponent::TextComponent(GameObject* owner, const std::string& text, st
 
 void dae::TextComponent::FixedUpdate(float DeltaTime)
 {
-	(void)DeltaTime; // Suppress unused parameter warning
+	(void)DeltaTime;
 }
 
 void dae::TextComponent::Update()
@@ -21,7 +21,7 @@ void dae::TextComponent::Update()
 	if (m_needsUpdate)
 	{
 		const SDL_Color color = { 255,255,255,255 }; // only white text is supported now
-		const Uint32 wrapLength = 600; // width in pixels, adjust as you like
+		const Uint32 wrapLength = 600;
 		const auto surf = TTF_RenderText_Blended_Wrapped(m_font->GetFont(), m_text.c_str(), color, wrapLength);
 		if (surf == nullptr) 
 		{

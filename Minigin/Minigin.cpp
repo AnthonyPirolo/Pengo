@@ -16,6 +16,7 @@
 #include "SDLSoundSystem.h"
 #include "ServiceLocator.h"
 #include "GameTime.h"
+#include "XInputManager.h"
 
 SDL_Window* g_window{};
 SDL_GLContext g_glContext{};
@@ -99,11 +100,11 @@ void dae::Minigin::Run(const std::function<void()>& load)
     auto& renderer = Renderer::GetInstance();
     auto& sceneManager = SceneManager::GetInstance();
     auto& input = InputManager::GetInstance();
-	auto& time = GameTime::GetInstance();
+    auto& time = GameTime::GetInstance();
+    auto& xi = dae::XInputManager::GetInstance();
 
-
-    constexpr float fixed_time_step = 0.016f; // Assuming 60 FPS
-    constexpr int ms_per_frame = 16;          // Assuming 16 ms per frame
+    constexpr float fixed_time_step = 0.016f; // 60 FPS
+    constexpr int   ms_per_frame = 16;     // ~16 ms
 
     bool doContinue = true;
     auto last_time = std::chrono::high_resolution_clock::now();
@@ -113,25 +114,27 @@ void dae::Minigin::Run(const std::function<void()>& load)
     {
         const auto current_time = std::chrono::high_resolution_clock::now();
         const float delta_time = std::chrono::duration<float>(current_time - last_time).count();
-		time.SetDeltaTime(delta_time);
+        time.SetDeltaTime(delta_time);
         last_time = current_time;
         lag += delta_time;
 
-        doContinue = input.ProcessInput();
+        bool xiOk = xi.ProcessInput();
 
-        // --- UPDATE LOGIC ---
+        bool sdlOk = input.ProcessInput();
+
+        doContinue = (sdlOk && xiOk);
+
         while (lag >= fixed_time_step)
         {
             sceneManager.FixedUpdate(fixed_time_step);
             lag -= fixed_time_step;
         }
-		sceneManager.Update();
-		sceneManager.LateUpdate(); //Mainly for camera
 
-		//Render Game Objects
+        sceneManager.Update();
+        sceneManager.LateUpdate();
+
         renderer.Render();
 
-        // Ensure 60 FPS cap
         const auto frame_end_time = current_time + std::chrono::milliseconds(ms_per_frame);
         std::this_thread::sleep_until(frame_end_time);
     }

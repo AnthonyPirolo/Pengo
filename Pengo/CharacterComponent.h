@@ -1,4 +1,5 @@
 #pragma once
+
 #include "BaseComponent.h"
 #include "CharacterState.h"
 #include "GameTime.h"
@@ -6,19 +7,21 @@
 
 namespace dae
 {
-    class CharacterState;
-
     class CharacterComponent : public BaseComponent
     {
     public:
-        CharacterComponent(GameObject* owner)
-            : BaseComponent(owner), m_CurrentState(new IdleState()), m_IsMoving(false)
+        explicit CharacterComponent(GameObject* owner)
+            : BaseComponent(owner)
+            , m_CurrentState(new IdleState())
         {
+            if (m_CurrentState)
+                m_CurrentState->OnEnter(this);
         }
 
         ~CharacterComponent() override
         {
             delete m_CurrentState;
+            m_CurrentState = nullptr;
         }
 
         void SetMoving(bool moving) { m_IsMoving = moving; }
@@ -27,34 +30,34 @@ namespace dae
         void Update() override
         {
             if (m_CurrentState)
-                m_CurrentState->Update(this, dae::GameTime::GetInstance().GetDeltaTime());
+            {
+                const float dt = GameTime::GetInstance().GetDeltaTime();
+                m_CurrentState->Update(this, dt);
+            }
 
-            // Reset movement flag so it's only true for the frame movement happens
             m_IsMoving = false;
         }
 
         void SetState(CharacterState* newState)
         {
             if (m_CurrentState)
+            {
                 m_CurrentState->OnExit(this);
+                delete m_CurrentState;
+            }
 
-            delete m_CurrentState;
             m_CurrentState = newState;
 
             if (m_CurrentState)
                 m_CurrentState->OnEnter(this);
         }
 
-		void FixedUpdate(float) override {}
-		void LateUpdate() override {}
-		void Render() const override
-		{
-			// Render logic for the character can be added here
-		}
+        void FixedUpdate(float) override {}
+        void LateUpdate() override {}
+        void Render() const override {}
 
     private:
-        CharacterState* m_CurrentState;
-        bool m_IsMoving;
+        CharacterState* m_CurrentState{ nullptr };
+        bool m_IsMoving{ false };
     };
-
 }

@@ -9,7 +9,7 @@ namespace dae
 		friend Scene& SceneManager::CreateScene(const std::string& name);
 	public:
 		void Add(std::shared_ptr<GameObject> object);
-		void Remove(std::shared_ptr<GameObject> object);
+		void Remove(const std::shared_ptr<GameObject>& object);
 		void RemoveAll();
 		std::vector<std::shared_ptr<GameObject>> GetGameObjects() const;
 

@@ -2,7 +2,7 @@
 
 void dae::InputManager::BindCommand(SDL_KeyCode key, KeyState state, std::shared_ptr<Command> command)
 {
-    m_KeyBindings[key] = { command, state }; // No move(), shared_ptr keeps reference
+    m_KeyBindings[key] = { command, state };
 }
 
 bool dae::InputManager::ProcessInput()

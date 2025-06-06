@@ -19,12 +19,18 @@ namespace dae
 
         struct InputBinding
         {
-            std::shared_ptr<Command> command; // Use shared_ptr instead of unique_ptr
+            std::shared_ptr<Command> command;
             KeyState state;
         };
 
-        void BindCommand(SDL_KeyCode key, KeyState state, std::shared_ptr<Command> command); // Update to shared_ptr
+        void BindCommand(SDL_KeyCode key, KeyState state, std::shared_ptr<Command> command);
         bool ProcessInput();
+        void UnbindCommand(SDL_KeyCode key) {
+			if (m_KeyBindings.find(key) == m_KeyBindings.end())
+				return;
+            m_KeyBindings.erase(key);
+            m_PreviousKeyStates.erase(key);
+        }
 
     private:
         std::unordered_map<SDL_KeyCode, InputBinding> m_KeyBindings;

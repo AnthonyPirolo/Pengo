@@ -31,6 +31,24 @@
     <Filter Include="Character\Source Files">
       <UniqueIdentifier>{0ba7e771-5318-4fab-b495-6c3ea8056f68}</UniqueIdentifier>
     </Filter>
+    <Filter Include="HelperClasses">
+      <UniqueIdentifier>{63353ca1-bdc3-4c6d-9cf1-3ec9ae7251ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HelperClasses\Header Files">
+      <UniqueIdentifier>{fea56e8b-01fe-4f76-902a-c6723e8c9eeb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HelperClasses\Source Files">
+      <UniqueIdentifier>{cedad1b5-ba21-46ab-bfde-50a50e6a7462}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameStates">
+      <UniqueIdentifier>{40cafbed-f610-4c87-b415-944b644a9067}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameStates\Header Files">
+      <UniqueIdentifier>{c954f671-59ca-4105-bfae-d26181e6a586}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameStates\Source Files">
+      <UniqueIdentifier>{d27bb1e8-0641-4c2a-a98b-b0a85682ee57}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Pengo.cpp">
@@ -51,9 +69,6 @@
     <ClCompile Include="..\Minigin\RotationComponent.cpp">
       <Filter>Components\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="WallCreator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="IdleState.cpp">
       <Filter>Character\Source Files</Filter>
     </ClCompile>
@@ -66,11 +81,59 @@
     <ClCompile Include="DeadState.cpp">
       <Filter>Character\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GameCommands.h">
-      <Filter>Header Files</Filter>
-    </ClCompile>
     <ClCompile Include="GameCommands.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CreateEntity.cpp">
+      <Filter>HelperClasses\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GridModel.cpp">
+      <Filter>HelperClasses\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GridLogic.cpp">
+      <Filter>HelperClasses\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GridViewComponent.cpp">
+      <Filter>Components\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerComponent.cpp">
+      <Filter>Components\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelManager.cpp">
+      <Filter>HelperClasses\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameStateManager.cpp">
+      <Filter>GameStates\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MainMenuState.cpp">
+      <Filter>GameStates\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameCommands.h">
+      <Filter>HelperClasses\Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SinglePlayerState.cpp">
+      <Filter>GameStates\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CoOpState.cpp">
+      <Filter>GameStates\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HighScoreManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LivesComponent.cpp">
+      <Filter>Components\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameOverState.cpp">
+      <Filter>GameStates\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ScoreComponent.cpp">
+      <Filter>Components\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyAIComponent.cpp">
+      <Filter>Components\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WallComponent.cpp">
+      <Filter>Components\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -95,9 +158,6 @@
     <ClInclude Include="..\Minigin\RotationComponent.h">
       <Filter>Components\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WallCreator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SoundPlayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -121,6 +181,57 @@
     </ClInclude>
     <ClInclude Include="RunningState.h">
       <Filter>Character\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CreateEntity.h">
+      <Filter>HelperClasses\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GridModel.h">
+      <Filter>HelperClasses\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GridLogic.h">
+      <Filter>HelperClasses\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GridViewComponent.h">
+      <Filter>Components\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerComponent.h">
+      <Filter>Components\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LevelManager.h">
+      <Filter>HelperClasses\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameStateManager.h">
+      <Filter>GameStates\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MainMenuState.h">
+      <Filter>GameStates\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuCommands.h">
+      <Filter>HelperClasses\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SinglePlayerState.h">
+      <Filter>GameStates\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CoOpState.h">
+      <Filter>GameStates\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HighScoreManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LivesComponent.h">
+      <Filter>Components\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameOverState.h">
+      <Filter>GameStates\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ScoreComponent.h">
+      <Filter>Components\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyAIComponent.h">
+      <Filter>Components\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WallComponent.h">
+      <Filter>Components\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

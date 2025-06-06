@@ -19,18 +19,7 @@ namespace dae
     void IdleState::Update(CharacterComponent* character, float deltaTime)
     {
 		(void)deltaTime;
-        if (character->IsMoving())
-        {
-            character->SetState(new RunningState());
-        }
-        else if (false)
-        {
-            character->SetState(new PushingState());
-        }
-        else if (false)
-        {
-            character->SetState(new DeadState());
-        }
+		(void)character;
     }
 
     void IdleState::OnExit(CharacterComponent* character)

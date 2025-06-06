@@ -72,9 +72,6 @@
     <ClInclude Include="Components.h">
       <Filter>Components\Header</Filter>
     </ClInclude>
-    <ClInclude Include="Gamepad.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Observer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -98,6 +95,21 @@
     </ClInclude>
     <ClInclude Include="Command.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="XInputManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LevelLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="json.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RigidbodyComponent.h">
+      <Filter>Components\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionSystem.h">
+      <Filter>Components\Header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -166,6 +178,18 @@
     </ClCompile>
     <ClCompile Include="BaseState.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="XInputManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RigidbodyComponent.cpp">
+      <Filter>Components\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionSystem.cpp">
+      <Filter>Components\Source</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

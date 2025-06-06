@@ -8,33 +8,44 @@
 #include <iostream>
 #include <memory>
 #include "CharacterComponent.h"
+#include "PlayerComponent.h"
+#include <glm.hpp>
+#include <cmath>
+#include "LevelManager.h"
 
 class GameObjectCommand : public Command
 {
 public:
     GameObjectCommand(dae::GameObject* actor)
+        : m_actor(actor)
     {
-        m_actor = actor;
-    };
+    }
     virtual ~GameObjectCommand() = default;
+
     dae::GameObject* GetGameObject() const { return m_actor; }
+
 private:
     dae::GameObject* m_actor;
 };
 
+
 class MoveCommand : public GameObjectCommand
 {
 public:
+
     MoveCommand(dae::GameObject* owner, float speed = 50.0f)
-        : GameObjectCommand(owner), m_Speed(speed)
+        : GameObjectCommand(owner)
+        , m_Speed(speed)
+        , m_Direction{ 0.f, 0.f, 0.f }
     {
     }
 
-    // Rule of five
-    ~MoveCommand() = default;
+    ~MoveCommand() override = default;
 
     MoveCommand(const MoveCommand& other)
-        : GameObjectCommand(other), m_Speed(other.m_Speed), m_Direction(other.m_Direction)
+        : GameObjectCommand(other)
+        , m_Speed(other.m_Speed)
+        , m_Direction(other.m_Direction)
     {
     }
 
@@ -48,9 +59,12 @@ public:
     }
 
     MoveCommand(MoveCommand&& other) noexcept
-        : GameObjectCommand(std::move(other)), m_Speed(other.m_Speed), m_Direction(std::move(other.m_Direction))
+        : GameObjectCommand(std::move(other))
+        , m_Speed(other.m_Speed)
+        , m_Direction(std::move(other.m_Direction))
     {
         other.m_Speed = 50.0f;
+        other.m_Direction = glm::vec3(0.f);
     }
 
     MoveCommand& operator=(MoveCommand&& other) noexcept
@@ -60,45 +74,74 @@ public:
         m_Speed = other.m_Speed;
         m_Direction = std::move(other.m_Direction);
         other.m_Speed = 50.0f;
+        other.m_Direction = glm::vec3(0.f);
         return *this;
     }
 
-    void SetDirection(glm::vec3 direction) { m_Direction = direction; }
+    void SetDirection(const glm::vec3& direction) { m_Direction = direction; }
 
     virtual void Execute() override
     {
         dae::GameObject* owner = GetGameObject();
-        if (owner) {
-            owner->SetLocalPosition(owner->GetWorldPosition() + m_Direction * m_Speed * dae::GameTime::GetInstance().GetDeltaTime());
-
-            if (auto character = owner->GetComponent<dae::CharacterComponent>())
-             {
-                 character->SetMoving(true);
-             }
-        }
-        else {
+        if (!owner)
+        {
             std::cout << "MoveCommand executed but owner is null!" << std::endl;
+            return;
+        }
+
+        if (auto* pComp = owner->GetComponent<dae::PlayerComponent>())
+        {
+            int dx = 0, dy = 0;
+            if (std::fabs(m_Direction.x) > 0.5f)
+            {
+                dx = (m_Direction.x > 0.0f ? 1 : -1);
+            }
+            else if (std::fabs(m_Direction.y) > 0.5f)
+            {
+                dy = (m_Direction.y > 0.0f ? 1 : -1);
+            }
+            pComp->SetDesiredDirection(dx, dy);
+
+            if (auto* character = owner->GetComponent<dae::CharacterComponent>())
+            {
+                character->SetMoving(true);
+            }
+            return;
+        }
+
+        {
+            glm::vec3 newPos = owner->GetWorldPosition() +
+                (m_Direction * m_Speed * dae::GameTime::GetInstance().GetDeltaTime());
+            owner->SetLocalPosition(newPos);
+
+            if (auto* character = owner->GetComponent<dae::CharacterComponent>())
+            {
+                character->SetMoving(true);
+            }
         }
     }
 
 private:
-    glm::vec3 m_Direction{ 0.f, 0.f, 0.f };
-    float m_Speed{ };
+    glm::vec3 m_Direction;
+    float m_Speed;
 };
 
 class AttackCommand : public GameObjectCommand
 {
 public:
     AttackCommand(dae::GameObject* owner, float attackRange, float damage)
-        : GameObjectCommand(owner), m_AttackRange(attackRange), m_Damage(damage)
+        : GameObjectCommand(owner)
+        , m_AttackRange(attackRange)
+        , m_Damage(damage)
     {
     }
 
-    // Rule of five
-    ~AttackCommand() = default;
+    ~AttackCommand() override = default;
 
     AttackCommand(const AttackCommand& other)
-        : GameObjectCommand(other), m_AttackRange(other.m_AttackRange), m_Damage(other.m_Damage)
+        : GameObjectCommand(other)
+        , m_AttackRange(other.m_AttackRange)
+        , m_Damage(other.m_Damage)
     {
     }
 
@@ -112,7 +155,9 @@ public:
     }
 
     AttackCommand(AttackCommand&& other) noexcept
-        : GameObjectCommand(std::move(other)), m_AttackRange(other.m_AttackRange), m_Damage(other.m_Damage)
+        : GameObjectCommand(std::move(other))
+        , m_AttackRange(other.m_AttackRange)
+        , m_Damage(other.m_Damage)
     {
         other.m_AttackRange = 0.f;
         other.m_Damage = 0;
@@ -129,7 +174,11 @@ public:
         return *this;
     }
 
-    virtual void Execute() override;
+    virtual void Execute() override
+    {
+        dae::GameObject* owner = GetGameObject();
+        if (!owner) return;
+    }
 
 private:
     float m_AttackRange;
@@ -138,67 +187,17 @@ private:
     dae::GameObject* FindClosestEnemy();
 };
 
-class AddPointsCommand : public GameObjectCommand
-{
-public:
-    AddPointsCommand(dae::GameObject* owner, int points)
-        : GameObjectCommand(owner), m_Points(points)
-    {
-    }
-
-    ~AddPointsCommand() = default;
-
-    AddPointsCommand(const AddPointsCommand& other)
-        : GameObjectCommand(other), m_Points(other.m_Points)
-    {
-    }
-
-    AddPointsCommand& operator=(const AddPointsCommand& other)
-    {
-        if (this == &other) return *this;
-        GameObjectCommand::operator=(other);
-        m_Points = other.m_Points;
-        return *this;
-    }
-
-    AddPointsCommand(AddPointsCommand&& other) noexcept
-        : GameObjectCommand(std::move(other)), m_Points(other.m_Points)
-    {
-        other.m_Points = 0;
-    }
-
-    AddPointsCommand& operator=(AddPointsCommand&& other) noexcept
-    {
-        if (this == &other) return *this;
-        GameObjectCommand::operator=(std::move(other));
-        m_Points = other.m_Points;
-        other.m_Points = 0;
-        return *this;
-    }
-
-    virtual void Execute() override
-    {
-        dae::GameObject* owner = GetGameObject();
-        if (owner)
-        {
-            owner->GetComponent<dae::PointsComponent>()->AddPoints();
-        }
-        else {
-            std::cout << "AddPointsCommand executed but owner is null!" << std::endl;
-        }
-    }
-private:
-    int m_Points;
-};
-
 class SoundCommand : public GameObjectCommand
 {
 public:
     SoundCommand(dae::GameObject* owner, sound_id id, float volume)
-        : GameObjectCommand(owner), m_SoundId(id), m_Volume(volume) {
+        : GameObjectCommand(owner)
+        , m_SoundId(id)
+        , m_Volume(volume)
+    {
     }
 
-    virtual ~SoundCommand() = default;
+    ~SoundCommand() override = default;
 
     virtual void Execute() override
     {
@@ -206,7 +205,6 @@ public:
         dae::GameObject* owner = GetGameObject();
         if (owner)
         {
-            // Fetch the sound system from ServiceLocator
             auto& soundSystem = ServiceLocator::GetSoundSystem();
             soundSystem.Play(m_SoundId, m_Volume);
             std::cout << "Executing SoundCommand with ID: " << m_SoundId << " and Volume: " << m_Volume << std::endl;
@@ -219,7 +217,23 @@ public:
 
 private:
     sound_id m_SoundId;
-    float m_Volume;
+    float    m_Volume;
 };
 
+class SkipLevelCommand : public Command
+{
+public:
+    SkipLevelCommand(LevelManager* mgr, dae::GridViewComponent* view)
+        : m_Mgr(mgr), m_View(view) 
+{
+    }
+    virtual void Execute() override {
+        if (!m_Mgr->LoadNextLevel(m_View)) {
+            std::cout << "No more levels to load!\n";
+        }
+    }
+private:
+    LevelManager* m_Mgr;
+    dae::GridViewComponent* m_View;
+};
 

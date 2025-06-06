@@ -15,14 +15,7 @@ namespace dae
     void PushingState::Update(CharacterComponent* character, float deltaTime)
     {
         (void)deltaTime;
-        if (false)
-        {
-            character->SetState(new IdleState());
-        }
-        else if (false)
-        {
-            character->SetState(new DeadState());
-        }
+		(void)character;
     }
 
     void PushingState::OnExit(CharacterComponent* character)

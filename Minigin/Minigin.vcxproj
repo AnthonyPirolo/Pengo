@@ -188,17 +188,20 @@
   <ItemGroup>
     <ClInclude Include="BaseComponent.h" />
     <ClInclude Include="BaseState.h" />
+    <ClInclude Include="CollisionSystem.h" />
     <ClInclude Include="Command.h" />
     <ClInclude Include="Components.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="GameObject.h" />
-    <ClInclude Include="Gamepad.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="ISoundSystem.h" />
+    <ClInclude Include="json.hpp" />
+    <ClInclude Include="LevelLoader.h" />
     <ClInclude Include="Minigin.h" />
     <ClInclude Include="Observer.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="ResourceManager.h" />
+    <ClInclude Include="RigidbodyComponent.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="SDLSoundSystem.h" />
@@ -211,19 +214,23 @@
     <ClInclude Include="TextureComponent.h" />
     <ClInclude Include="ThreadTask.h" />
     <ClInclude Include="Transform.h" />
+    <ClInclude Include="XInputManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseComponent.cpp" />
     <ClCompile Include="BaseState.cpp" />
+    <ClCompile Include="CollisionSystem.cpp" />
     <ClCompile Include="Command.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Gamepad.cpp" />
     <ClCompile Include="InputManager.cpp" />
+    <ClCompile Include="LevelLoader.cpp" />
     <ClCompile Include="Minigin.cpp" />
     <ClCompile Include="Observer.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="RigidbodyComponent.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="SDLSoundSystem.cpp" />
@@ -235,6 +242,7 @@
     <ClCompile Include="GameTime.cpp" />
     <ClCompile Include="ThreadTask.cpp" />
     <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="XInputManager.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

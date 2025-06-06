@@ -61,7 +61,7 @@ public:
     {
         m_TaskQueue.Enqueue([this, filePath, id]()
             {
-                const auto& dataPath = dae::ResourceManager::GetInstance().GetDataPath();
+                const auto& dataPath = dae::ResourceManager::GetInstance().m_dataPath;
                 const auto fullPath = dataPath / filePath;
 
                 Mix_Chunk* chunk = Mix_LoadWAV(fullPath.string().c_str());
@@ -74,6 +74,14 @@ public:
                 m_SoundMap.emplace(id, chunk);
             });
     }
+
+	void SetMasterVolume(const float volume)
+	{
+		m_TaskQueue.Enqueue([volume]()
+			{
+				Mix_Volume(-1, static_cast<int>(volume * MIX_MAX_VOLUME));
+			});
+	}
 
 private:
     std::unordered_map<sound_id, Mix_Chunk*> m_SoundMap;
@@ -96,4 +104,9 @@ void SDLSoundSystem::Play(const sound_id id, const float volume)
 void SDLSoundSystem::LoadSound(const std::string& filePath, const sound_id id)
 {
     m_pImpl->LoadSound(filePath, id);
+}
+
+void SDLSoundSystem::SetMasterVolume(const float volume)
+{
+	m_pImpl->SetMasterVolume(volume);
 }

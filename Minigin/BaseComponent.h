@@ -48,7 +48,7 @@ namespace dae
         //---------------------------------
         //Observer related functions
         //---------------------------------
-        virtual void Notify(Observer::Event event) const;
+        virtual void Notify(Observer::Event event);
         std::vector<std::shared_ptr<Observer>> m_Observers;
     };
 }

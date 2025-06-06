@@ -41,7 +41,6 @@ void dae::HealthComponent::DecreaseHealth(float amount)
 		m_Lives = 0;
 	}
 
-	// Notify observers that health has changed (e.g., player took damage)
 	Notify(Observer::Event::playerHit);
 }
 

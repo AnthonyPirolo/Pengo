@@ -3,6 +3,7 @@
 #include "Renderer.h"
 #include "GameObject.h"
 #include "Texture2D.h"
+#include "RigidbodyComponent.h"
 
 dae::TextureComponent::TextureComponent(GameObject* owner, const std::string& path):
 	BaseComponent(owner)
@@ -10,9 +11,9 @@ dae::TextureComponent::TextureComponent(GameObject* owner, const std::string& pa
 	SetTexture(path);
 }
 
-void dae::TextureComponent::FixedUpdate(float DeltaTime) 
+void dae::TextureComponent::FixedUpdate(float DeltaTime)
 {
-	(void)DeltaTime; // Suppress unused parameter warning
+    DeltaTime;
 }
 
 void dae::TextureComponent::Update()
@@ -33,9 +34,23 @@ void dae::TextureComponent::SetTexture(const std::string& filename)
 
 void dae::TextureComponent::Render() const
 {
-	if (!m_texture) return;
-	const auto& pos = BaseComponent::GetOwner()->GetWorldPosition();
-	Renderer::GetInstance().RenderTexture(*m_texture, pos.x, pos.y, m_scaledSize.x, m_scaledSize.y);
+    if (!m_texture) return;
+
+    const auto& pos = BaseComponent::GetOwner()->GetWorldPosition();
+
+    if (auto* rb = GetOwner()->GetComponent<RigidbodyComponent>())
+    {
+        float w = static_cast<float>(rb->m_Width);
+        float h = static_cast<float>(rb->m_Height);
+
+		float halfW = w * 0.5f;
+        float halfH = w * 0.5f;
+        Renderer::GetInstance().RenderTexture(*m_texture, pos.x + halfW, pos.y + halfH, w, h);
+    }
+    else
+    {
+        Renderer::GetInstance().RenderTexture(*m_texture, pos.x, pos.y, m_scaledSize.x, m_scaledSize.y);
+    }
 }
 
 void dae::TextureComponent::SetScale(const float xScale, const float yScale)

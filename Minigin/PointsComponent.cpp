@@ -23,7 +23,7 @@ void dae::PointsComponent::LateUpdate()
 
 void dae::PointsComponent::Render() const
 {
-	//No need to render anything
+
 }
 
 void dae::PointsComponent::AddPoints()

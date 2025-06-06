@@ -4,6 +4,7 @@
 #include "BaseComponent.h"
 #include "Transform.h"
 #include "GameObject.h"
+#include "RigidbodyComponent.h"
 
 namespace dae
 {

@@ -28,7 +28,7 @@ void dae::FpsComponent::LateUpdate()
 
 void dae::FpsComponent::Render() const
 {
-	//Stays empty
+
 }
 
 void dae::FpsComponent::CalculateFPS(float deltaTime)

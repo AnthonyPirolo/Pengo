@@ -42,6 +42,5 @@ dae::Scene& dae::SceneManager::CreateScene(const std::string& name)
 
 dae::Scene& dae::SceneManager::GetActiveScene()
 {
-	// Assuming the last created scene is the active one
 	return *m_scenes.back();
 }
