@@ -19,16 +19,26 @@ public:
 
     ~Impl()
     {
-        m_TaskQueue.Stop(); // stop thread first
+        m_TaskQueue.Enqueue([this]() {
+            Mix_HaltMusic();
+            if (m_pMusic)
+            {
+                Mix_FreeMusic(m_pMusic);
+                m_pMusic = nullptr;
+            }
+            });
+
+        m_TaskQueue.Stop();
 
         for (auto& [id, chunk] : m_SoundMap)
         {
             Mix_FreeChunk(chunk);
         }
+
         Mix_CloseAudio();
     }
 
-	//Lots of debugging to make sure soundsystem worked properly
+
     void Play(const sound_id id, const float volume)
     {
         m_TaskQueue.Enqueue([this, id, volume]()
@@ -75,17 +85,75 @@ public:
             });
     }
 
-	void SetMasterVolume(const float volume)
-	{
-		m_TaskQueue.Enqueue([volume]()
-			{
-				Mix_Volume(-1, static_cast<int>(volume * MIX_MAX_VOLUME));
-			});
-	}
+    void SetMasterVolume(const float volume)
+    {
+        m_TaskQueue.Enqueue([this, volume]()
+            {
+                m_MasterVolume = volume;
+                Mix_Volume(-1, static_cast<int>(volume * MIX_MAX_VOLUME));
+                Mix_VolumeMusic(static_cast<int>(volume * MIX_MAX_VOLUME));
+            });
+    }
+
+    void ToggleMute()
+    {
+        m_TaskQueue.Enqueue([this]()
+            {
+                m_Muted = !m_Muted;
+                const int targetVolume = static_cast<int>((m_Muted ? 0.0f : m_MasterVolume) * MIX_MAX_VOLUME);
+                Mix_Volume(-1, targetVolume);
+                Mix_VolumeMusic(targetVolume);
+                std::cout << "[SoundSystem] Muted: " << std::boolalpha << m_Muted << "\n";
+            });
+    }
+
+
+    void PlayMusic(const std::string& musicFile, float volume, bool loop)
+    {
+        m_TaskQueue.Enqueue([this, musicFile, volume, loop]()
+            {
+                if (m_pMusic)
+                {
+                    Mix_HaltMusic();
+                    Mix_FreeMusic(m_pMusic);
+                    m_pMusic = nullptr;
+                }
+
+                const auto& dataPath = dae::ResourceManager::GetInstance().m_dataPath;
+                const auto fullPath = dataPath / musicFile;
+
+                m_pMusic = Mix_LoadMUS(fullPath.string().c_str());
+                if (!m_pMusic)
+                {
+                    std::cerr << "Failed to load music: " << musicFile << " - " << Mix_GetError() << std::endl;
+                    return;
+                }
+
+                Mix_VolumeMusic(static_cast<int>(volume * MIX_MAX_VOLUME));
+                Mix_PlayMusic(m_pMusic, loop ? -1 : 1);
+            });
+    }
+
+    void StopMusic()
+    {
+        m_TaskQueue.Enqueue([this]()
+            {
+                Mix_HaltMusic();
+                if (m_pMusic)
+                {
+                    Mix_FreeMusic(m_pMusic);
+                    m_pMusic = nullptr;
+                }
+            });
+    }
+
 
 private:
     std::unordered_map<sound_id, Mix_Chunk*> m_SoundMap;
     ThreadTask m_TaskQueue;
+	Mix_Music* m_pMusic = nullptr;
+    bool m_Muted = false;
+    float m_MasterVolume = 1.0f;
 };
 
 SDLSoundSystem::SDLSoundSystem() : m_pImpl(std::make_unique<Impl>())
@@ -109,4 +177,19 @@ void SDLSoundSystem::LoadSound(const std::string& filePath, const sound_id id)
 void SDLSoundSystem::SetMasterVolume(const float volume)
 {
 	m_pImpl->SetMasterVolume(volume);
+}
+
+void SDLSoundSystem::PlayMusic(const std::string& musicFile, float volume, bool loop)
+{
+	m_pImpl->PlayMusic(musicFile, volume, loop);
+}
+
+void SDLSoundSystem::StopMusic()
+{
+	m_pImpl->StopMusic();
+}
+
+void SDLSoundSystem::ToggleMute()
+{
+	m_pImpl->ToggleMute();
 }

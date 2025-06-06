@@ -201,18 +201,9 @@ public:
 
     virtual void Execute() override
     {
-        std::cout << "Playing using Sound System at: " << &ServiceLocator::GetSoundSystem() << std::endl;
-        dae::GameObject* owner = GetGameObject();
-        if (owner)
-        {
-            auto& soundSystem = ServiceLocator::GetSoundSystem();
-            soundSystem.Play(m_SoundId, m_Volume);
-            std::cout << "Executing SoundCommand with ID: " << m_SoundId << " and Volume: " << m_Volume << std::endl;
-        }
-        else
-        {
-            std::cout << "SoundCommand executed but owner is null!" << std::endl;
-        }
+
+        std::cout << "F2 pressed -> toggling mute\n";
+        ServiceLocator::GetSoundSystem().ToggleMute();
     }
 
 private:

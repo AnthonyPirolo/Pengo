@@ -43,6 +43,9 @@ void SinglePlayerState::OnEnter()
     m_Scene->RemoveAll();
     m_HighscoreMgr->Load();
 
+    auto& soundSystem = ServiceLocator::GetSoundSystem();
+    soundSystem.PlayMusic("PengoMain.ogg", 0.5f, true);
+
     InitHUD();
     InitGridAndLevel();
     InitPlayerComponents();
@@ -125,7 +128,7 @@ void SinglePlayerState::InitInput()
     for (const std::pair<SDL_Keycode, glm::vec3>& direction : gpDirections) {
         auto moveCmd = std::make_shared<MoveCommand>(m_PlayerGO.get(), speed);
         moveCmd->SetDirection(direction.second);
-        xi.BindCommand(static_cast<dae::XInputManager::ButtonID>(direction.first), dae::XInputManager::ButtonState::Pressed, moveCmd);
+        xi.BindCommand(static_cast<dae::XInputManager::ButtonID>(direction.first), dae::XInputManager::ButtonState::Held, moveCmd);
     }
 
     inputMgr.BindCommand(SDLK_F2, dae::InputManager::KeyState::Pressed, std::make_shared<SoundCommand>(m_PlayerGO.get(), 0, 0.0f));
