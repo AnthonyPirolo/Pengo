@@ -135,6 +135,15 @@
     <ClCompile Include="WallComponent.cpp">
       <Filter>Components\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PlayerCollisionListener.h">
+      <Filter>HelperClasses\Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameManager.cpp">
+      <Filter>HelperClasses\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SpacialPartitioning.cpp">
+      <Filter>HelperClasses\Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Minigin\LivesDisplay.h">
@@ -232,6 +241,15 @@
     </ClInclude>
     <ClInclude Include="WallComponent.h">
       <Filter>Components\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameManager.h">
+      <Filter>HelperClasses\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StateComponent.h">
+      <Filter>Components\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SpatialPartitioning.h">
+      <Filter>HelperClasses\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

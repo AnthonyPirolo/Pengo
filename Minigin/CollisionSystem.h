@@ -1,51 +1,56 @@
 #pragma once
-
-#include "BaseComponent.h"
-#include <glm.hpp>
-#include <vector>
-#include <memory>
+#include "ICollisionSystem.h"
+#include "CollisionComponent.h"
+#include "Observer.h"
 #include <algorithm>
-#include <cmath>
+#include <iostream>
 
 namespace dae
 {
-    class CollisionComponent;
-    class GameObject;
-
-    struct AABB
+    class CollisionSystem : public ICollisionSystem
     {
-        glm::vec2 center;
-        glm::vec2 halfExtents;
-
-        bool Intersects(const AABB& other) const
+    public:
+        void Register(CollisionComponent* comp) override
         {
-            return std::abs(center.x - other.center.x) < (halfExtents.x + other.halfExtents.x) &&
-                std::abs(center.y - other.center.y) < (halfExtents.y + other.halfExtents.y);
+            m_Components.push_back(comp);
+
         }
-    };
 
-    class CollisionComponent : public BaseComponent
-    {
-    public:
-        explicit CollisionComponent(GameObject* owner);
+        void Unregister(CollisionComponent* comp) override
+        {
+            m_Components.erase(
+                std::remove(m_Components.begin(), m_Components.end(), comp),
+                m_Components.end()
+            );
+        }
 
-        void FixedUpdate(float deltaTime) override;
-        void Update() override {}
-        void LateUpdate() override {}
-        void Render() const override {}
+        void CheckAll() override
+        {
+            for (size_t i = 0; i < m_Components.size(); ++i)
+            {
+                for (size_t j = i + 1; j < m_Components.size(); ++j)
+                {
+                    auto* a = m_Components[i];
+                    auto* b = m_Components[j];
 
-        AABB GetAABB() const;
+                    if (a->GetAABB().Intersects(b->GetAABB()))
+                    {
+                        const auto tagA = a->m_Tag;
+                        const auto tagB = b->m_Tag;
 
-    private:
-        bool m_Resolved = false;
-    };
+                        if ((tagA == CollisionTag::Player && tagB == CollisionTag::Enemy) ||
+                            (tagA == CollisionTag::Enemy && tagB == CollisionTag::Player))
+                        {
+                            CollisionComponent* playerCol =
+                                (tagA == CollisionTag::Player) ? a : b;
+                            playerCol->Notify(Observer::Event::playerDied);
 
-    class CollisionSystem
-    {
-    public:
-        void Register(CollisionComponent* comp);
-        void Unregister(CollisionComponent* comp);
-        void CheckAll();
+                            return;
+                        }
+                    }
+                }
+            }
+        }
 
     private:
         std::vector<CollisionComponent*> m_Components;

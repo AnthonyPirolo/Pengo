@@ -30,6 +30,6 @@ namespace dae
         bool m_GameOverTriggered{ false };
 
         std::vector<std::function<void(int)>> m_LivesObservers;
-        std::vector<std::function<void()>>    m_GameOverObservers;
+        std::vector<std::function<void()>> m_GameOverObservers;
     };
 }

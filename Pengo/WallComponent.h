@@ -14,21 +14,29 @@ namespace dae
 		{
 			Idle,
 			BeingBroken,
+			Sliding,
 			Broken
 		};
 
-		WallComponent(GameObject* owner);
-		void Update() override;
+		WallComponent(GameObject* owner, GridViewComponent* view, int gridX, int gridY);
+		void Update() override {};
+		void FixedUpdate(float deltaTime) override;
+		void LateUpdate() override{}
+		void Render() const override {}
 
-		void Initialize(GridViewComponent* view, int gridX, int gridY);
 		void SetHasEgg(bool hasEgg);
 		bool HasEgg() const;
 
-		void BeginBreaking(GameObject* breaker);
-		void CancelBreaking(GameObject* breaker);
+		void SetGridPosition(int x, int y)
+		{
+			m_GridX = x;
+			m_GridY = y;
+		}
 
-	private:
+
 		State m_State;
+	private:
+		
 		bool m_HasEgg;
 
 		GameObject* m_CurrentBreaker;
@@ -36,6 +44,7 @@ namespace dae
 		const float m_BreakDuration = 3.0f;
 
 		GridViewComponent* m_pGridView;
-		int m_GridX, m_GridY;
+		int m_GridX;
+		int m_GridY;
 	};
 }

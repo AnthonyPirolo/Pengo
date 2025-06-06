@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 #include <string>
+#include "GameManager.h"
 
 namespace dae {
     class Scene;
@@ -51,4 +52,8 @@ private:
 
     float m_LevelTimer;
     bool m_TimerRunning;
+
+	float m_ResetTimer{ 0.0f };
+
+    dae::GameManager m_GameManager;
 };

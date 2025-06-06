@@ -12,15 +12,23 @@
 #include "Scene.h"
 #include "GameStateManager.h"
 #include "SinglePlayerState.h"
+#include "StateComponent.h"
 
 void load()
 {
     auto& sceneMgr = dae::SceneManager::GetInstance();
     auto& myScene = sceneMgr.CreateScene("SinglePlayerTest");
+    auto* spState = new SinglePlayerState(&myScene);
 
     dae::GameStateManager::GetInstance().ChangeState(
-        new SinglePlayerState(&myScene)
+		spState
     );
+
+    auto stateGO = std::make_shared<dae::GameObject>();
+
+    stateGO->AddComponent<dae::StateComponent>(stateGO.get(), spState);
+
+    sceneMgr.GetActiveScene().Add(stateGO);
 }
 
 int main(int, char* [])

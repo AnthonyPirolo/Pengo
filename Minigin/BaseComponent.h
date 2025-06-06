@@ -44,11 +44,12 @@ namespace dae
         void AttachObserver(std::shared_ptr<Observer> observer);
         void RemoveObserver(Observer* observerToRemove);
 
+        virtual void Notify(Observer::Event event);
+
     protected:
         //---------------------------------
         //Observer related functions
         //---------------------------------
-        virtual void Notify(Observer::Event event);
         std::vector<std::shared_ptr<Observer>> m_Observers;
     };
 }

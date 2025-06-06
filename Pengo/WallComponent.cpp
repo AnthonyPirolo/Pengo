@@ -2,26 +2,20 @@
 #include "GameObject.h"
 #include "GameTime.h"
 #include "GridViewComponent.h"
+#include "EnemyAIComponent.h"
 
 namespace dae
 {
-	WallComponent::WallComponent(GameObject* owner)
+	WallComponent::WallComponent(GameObject* owner, GridViewComponent* view, int gridX, int gridY)
 		: BaseComponent(owner),
 		m_State(State::Idle),
 		m_HasEgg(false),
 		m_CurrentBreaker(nullptr),
 		m_BreakTimer(0.0f),
-		m_pGridView(nullptr),
-		m_GridX(-1),
-		m_GridY(-1)
+		m_pGridView(view),
+		m_GridX(gridX),
+		m_GridY(gridY)
 	{
-	}
-
-	void WallComponent::Initialize(GridViewComponent* view, int gridX, int gridY)
-	{
-		m_pGridView = view;
-		m_GridX = gridX;
-		m_GridY = gridY;
 	}
 
 	void WallComponent::SetHasEgg(bool hasEgg)
@@ -34,42 +28,43 @@ namespace dae
 		return m_HasEgg;
 	}
 
-	void WallComponent::BeginBreaking(GameObject* breaker)
-	{
-		if (m_State == State::Idle || breaker == m_CurrentBreaker)
-		{
-			if (m_CurrentBreaker != breaker)
-			{
-				m_BreakTimer = 0.0f;
-				m_CurrentBreaker = breaker;
-			}
-			m_State = State::BeingBroken;
-		}
-	}
+    void WallComponent::FixedUpdate(float deltaTime)
+    {
+        switch (m_State)
+        {
+        case State::BeingBroken:
+            if (!m_CurrentBreaker) return;
 
-	void WallComponent::CancelBreaking(GameObject* breaker)
-	{
-		if (breaker == m_CurrentBreaker)
-		{
-			m_State = State::Idle;
-			m_BreakTimer = 0.0f;
-			m_CurrentBreaker = nullptr;
-		}
-	}
+            m_BreakTimer += deltaTime;
+            if (m_BreakTimer >= m_BreakDuration)
+            {
+                m_State = State::Broken;
+                if (m_pGridView)
+                    m_pGridView->OnWallBroken(m_GridX, m_GridY);
+            }
+            break;
 
-	void WallComponent::Update()
-	{
-		if (m_State != State::BeingBroken || m_CurrentBreaker == nullptr)
-			return;
+        case State::Sliding:
+            if (!m_pGridView) return;
 
-		m_BreakTimer += GameTime::GetInstance().GetDeltaTime();
+            if (GameObject* enemy = m_pGridView->GetEnemyAt(m_GridX, m_GridY))
+            {
+                if (auto* ai = enemy->GetComponent<EnemyAIComponent>())
+                {
+                    glm::vec3 wallPos = GetOwner()->GetWorldPosition();
+                    glm::vec3 enemyPos = enemy->GetWorldPosition();
+                    glm::vec3 pushDir = glm::normalize(wallPos - enemyPos);
+                    ai->SetPushed(pushDir, 300.0f);
+                }
+            }
 
-		if (m_BreakTimer >= m_BreakDuration)
-		{
-			m_State = State::Broken;
+        case State::Broken:
+            break;
+        case State::Idle:
+            break;
+        default:
+            break;
+        }
+    }
 
-			if (m_pGridView)
-				m_pGridView->OnWallBroken(m_GridX, m_GridY);
-		}
-	}
 }

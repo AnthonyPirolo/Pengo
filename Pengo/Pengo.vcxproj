@@ -178,6 +178,7 @@
     <ClCompile Include="EnemyAIComponent.cpp" />
     <ClCompile Include="GameCommands.cpp" />
     <ClCompile Include="GameCommands.h" />
+    <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GameOverState.cpp" />
     <ClCompile Include="GridLogic.cpp" />
     <ClCompile Include="GridModel.cpp" />
@@ -188,12 +189,14 @@
     <ClCompile Include="LivesComponent.cpp" />
     <ClCompile Include="MainMenuState.cpp" />
     <ClCompile Include="Pengo.cpp" />
+    <ClCompile Include="PlayerCollisionListener.h" />
     <ClCompile Include="PlayerComponent.cpp" />
     <ClCompile Include="PushingState.cpp" />
     <ClCompile Include="RunningState.cpp" />
     <ClCompile Include="GameStateManager.cpp" />
     <ClCompile Include="ScoreComponent.cpp" />
     <ClCompile Include="SinglePlayerState.cpp" />
+    <ClCompile Include="SpacialPartitioning.cpp" />
     <ClCompile Include="WallComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -211,6 +214,7 @@
     <ClInclude Include="DeadState.h" />
     <ClInclude Include="EnemyAIComponent.h" />
     <ClInclude Include="GameComponents.h" />
+    <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameOverState.h" />
     <ClInclude Include="GridLogic.h" />
     <ClInclude Include="GridModel.h" />
@@ -228,6 +232,8 @@
     <ClInclude Include="ScoreComponent.h" />
     <ClInclude Include="SinglePlayerState.h" />
     <ClInclude Include="SoundPlayer.h" />
+    <ClInclude Include="SpatialPartitioning.h" />
+    <ClInclude Include="StateComponent.h" />
     <ClInclude Include="WallComponent.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -14,6 +14,8 @@
 #include <iostream>
 #include <json.hpp>
 #include "EnemyAIComponent.h"
+#include "PlayerCollisionListener.h"
+#include "WallComponent.h"
 
 namespace dae
 {
@@ -88,6 +90,7 @@ namespace dae
         wall->AddComponent<TextureComponent>(wall.get(), "Wall.png");
         wall->AddComponent<MoveComponent>(wall.get(), 300.0f);
         wall->AddComponent<CollisionComponent>(wall.get());
+		wall->AddComponent<WallComponent>(wall.get(), this, x, y);
 
         m_WallGameObjects[x][y] = wall.get();
         SceneManager::GetInstance().GetActiveScene().Add(wall);
@@ -101,12 +104,20 @@ namespace dae
         player->SetTag("player");
         player->AddComponent<RigidbodyComponent>(player.get(), m_TileSize, m_TileSize);
         player->AddComponent<TextureComponent>(player.get(), "SinglePenguin.png");
-        player->AddComponent<PlayerComponent>(player.get(), &m_Logic, this, float(m_TileSize), 150.0f);
-        player->AddComponent<CollisionComponent>(player.get());
+        auto* colComp = player->AddComponent<CollisionComponent>(player.get());
+		colComp->m_Tag = CollisionTag::Player;
+
+        auto* playerComp = player->AddComponent<PlayerComponent>(player.get(), &m_Logic, this, float(m_TileSize), 150.0f);
+
+        ServiceLocator::GetCollisionSystem().Register(colComp);
+
         player->AddComponent<CharacterComponent>(player.get());
 
         auto soundObs = std::make_shared<SoundPlayer>();
         player->GetComponent<CharacterComponent>()->AttachObserver(soundObs);
+
+        auto playerListener = std::make_shared<PlayerCollisionListener>(playerComp);
+        colComp->AttachObserver(playerListener);
 
         m_SpawnedPlayer = player;
         SceneManager::GetInstance().GetActiveScene().Add(player);
@@ -122,7 +133,10 @@ namespace dae
         enemy->AddComponent<TextureComponent>(enemy.get(), "SinglePenguin2.png");
         enemy->AddComponent<CharacterComponent>(enemy.get());
         enemy->AddComponent<MoveComponent>(enemy.get(), 150.0f);
-        enemy->AddComponent<CollisionComponent>(enemy.get());
+        auto* colComp = enemy->AddComponent<CollisionComponent>(enemy.get());
+		colComp->m_Tag = CollisionTag::Enemy;
+		ServiceLocator::GetCollisionSystem().Register(colComp);
+
         enemy->AddComponent<EnemyAIComponent>(enemy.get(), &m_Logic, this, float(m_TileSize), 75.f);
 
         m_SpawnedEnemies.push_back(enemy);
@@ -144,12 +158,52 @@ namespace dae
         }
 
         m_WallGameObjects[newX][newY] = wall;
+
+        auto* wallComp = wall->GetComponent<WallComponent>();
+		wallComp->SetGridPosition(newX, newY);
+
         glm::vec3 center = m_Logic.GridToWorld(newX, newY) + glm::vec3(m_TileSize / 2.0f);
 
         if (auto* mc = wall->GetComponent<MoveComponent>())
             mc->SetTarget(center);
         else
             wall->SetLocalPosition(center);
+
+        if (wallComp)
+        {
+            wallComp->m_State = WallComponent::State::Sliding;
+        }
+
+
+        TileType tileType = GetTileType(newX, newY);
+        if (tileType == TileType::Enemy)
+        {
+            GameObject* enemy = GetEnemyAt(newX, newY);
+            if (enemy)
+            {
+                if (auto ai = enemy->GetComponent<EnemyAIComponent>())
+                {
+                    ai->Die();
+                }
+            }
+        }
+    }
+
+    GameObject* GridViewComponent::GetEnemyAt(int x, int y) const
+    {
+        for (const auto& enemy : m_SpawnedEnemies)
+        {
+            if (!enemy || enemy->IsMarkedForDestroy()) continue;
+
+            glm::vec3 pos = enemy->GetWorldPosition();
+            glm::vec3 topLeft = pos - glm::vec3(m_TileSize / 2.0f);
+            int ex, ey;
+            m_Logic.WorldToGrid(topLeft, ex, ey);
+
+            if (ex == x && ey == y)
+                return enemy.get();
+        }
+        return nullptr;
     }
 
     void GridViewComponent::OnWallBroken(int x, int y)
@@ -192,4 +246,40 @@ namespace dae
             }
         }
     }
+
+    TileType GridViewComponent::GetTileType(int x, int y) const
+    {
+        if (x < 0 || y < 0 || x >= m_Model.GetWidth() || y >= m_Model.GetHeight())
+            return TileType::Empty;
+
+        if (m_Model.HasWall(x, y))
+            return TileType::Wall;
+
+        for (const auto& enemy : m_SpawnedEnemies)
+        {
+            if (!enemy || enemy->IsMarkedForDestroy()) continue;
+
+            glm::vec3 pos = enemy->GetWorldPosition();
+            glm::vec3 topLeft = pos - glm::vec3(m_TileSize / 2.0f);
+            int ex, ey;
+            m_Logic.WorldToGrid(topLeft, ex, ey);
+
+            if (ex == x && ey == y)
+                return TileType::Enemy;
+        }
+
+        if (m_SpawnedPlayer)
+        {
+            glm::vec3 pos = m_SpawnedPlayer->GetWorldPosition();
+            glm::vec3 topLeft = pos - glm::vec3(m_TileSize / 2.0f);
+            int px, py;
+            m_Logic.WorldToGrid(topLeft, px, py);
+
+            if (px == x && py == y)
+                return TileType::Player;
+        }
+
+        return TileType::Empty;
+    }
+
 }

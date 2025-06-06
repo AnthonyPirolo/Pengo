@@ -37,6 +37,10 @@ namespace dae
         const std::vector<std::shared_ptr<GameObject>>& GetSpawnedEnemies() const { return m_SpawnedEnemies; }
         const std::shared_ptr<GameObject>& GetPlayerGameObject() const { return m_SpawnedPlayer; }
 
+        TileType GetTileType(int x, int y) const;
+
+        GameObject* GetEnemyAt(int x, int y) const;
+
     private:
         int m_TileSize;
         glm::vec3 m_GridOffset;

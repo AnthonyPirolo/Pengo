@@ -63,4 +63,6 @@ namespace dae
         outNewWallY = -1;
         return result != SlideResult::None;
     }
+
+
 }

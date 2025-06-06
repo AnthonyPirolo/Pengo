@@ -6,12 +6,24 @@
 #include "GameTime.h"
 #include <cmath>
 #include <iostream>
+#include "PlayerCollisionListener.h"
+#include "GameManager.h"
 
 namespace dae
 {
     PlayerComponent::PlayerComponent(GameObject* owner, GridLogic* logic, GridViewComponent* view, float tileSize, float moveSpeed)
-        : BaseComponent(owner), m_pLogic(logic), m_pView(view), m_TileSize(tileSize), m_MoveSpeed(moveSpeed),
-        m_IsMoving(false), m_TargetPosition(0.0f), m_MoveDirection(0.0f), m_PendingDX(0), m_PendingDY(0)
+        : BaseComponent(owner)
+        , m_pLogic(logic)
+        , m_pView(view)
+        , m_TileSize(tileSize)
+        , m_MoveSpeed(moveSpeed)
+        , m_IsMoving(false)
+        , m_TargetPosition(0.0f)
+        , m_MoveDirection(0.0f)
+        , m_PendingDX(0)
+        , m_PendingDY(0)
+        , m_IsAlive(true)
+        , m_DeathTimer(0.0f)
     {
         glm::vec3 worldPos = owner->GetWorldPosition();
         glm::vec3 topLeft = worldPos - glm::vec3(tileSize / 2.0f);
@@ -20,6 +32,19 @@ namespace dae
 
         glm::vec3 center = m_pLogic->GridToWorld(gx, gy) + glm::vec3(tileSize / 2.0f, tileSize / 2.0f, 0.0f);
         owner->SetLocalPosition(center);
+		m_SpawnPosition = center;
+
+        m_Listener = std::make_shared<PlayerCollisionListener>(this);
+
+        if (auto col = owner->GetComponent<CollisionComponent>())
+        {
+            col->m_Tag = CollisionTag::Player;
+        }
+        else
+        {
+            std::cout << "[PlayerComponent] WARNING: No CollisionComponent found on Player!\n";
+        }
+
     }
 
     void PlayerComponent::SetDesiredDirection(int dx, int dy)
@@ -33,15 +58,42 @@ namespace dae
 
     void PlayerComponent::Update()
     {
+        if (!m_IsAlive)
+        {
+            m_DeathTimer -= GameTime::GetInstance().GetDeltaTime();
+            if (m_DeathTimer <= 0.0f)
+            {
+
+            }
+            return;
+        }
+
         if (m_IsMoving)
         {
             MoveTowardsTarget();
             return;
         }
 
-        if (m_PendingDX == 0 && m_PendingDY == 0) return;
+        if (m_PendingDX == 0 && m_PendingDY == 0)
+            return;
 
         AttemptStep();
+    }
+
+    void PlayerComponent::ResetToStart()
+    {
+        m_IsAlive = true;
+        m_DeathTimer = 0.0f;
+
+        if (auto* t = GetOwner())
+        {
+            glm::vec3 pos = GetOwner()->GetWorldPosition();
+            GetOwner()->SetLocalPosition(m_SpawnPosition);
+        }
+
+        m_IsMoving = false;
+        m_PendingDX = m_PendingDY = 0;
+        m_MoveDirection = glm::vec3{ 0.0f };
     }
 
     void PlayerComponent::MoveTowardsTarget()
@@ -85,7 +137,7 @@ namespace dae
             return;
         }
 
-        if (m_pLogic->GetModel()->HasWall(nextX, nextY))
+        if (m_pView->GetTileType(nextX, nextY) == TileType::Wall)
         {
             HandleWallPush(nextX, nextY);
             return;

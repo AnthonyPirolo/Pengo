@@ -6,6 +6,7 @@
 #include "CharacterComponent.h"
 #include <chrono>
 #include <iostream>
+#include "GameManager.h"
 
 namespace dae
 {
@@ -22,10 +23,26 @@ namespace dae
 		, m_RNG(static_cast<unsigned>(std::chrono::steady_clock::now().time_since_epoch().count()))
 	{
 		PickNewDirection();
+
+		m_SpawnPos = GetOwner()->GetWorldPosition();
+
+	}
+
+	void EnemyAIComponent::ResetToSpawn()
+	{
+		if (auto* ai = GetOwner()->GetComponent<EnemyAIComponent>())
+		{
+			ai->FinishMove();
+			ai->PickNewDirection();
+		}
+		GetOwner()->SetLocalPosition(m_SpawnPos);
 	}
 
 	void EnemyAIComponent::FixedUpdate(float)
 	{
+		switch (m_State)
+		{
+		case EnemyState::Roaming:
 		if (m_IsMoving)
 		{
 			float dt = GameTime::GetInstance().GetDeltaTime();
@@ -46,8 +63,42 @@ namespace dae
 			}
 			return;
 		}
+		else { AttemptStep(); }
+		break;
+		case EnemyState::BeingPushed:
+			HandlePushedMovement();
+			break;
 
-		AttemptStep();
+		case EnemyState::Dead:
+			break;
+		}
+	}
+
+	void EnemyAIComponent::HandlePushedMovement()
+	{
+		float dt = GameTime::GetInstance().GetDeltaTime();
+		glm::vec3 pos = GetOwner()->GetWorldPosition();
+		glm::vec3 newPos = pos + m_PushDirection * m_PushSpeed * dt;
+
+		GetOwner()->SetLocalPosition(newPos);
+
+		// Check if we've reached destination
+		int x, y;
+		m_pGridLogic->WorldToGrid(newPos, x, y);
+		if (m_pGridLogic->GetModel()->HasWall(x, y))
+		{
+			Die(); // Kill enemy
+		}
+	}
+
+	void EnemyAIComponent::Die()
+	{
+		if (m_State == EnemyState::Dead)
+			return;
+
+		m_State = EnemyState::Dead;
+		GetOwner()->MarkForDestroy(); // Or play animation and delay
+		// You can also notify observers here
 	}
 
 	void EnemyAIComponent::AttemptStep()
@@ -68,12 +119,16 @@ namespace dae
 		if (nextX < 0 || nextX >= gridW || nextY < 0 || nextY >= gridH)
 			return;
 
-		if (m_pGridLogic->GetModel()->HasWall(nextX, nextY))
+		TileType nextTile = m_pGridView->GetTileType(nextX, nextY);
+		if (nextTile == TileType::Wall)
 		{
 			HandleWallPush(nextX, nextY);
 			return;
 		}
-
+		if (nextTile == TileType::Enemy)
+		{
+			return;
+		}
 		StartMoveTo(nextX, nextY);
 	}
 

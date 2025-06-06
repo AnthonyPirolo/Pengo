@@ -5,6 +5,7 @@
 #include "GameStateManager.h"
 #include "GameOverState.h"
 #include "ResourceManager.h"
+#include "ServiceLocator.h"
 
 #include "GridViewComponent.h"
 #include "LivesComponent.h"
@@ -15,6 +16,7 @@
 #include "TextComponent.h"
 #include "Scene.h"
 #include "Components.h"
+#include "EnemyAIComponent.h"
 
 #include <SDL.h>
 #include <Xinput.h>
@@ -23,6 +25,8 @@
 #include "GameCommands.h"
 
 #include <memory>
+#include <CollisionSystem.h>
+#include "PlayerCollisionListener.h"
 
 SinglePlayerState::SinglePlayerState(dae::Scene* scene)
     : m_Scene(scene)
@@ -40,7 +44,6 @@ SinglePlayerState::SinglePlayerState(dae::Scene* scene)
 
 void SinglePlayerState::OnEnter()
 {
-    m_Scene->RemoveAll();
     m_HighscoreMgr->Load();
 
     auto& soundSystem = ServiceLocator::GetSoundSystem();
@@ -85,6 +88,13 @@ void SinglePlayerState::InitGridAndLevel()
 
     m_PlayerGO = m_GridView->GetPlayerGameObject();
     m_EnemyGOs = m_GridView->GetSpawnedEnemies();
+
+	for (const auto& enemyGO : m_EnemyGOs) {
+		if (enemyGO) {
+            auto eComp = enemyGO->GetComponent<dae::EnemyAIComponent>();
+            m_GameManager.RegisterEnemy(eComp);
+		}
+	}
 }
 
 void SinglePlayerState::InitPlayerComponents()
@@ -97,6 +107,12 @@ void SinglePlayerState::InitPlayerComponents()
     }
 
     m_ScoreComp = m_PlayerGO->AddComponent<dae::ScoreComponent>(m_PlayerGO.get());
+
+    if (auto playerComp = m_PlayerGO->GetComponent<dae::PlayerComponent>())
+    {
+        m_GameManager.RegisterPlayer(playerComp);
+    }
+
 }
 
 void SinglePlayerState::InitInput()
@@ -147,6 +163,14 @@ void SinglePlayerState::OnExit()
 
 void SinglePlayerState::Update(float)
 {
+	if (!m_PlayerGO->GetComponent<dae::PlayerComponent>()->IsAlive()) 
+    {
+		OnPlayerDead();
+		m_ResetTimer = 0.0f;
+		m_GameManager.ResetRound();
+		return;
+	}
+
     if (m_TimerRunning)
         m_LevelTimer += dae::GameTime::GetInstance().GetDeltaTime();
 
@@ -156,24 +180,22 @@ void SinglePlayerState::Update(float)
         OnLevelComplete();
     }
 
-    m_Scene->FixedUpdate(dae::GameTime::GetInstance().GetDeltaTime());
-    m_Scene->Update();
-    m_Scene->LateUpdate();
+	ServiceLocator::GetCollisionSystem().CheckAll();
 }
 
 void SinglePlayerState::Render()
 {
-    m_Scene->Render();
+
 }
 
 void SinglePlayerState::OnPlayerDead()
 {
+    if (m_LivesComp) {
+        m_LivesComp->LoseLife();
+    }
+	
     m_TimerRunning = false;
-    int finalScore = m_ScoreComp ? m_ScoreComp->GetScore() : 0;
 
-    dae::GameStateManager::GetInstance().ChangeState(
-        new GameOverState(m_Scene, finalScore, m_HighscoreMgr.get())
-    );
 }
 
 void SinglePlayerState::OnLevelComplete()
