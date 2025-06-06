@@ -176,6 +176,7 @@
     <ClCompile Include="CreateEntity.cpp" />
     <ClCompile Include="DeadState.cpp" />
     <ClCompile Include="EnemyAIComponent.cpp" />
+    <ClCompile Include="EnemyPushSystem.cpp" />
     <ClCompile Include="GameCommands.cpp" />
     <ClCompile Include="GameCommands.h" />
     <ClCompile Include="GameManager.cpp" />
@@ -213,6 +214,7 @@
     <ClInclude Include="CreateEntity.h" />
     <ClInclude Include="DeadState.h" />
     <ClInclude Include="EnemyAIComponent.h" />
+    <ClInclude Include="EnemyPushSystem.h" />
     <ClInclude Include="GameComponents.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameOverState.h" />

@@ -11,7 +11,7 @@ namespace dae
 
 		enum class Event
 		{
-			enemyDied,
+			EnemyDied,
 			playerDied,
 			enemyHit,
 			playerHit,

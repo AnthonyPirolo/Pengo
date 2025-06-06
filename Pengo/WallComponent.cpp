@@ -1,70 +1,81 @@
 #include "WallComponent.h"
-#include "GameObject.h"
 #include "GameTime.h"
 #include "GridViewComponent.h"
+#include "GameObject.h"
 #include "EnemyAIComponent.h"
+#include "iostream"
+#include <MoveComponent.h>
+#include <CollisionSystem.h>
+#include "RigidbodyComponent.h"
+#include "EnemyPushSystem.h"
 
-namespace dae
-{
-	WallComponent::WallComponent(GameObject* owner, GridViewComponent* view, int gridX, int gridY)
-		: BaseComponent(owner),
-		m_State(State::Idle),
-		m_HasEgg(false),
-		m_CurrentBreaker(nullptr),
-		m_BreakTimer(0.0f),
-		m_pGridView(view),
-		m_GridX(gridX),
-		m_GridY(gridY)
-	{
-	}
+namespace dae {
 
-	void WallComponent::SetHasEgg(bool hasEgg)
-	{
-		m_HasEgg = hasEgg;
-	}
+    WallComponent::WallComponent(GameObject* owner, GridViewComponent* view, int gridX, int gridY)
+        : BaseComponent(owner), m_pGridView(view), m_GridX(gridX), m_GridY(gridY), m_State(State::Idle)
+    {
+    }
 
-	bool WallComponent::HasEgg() const
-	{
-		return m_HasEgg;
-	}
+    void WallComponent::SetHasEgg(bool hasEgg) {
+        m_HasEgg = hasEgg;
+    }
+
+    bool WallComponent::HasEgg() const {
+        return m_HasEgg;
+    }
+
+    void WallComponent::SetGridPosition(int x, int y) {
+        m_GridX = x;
+        m_GridY = y;
+    }
+
+    void WallComponent::SetBreaker(GameObject* breaker) {
+        m_CurrentBreaker = breaker;
+        m_State = State::BeingBroken;
+        m_BreakTimer = 0.0f;
+    }
 
     void WallComponent::FixedUpdate(float deltaTime)
     {
-        switch (m_State)
-        {
+        switch (m_State) {
         case State::BeingBroken:
             if (!m_CurrentBreaker) return;
-
             m_BreakTimer += deltaTime;
-            if (m_BreakTimer >= m_BreakDuration)
-            {
+            if (m_BreakTimer >= m_BreakDuration) {
+                m_DestroyAfterSlide = true;
                 m_State = State::Broken;
-                if (m_pGridView)
-                    m_pGridView->OnWallBroken(m_GridX, m_GridY);
             }
             break;
 
-        case State::Sliding:
+        case State::Sliding: {
             if (!m_pGridView) return;
-
-            if (GameObject* enemy = m_pGridView->GetEnemyAt(m_GridX, m_GridY))
-            {
-                if (auto* ai = enemy->GetComponent<EnemyAIComponent>())
-                {
-                    glm::vec3 wallPos = GetOwner()->GetWorldPosition();
-                    glm::vec3 enemyPos = enemy->GetWorldPosition();
-                    glm::vec3 pushDir = glm::normalize(wallPos - enemyPos);
-                    ai->SetPushed(pushDir, 300.0f);
+            auto* moveComponent = GetOwner()->GetComponent<MoveComponent>();
+            if (moveComponent && !moveComponent->IsMovingToTarget()) {
+                m_State = State::Idle;
+                if (m_DestroyAfterSlide && m_pGridView) {
+                    m_pGridView->OnWallBroken(m_GridX, m_GridY);
+                    m_DestroyAfterSlide = false;
                 }
+                return;
             }
+            auto* wallRigidbody = GetOwner()->GetComponent<RigidbodyComponent>();
+            if (!wallRigidbody) return;
 
+            glm::vec3 direction = glm::normalize(glm::vec3(m_PushDirection, 0.0f));
+            float pushDistance = 300.0f * deltaTime;
+            AABB wallAABB = wallRigidbody->GetAABB();
+            wallAABB.center += glm::vec2(direction.x, direction.y) * pushDistance;
+
+            EnemyPushSystem pushSystem(m_pGridView);
+            pushSystem.HandleEnemyPush(direction, pushDistance, wallAABB);
+
+            break;
+        }
         case State::Broken:
-            break;
         case State::Idle:
-            break;
         default:
             break;
         }
     }
-
 }
+

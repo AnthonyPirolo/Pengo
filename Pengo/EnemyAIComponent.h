@@ -1,79 +1,70 @@
-#pragma once  
-#include "BaseComponent.h"  
-#include <glm.hpp>  
-#include <random>  
-#include <unordered_map>  
-#include <memory>
+#pragma once
 
-namespace dae  
-{  
-   class GridLogic;  
-   class GridViewComponent;  
+#include "BaseComponent.h"
+#include <glm.hpp>
+#include <random>
 
-   class EnemyAIComponent : public BaseComponent
-   {  
-   public:  
-       EnemyAIComponent(GameObject* owner, GridLogic* logic, GridViewComponent* view, float tileSize, float moveSpeed);  
+namespace dae {
+	class GridLogic;
+	class GridViewComponent;
 
-       void FixedUpdate(float dt) override;  
-       void Update() override {}  
-       void LateUpdate() override {}  
-       void Render() const override {}  
+	class EnemyAIComponent : public BaseComponent {
+	public:
+		enum class Direction {
+			Up,
+			Down,
+			Left,
+			Right,
+			None
+		};
 
-       void ResetToSpawn();
+		enum class EnemyState {
+			Roaming,
+			BeingPushed,
+			Dead
+		};
 
-       void SetPushed(glm::vec3 dir, float speed)
-       {
-           m_State = EnemyState::BeingPushed;
-           m_PushDirection = glm::normalize(dir);
-           m_PushSpeed = speed;
-       }
+		EnemyAIComponent(GameObject* owner, GridLogic* logic, GridViewComponent* view, float tileSize, float moveSpeed);
 
-       void Die();
+		void FixedUpdate(float deltaTime) override;
+		void Update() override {}
+		void LateUpdate() override {}
+		void Render() const override {}
 
-   private:  
-       enum class Direction { Up, Down, Left, Right, None };  
-       enum class EnemyState
-       {
-           Roaming,
-           BeingPushed,
-           Dead
-       };
+		void ResetToSpawn();
+		void Die();
+		void SetPushed(const glm::vec3& dir, float speed);
 
-       void AttemptStep();  
-       void HandleWallPush(int wallX, int wallY);  
-       void StartMoveTo(int gx, int gy);  
-       void FinishMove();  
-       void PickNewDirection();  
-       glm::ivec2 DirectionToOffset(Direction dir) const;  
-       void HandlePushedMovement();
+		bool IsOutOfBounds() const;
 
-       glm::vec3 m_SpawnPos;  
+	private:
+		void AttemptStep();
+		void HandleWallPush(int wallX, int wallY);
+		void HandlePushedMovement();
 
-       GridLogic* m_pGridLogic;  
-       GridViewComponent* m_pGridView;  
+		void StartMoveTo(int gx, int gy);
+		void FinishMove();
+		void PickNewDirection();
 
-       float m_TileSize;  
-       float m_MoveSpeed;  
+		glm::ivec2 DirectionToOffset(Direction dir) const;
 
-       bool m_IsMoving;  
-       glm::vec3 m_TargetPosition;  
-       glm::vec3 m_MoveDirection;  
+		GridLogic* m_pGridLogic;
+		GridViewComponent* m_pGridView;
 
-       Direction m_CurrentDirection;  
-       std::mt19937 m_RNG;  
+		glm::vec3 m_MoveDirection;
+		glm::vec3 m_TargetPosition;
 
-       struct WallBreakState  
-       {  
-           bool isBreaking = false;  
-           float timer = 0.0f;  
-       };  
+		glm::vec3 m_PushDirection;
+		float m_PushSpeed;
 
-       std::unordered_map<std::pair<int, int>, WallBreakState,  
-           std::hash<int>, std::equal_to<>> m_BreakingWalls;  
+		float m_TileSize;
+		float m_MoveSpeed;
+		bool m_IsMoving;
 
-       EnemyState m_State{ EnemyState::Roaming };
-       glm::vec3 m_PushDirection{};
-       float m_PushSpeed{};
-   };  
+		glm::vec3 m_SpawnPos;
+
+		std::default_random_engine m_RNG;
+		Direction m_CurrentDirection;
+		EnemyState m_State = EnemyState::Roaming;
+	};
 }

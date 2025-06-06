@@ -1,6 +1,8 @@
 #pragma once
 
 #include "BaseComponent.h"
+#include "ICollisionSystem.h"
+
 
 namespace dae
 {
@@ -16,6 +18,14 @@ namespace dae
 
         const int m_Width;
         const int m_Height;
+
+        AABB GetAABB() const
+        {
+            glm::vec3 center3D = GetOwner()->GetWorldPosition();
+            glm::vec2 center{ center3D.x, center3D.y };
+            glm::vec2 halfExtents{ m_Width * 0.5f, m_Height * 0.5f };
+            return { center, halfExtents };
+        }
 
     };
 }

@@ -144,6 +144,9 @@
     <ClCompile Include="SpacialPartitioning.cpp">
       <Filter>HelperClasses\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="EnemyPushSystem.cpp">
+      <Filter>HelperClasses\Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Minigin\LivesDisplay.h">
@@ -249,6 +252,9 @@
       <Filter>Components\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SpatialPartitioning.h">
+      <Filter>HelperClasses\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyPushSystem.h">
       <Filter>HelperClasses\Header Files</Filter>
     </ClInclude>
   </ItemGroup>

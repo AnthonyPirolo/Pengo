@@ -1,71 +1,50 @@
 #pragma once
 
 #include "BaseComponent.h"
-#include "GridLogic.h"
-#include <glm.hpp>
 #include <memory>
-#include <iostream>
+#include <glm.hpp>
 
-namespace dae
-{
-    class GridViewComponent;
+namespace dae {
+	class GridLogic;
+	class GridViewComponent;
+	class PlayerCollisionListener;
 
-	class PlayerComponent : public BaseComponent
-    {
-    public:
-        PlayerComponent(GameObject* owner,
-            GridLogic* logic,
-            GridViewComponent* view,
-            float tileSize,
-            float moveSpeed = 150.0f);
+	class PlayerComponent : public BaseComponent {
+	public:
+		PlayerComponent(GameObject* owner, GridLogic* logic, GridViewComponent* view, float tileSize, float moveSpeed);
 
-        void FixedUpdate(float deltaTime) override { deltaTime; }
-        void Update() override;
-        void LateUpdate() override {}
-        void Render() const override {}
+		void Update() override;
+		void SetDesiredDirection(int dx, int dy);
 
-        void SetDesiredDirection(int dx, int dy);
+		void ResetToStart();
+		bool IsAlive() const { return m_IsAlive; }
 
-        bool IsAlive() const { return m_IsAlive; };
+		void FixedUpdate(float deltaTime) override { deltaTime; }
+		void Render() const override {}
+		void LateUpdate() override {}
+	private:
+		void AttemptStep();
+		void MoveTowardsTarget();
+		void HandleWallPush(int wallX, int wallY);
+		void StartMoveTo(int gx, int gy);
+		void FinishMove();
 
-        void HandleDeath()
-        {
-            m_IsAlive = false;
-            m_DeathTimer = 3.0f;
+		GridLogic* m_pLogic = nullptr;
+		GridViewComponent* m_pView = nullptr;
 
-            std::cout << "[PlayerComponent] Player died! Starting 1s cooldown...\n";
-        }
+		float m_TileSize;
+		float m_MoveSpeed;
+		glm::vec3 m_TargetPosition;
+		glm::vec3 m_MoveDirection;
 
-        void ResetToStart();
+		int m_PendingDX;
+		int m_PendingDY;
 
-        void SetSpawnPosition(const glm::vec3& pos)
-        {
-            m_SpawnPosition = pos;
-        }
+		bool m_IsMoving;
+		bool m_IsAlive;
+		float m_DeathTimer;
+		glm::vec3 m_SpawnPosition;
 
-
-    private:
-        void MoveTowardsTarget();
-        void AttemptStep();
-        void HandleWallPush(int wallX, int wallY);
-        void StartMoveTo(int gx, int gy);
-        void FinishMove();
-
-        GridLogic* m_pLogic;
-        GridViewComponent* m_pView;
-        float m_TileSize;
-        float m_MoveSpeed;
-
-        bool m_IsMoving;
-        glm::vec3 m_TargetPosition;
-        glm::vec3 m_MoveDirection;
-        int m_PendingDX;
-        int m_PendingDY;
-
-        bool m_IsAlive;
-        float m_DeathTimer;
-        glm::vec3 m_SpawnPosition;
-
-        std::shared_ptr<Observer> m_Listener;
-    };
+		std::shared_ptr<PlayerCollisionListener> m_Listener;
+	};
 }

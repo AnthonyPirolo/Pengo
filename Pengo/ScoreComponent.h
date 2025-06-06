@@ -3,7 +3,7 @@
 
 namespace dae
 {
-    class ScoreComponent final : public BaseComponent
+    class ScoreComponent final : public BaseComponent, public Observer
     {
     public:
         explicit ScoreComponent(GameObject* owner);
@@ -23,6 +23,8 @@ namespace dae
         void Update() override {}
         void LateUpdate() override {}
         void Render() const override {}
+
+        void OnNotify(BaseComponent* entity, Event event) override;
 
     private:
         int m_Score{ 0 };

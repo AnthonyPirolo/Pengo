@@ -1,17 +1,14 @@
 #pragma once
+
 #include "BaseComponent.h"
-#include <memory>
 
-namespace dae
-{
-	class GridViewComponent;
+namespace dae {
 	class GameObject;
+	class GridViewComponent;
 
-	class WallComponent : public BaseComponent
-	{
+	class WallComponent : public BaseComponent {
 	public:
-		enum class State
-		{
+		enum class State {
 			Idle,
 			BeingBroken,
 			Sliding,
@@ -19,32 +16,34 @@ namespace dae
 		};
 
 		WallComponent(GameObject* owner, GridViewComponent* view, int gridX, int gridY);
-		void Update() override {};
+
 		void FixedUpdate(float deltaTime) override;
-		void LateUpdate() override{}
+		void Update() override {}	
+		void LateUpdate() override {}
 		void Render() const override {}
 
 		void SetHasEgg(bool hasEgg);
 		bool HasEgg() const;
 
-		void SetGridPosition(int x, int y)
-		{
-			m_GridX = x;
-			m_GridY = y;
-		}
-
+		void SetGridPosition(int x, int y);
+		void SetBreaker(GameObject* breaker);
 
 		State m_State;
-	private:
-		
-		bool m_HasEgg;
 
-		GameObject* m_CurrentBreaker;
-		float m_BreakTimer;
+		glm::ivec2 m_PushDirection{};
+
+	private:
+		State m_PrevState = State::Idle;
+		bool m_HasEgg = false;
+		GameObject* m_CurrentBreaker = nullptr;
+
+		float m_BreakTimer = 0.0f;
 		const float m_BreakDuration = 3.0f;
 
-		GridViewComponent* m_pGridView;
-		int m_GridX;
-		int m_GridY;
+		GridViewComponent* m_pGridView = nullptr;
+		int m_GridX = -1;
+		int m_GridY = -1;
+
+		bool m_DestroyAfterSlide;
 	};
 }

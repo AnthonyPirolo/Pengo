@@ -1,38 +1,56 @@
 #include "SpatialPartitioning.h"
+#include "GameObject.h"
+#include <stdexcept>
 #include <algorithm>
 
-namespace dae
-{
-	void SpatialPartitionGrid::Register(GameObject* obj, const glm::ivec2& gridPos)
+namespace dae {
+
+	SpatialPartitionGrid::SpatialPartitionGrid(int width, int height)
+		: m_Width(width), m_Height(height)
 	{
-		m_GridMap[gridPos].push_back(obj);
-		m_ReverseLookup[obj] = gridPos;
+		if (width <= 0 || height <= 0)
+			throw std::runtime_error("SpatialPartitionGrid: Invalid grid dimensions");
+
+		m_Grid.resize(width, std::vector<std::vector<std::shared_ptr<GameObject>>>(height));
 	}
 
-	void SpatialPartitionGrid::Unregister(GameObject* obj)
+	void SpatialPartitionGrid::Clear()
 	{
-		auto it = m_ReverseLookup.find(obj);
-		if (it != m_ReverseLookup.end())
-		{
-			const auto& gridPos = it->second;
-			auto& vec = m_GridMap[gridPos];
-			vec.erase(std::remove(vec.begin(), vec.end(), obj), vec.end());
-			if (vec.empty()) m_GridMap.erase(gridPos);
-			m_ReverseLookup.erase(it);
-		}
+		for (int x = 0; x < m_Width; ++x)
+			for (int y = 0; y < m_Height; ++y)
+				m_Grid[x][y].clear();
 	}
 
-	void SpatialPartitionGrid::UpdatePosition(GameObject* obj, const glm::ivec2& newGridPos)
+	void SpatialPartitionGrid::Register(const std::shared_ptr<GameObject>& obj, int x, int y)
 	{
-		Unregister(obj);
-		Register(obj, newGridPos);
+		if (!IsInBounds(x, y) || !obj) return;
+		m_Grid[x][y].push_back(obj);
 	}
 
-	std::vector<GameObject*> SpatialPartitionGrid::GetObjectsAt(const glm::ivec2& gridPos) const
+	void SpatialPartitionGrid::Unregister(const std::shared_ptr<GameObject>& obj, int x, int y)
 	{
-		auto it = m_GridMap.find(gridPos);
-		if (it != m_GridMap.end())
-			return it->second;
-		return {};
+		if (!IsInBounds(x, y) || !obj) return;
+
+		auto& cell = m_Grid[x][y];
+		cell.erase(std::remove_if(cell.begin(), cell.end(),
+			[&](const std::shared_ptr<GameObject>& go) { return go == obj; }),
+			cell.end());
+	}
+
+	void SpatialPartitionGrid::Move(const std::shared_ptr<GameObject>& obj, int oldX, int oldY, int newX, int newY)
+	{
+		Unregister(obj, oldX, oldY);
+		Register(obj, newX, newY);
+	}
+
+	std::vector<std::shared_ptr<GameObject>> SpatialPartitionGrid::GetObjectsAt(int x, int y) const
+	{
+		if (!IsInBounds(x, y)) return {};
+		return m_Grid[x][y];
+	}
+
+	bool SpatialPartitionGrid::IsInBounds(int x, int y) const
+	{
+		return x >= 0 && x < m_Width && y >= 0 && y < m_Height;
 	}
 }

@@ -1,6 +1,7 @@
 #pragma once
-#include <unordered_map>
+
 #include <vector>
+#include <memory>
 #include <glm.hpp>
 
 namespace dae
@@ -10,13 +11,19 @@ namespace dae
 	class SpatialPartitionGrid
 	{
 	public:
-		void Register(GameObject* obj, const glm::ivec2& gridPos);
-		void Unregister(GameObject* obj);
-		void UpdatePosition(GameObject* obj, const glm::ivec2& newGridPos);
-		std::vector<GameObject*> GetObjectsAt(const glm::ivec2& gridPos) const;
+		SpatialPartitionGrid(int width, int height);
+
+		void Clear();
+		void Register(const std::shared_ptr<GameObject>& obj, int x, int y);
+		void Unregister(const std::shared_ptr<GameObject>& obj, int x, int y);
+		void Move(const std::shared_ptr<GameObject>& obj, int oldX, int oldY, int newX, int newY);
+
+		std::vector<std::shared_ptr<GameObject>> GetObjectsAt(int x, int y) const;
+		bool IsInBounds(int x, int y) const;
 
 	private:
-		std::unordered_map<glm::ivec2, std::vector<GameObject*>, std::hash<int>> m_GridMap;
-		std::unordered_map<GameObject*, glm::ivec2> m_ReverseLookup;
+		int m_Width{};
+		int m_Height{};
+		std::vector<std::vector<std::vector<std::shared_ptr<GameObject>>>> m_Grid;
 	};
 }

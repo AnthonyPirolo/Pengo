@@ -3,56 +3,60 @@
 #include "BaseComponent.h"
 #include "GridLogic.h"
 #include "GridModel.h"
+#include "SpatialPartitioning.h"
+#include "LevelLoader.h"
+#include <memory>
 #include <vector>
 #include <glm.hpp>
-#include <memory>
 
-namespace dae
-{
-    class GameObject;
+namespace dae {
+	class GameObject;
 
-    class GridViewComponent : public BaseComponent
-    {
-    public:
-        GridViewComponent(GameObject* owner, int tileSize, const glm::vec3& offset);
+	class GridViewComponent final : public BaseComponent {
+	public:
+		GridViewComponent(GameObject* owner, int tileSize, const glm::vec3& offset);
 
-        void FixedUpdate(float) override {}
-        void Update() override {}
-        void LateUpdate() override {}
-        void Render() const override {}
+		void LoadFromLevelData(const LevelData& level);
+		void ClearLevel();
 
-        void LoadFromLevelData(const LevelData& level);
-        void ClearLevel();
+		std::shared_ptr<GameObject> GetPlayerGameObject() const { return m_SpawnedPlayer; }
+		std::vector<std::shared_ptr<GameObject>> GetSpawnedEnemies() const;
 
-        std::shared_ptr<GameObject> CreateWallAt(int x, int y);
-        std::shared_ptr<GameObject> CreatePlayerAt(int x, int y);
-        std::shared_ptr<GameObject> CreateEnemyAt(int x, int y);
+		TileType GetTileType(int x, int y) const;
+		std::shared_ptr<GameObject> GetEnemyAt(int x, int y) const;
 
-        void OnWallPushed(int oldX, int oldY, int newX, int newY);
-        void OnWallBroken(int x, int y);
+		void OnWallPushed(int oldX, int oldY, int newX, int newY);
+		void OnWallBroken(int x, int y);
 
-        void HatchInitialEggs(int count);
-        void HatchNextEgg();
+		void HatchInitialEggs(int count);
+		void HatchNextEgg();
 
-        const std::vector<std::shared_ptr<GameObject>>& GetSpawnedEnemies() const { return m_SpawnedEnemies; }
-        const std::shared_ptr<GameObject>& GetPlayerGameObject() const { return m_SpawnedPlayer; }
+		bool HasEnemiesRemaining() const;
 
-        TileType GetTileType(int x, int y) const;
+		void FixedUpdate(float) override {}
+		void Update() override {}
+		void LateUpdate() override {}
+		void Render() const override {}
 
-        GameObject* GetEnemyAt(int x, int y) const;
+		std::vector<std::shared_ptr<GameObject>> GetSpawnedWalls() const;
 
-    private:
-        int m_TileSize;
-        glm::vec3 m_GridOffset;
+		SpatialPartitionGrid m_WallGrid;
+		SpatialPartitionGrid m_EnemyGrid;
+		SpatialPartitionGrid m_PlayerGrid;
 
-        GridModel m_Model;
-        GridLogic m_Logic;
+		GridLogic m_Logic;
+		GridModel m_Model;
 
-        std::vector<std::vector<GameObject*>> m_WallGameObjects;
-        std::shared_ptr<GameObject> m_SpawnedPlayer;
-        std::vector<std::shared_ptr<GameObject>> m_SpawnedEnemies;
+	private:
+		std::shared_ptr<GameObject> CreateWallAt(int x, int y);
+		std::shared_ptr<GameObject> CreatePlayerAt(int x, int y);
+		std::shared_ptr<GameObject> CreateEnemyAt(int x, int y);
 
-        std::vector<std::pair<int, int>> m_EggPositions;
-        std::vector<bool> m_EggHatched;
-    };
+		int m_TileSize;
+		glm::vec3 m_GridOffset;
+
+		std::shared_ptr<GameObject> m_SpawnedPlayer;
+		std::vector<glm::ivec2> m_EggPositions;
+		std::vector<bool> m_EggHatched;
+	};
 }
