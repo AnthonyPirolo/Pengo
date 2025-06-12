@@ -57,13 +57,7 @@
     <ClCompile Include="..\Minigin\FpsComponent.cpp">
       <Filter>Components\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Minigin\HealthComponent.cpp">
-      <Filter>Components\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\Minigin\MoveComponent.cpp">
-      <Filter>Components\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Minigin\PointsComponent.cpp">
       <Filter>Components\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Minigin\RotationComponent.cpp">
@@ -141,9 +135,6 @@
     <ClCompile Include="GameManager.cpp">
       <Filter>HelperClasses\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SpacialPartitioning.cpp">
-      <Filter>HelperClasses\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="EnemyPushSystem.cpp">
       <Filter>HelperClasses\Source Files</Filter>
     </ClCompile>
@@ -156,12 +147,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Minigin\MoveComponent.h">
-      <Filter>Components\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Minigin\PointsComponent.h">
-      <Filter>Components\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Minigin\HealthComponent.h">
       <Filter>Components\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Minigin\FpsComponent.h">
@@ -251,10 +236,10 @@
     <ClInclude Include="StateComponent.h">
       <Filter>Components\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SpatialPartitioning.h">
+    <ClInclude Include="EnemyPushSystem.h">
       <Filter>HelperClasses\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="EnemyPushSystem.h">
+    <ClInclude Include="ScoreObserver.h">
       <Filter>HelperClasses\Header Files</Filter>
     </ClInclude>
   </ItemGroup>

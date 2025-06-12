@@ -3,11 +3,11 @@
 #include "BaseComponent.h"
 #include "GridLogic.h"
 #include "GridModel.h"
-#include "SpatialPartitioning.h"
 #include "LevelLoader.h"
 #include <memory>
 #include <vector>
 #include <glm.hpp>
+#include "ScoreComponent.h"
 
 namespace dae {
 	class GameObject;
@@ -21,6 +21,7 @@ namespace dae {
 
 		std::shared_ptr<GameObject> GetPlayerGameObject() const { return m_SpawnedPlayer; }
 		std::vector<std::shared_ptr<GameObject>> GetSpawnedEnemies() const;
+		std::vector<std::shared_ptr<GameObject>> GetSpawnedWalls() const;
 
 		TileType GetTileType(int x, int y) const;
 		std::shared_ptr<GameObject> GetEnemyAt(int x, int y) const;
@@ -38,14 +39,12 @@ namespace dae {
 		void LateUpdate() override {}
 		void Render() const override {}
 
-		std::vector<std::shared_ptr<GameObject>> GetSpawnedWalls() const;
-
-		SpatialPartitionGrid m_WallGrid;
-		SpatialPartitionGrid m_EnemyGrid;
-		SpatialPartitionGrid m_PlayerGrid;
-
 		GridLogic m_Logic;
 		GridModel m_Model;
+
+		GridModel& GetModel() { return m_Model; }
+
+		ScoreComponent* GetScoreComponent() const { return m_ScoreComp; }
 
 	private:
 		std::shared_ptr<GameObject> CreateWallAt(int x, int y);
@@ -56,7 +55,11 @@ namespace dae {
 		glm::vec3 m_GridOffset;
 
 		std::shared_ptr<GameObject> m_SpawnedPlayer;
+		std::vector<std::shared_ptr<GameObject>> m_SpawnedEnemies;
+		std::vector<std::shared_ptr<GameObject>> m_SpawnedWalls;
 		std::vector<glm::ivec2> m_EggPositions;
 		std::vector<bool> m_EggHatched;
+
+		ScoreComponent* m_ScoreComp;
 	};
 }

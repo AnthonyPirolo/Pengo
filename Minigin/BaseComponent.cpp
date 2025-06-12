@@ -18,8 +18,14 @@ namespace dae
 		if (!observer)
 			return;
 
-		m_Observers.emplace_back(observer);
-		observer->OnNotify(this, Observer::Event::subjectAttached);
+		auto it = std::find_if(m_Observers.begin(), m_Observers.end(),
+			[observer](const std::shared_ptr<Observer>& obs) { return obs.get() == observer.get(); });
+		if (it == m_Observers.end())
+		{
+			m_Observers.emplace_back(observer);
+			observer->AddSubject(this);
+			observer->OnNotify(this, Observer::Event::subjectAttached);
+		}
 	}
 
 	void BaseComponent::RemoveObserver(Observer* observer)
@@ -35,6 +41,8 @@ namespace dae
 					return obs.get() == observer;
 				}),
 			m_Observers.end());
+
+		observer->OnSubjectRemoved(this);
 	}
 
 	void BaseComponent::Notify(Observer::Event event)

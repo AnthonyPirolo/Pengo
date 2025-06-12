@@ -3,6 +3,7 @@
 #include "BaseComponent.h"
 #include <glm.hpp>
 #include <random>
+#include "GridViewComponent.h"
 
 namespace dae {
 	class GridLogic;

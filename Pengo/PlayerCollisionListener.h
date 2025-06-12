@@ -24,7 +24,7 @@ namespace dae
             }
             else if (event == Event::playerDied)
             {
-                //m_Player->HandleDeath();
+				m_Player->Die(3.0f);
             }
         }
 

@@ -60,6 +60,7 @@ namespace dae
             if (tstr == "wall")       t = TileType::Wall;
             else if (tstr == "player") t = TileType::Player;
             else if (tstr == "enemy")  t = TileType::Enemy;
+            else if (tstr == "egg") t = TileType::Egg;
             else {
                 std::cerr << "[LevelLoader] Warning: unknown tile type '" << tstr << "'\n";
                 continue;

@@ -38,14 +38,6 @@ namespace dae {
 	}
 
 	void PlayerComponent::Update() {
-		if (!m_IsAlive) {
-			m_DeathTimer -= GameTime::GetInstance().GetDeltaTime();
-			if (m_DeathTimer <= 0.0f) {
-				// Animation complete
-			}
-			return;
-		}
-
 		if (m_IsMoving) {
 			MoveTowardsTarget();
 			return;
@@ -57,13 +49,21 @@ namespace dae {
 		AttemptStep();
 	}
 
+	void PlayerComponent::Die(float delay) {
+		if (!m_IsAlive) return;
+		m_IsAlive = false;
+		m_DeathTimer = delay;
+
+	}
+
 	void PlayerComponent::ResetToStart() {
 		m_IsAlive = true;
 		m_DeathTimer = 0.0f;
 		m_IsMoving = false;
 		m_PendingDX = m_PendingDY = 0;
 		m_MoveDirection = glm::vec3(0.0f);
-		GetOwner()->SetLocalPosition(m_SpawnPosition);
+		if (GetOwner())
+			GetOwner()->SetLocalPosition(m_SpawnPosition);
 	}
 
 	void PlayerComponent::MoveTowardsTarget() {

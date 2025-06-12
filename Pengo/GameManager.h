@@ -2,20 +2,34 @@
 #include <vector>
 #include "EnemyAIComponent.h"
 #include "PlayerComponent.h"
+#include "BaseComponent.h"
 
 namespace dae
 {
     class PlayerComponent;
     class EnemyAIComponent;
 
-    class GameManager
+    class GameManager : public BaseComponent
     {
     public:
-        GameManager() = default;
-        ~GameManager() = default;
+		GameManager(GameObject* owner)
+			: BaseComponent(owner)
+		{
+		}
 
-        GameManager(const GameManager&) = delete;
-        GameManager& operator=(const GameManager&) = delete;
+        void FixedUpdate(float deltaTime) override
+        {
+            deltaTime;
+        }
+		void Update() override
+		{
+		}
+		void LateUpdate() override
+		{
+		}
+        void Render() const override
+        { 
+        }
 
         void RegisterPlayer(PlayerComponent* player)
         {
@@ -26,6 +40,23 @@ namespace dae
         {
             m_Enemies.push_back(enemy);
         }
+
+		void UnregisterEnemies()
+		{
+			for (auto& e : m_Enemies)
+			{
+				if (e)
+				{
+                    e = nullptr;
+				}
+			}
+			m_Enemies.clear();
+		}
+
+		void UnregisterPlayer()
+		{
+			m_Player = nullptr;
+		}
 
         void ResetRound()
         {

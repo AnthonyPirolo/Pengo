@@ -23,20 +23,28 @@ namespace dae {
 
 	GridViewComponent::GridViewComponent(GameObject* owner, int tileSize, const glm::vec3& offset)
 		: BaseComponent(owner), m_TileSize(tileSize), m_GridOffset(offset),
-		m_Model(), m_Logic(&m_Model, tileSize, offset),
-		m_WallGrid(1, 1), m_EnemyGrid(1, 1), m_PlayerGrid(1, 1)
+		m_Model(), m_Logic(&m_Model, tileSize, offset)
 	{
+		owner->AddComponent<dae::ScoreComponent>(owner);
+		m_ScoreComp = owner->GetComponent<dae::ScoreComponent>();
 	}
 
 	void GridViewComponent::ClearLevel() {
-		m_WallGrid.Clear();
-		m_EnemyGrid.Clear();
-		m_PlayerGrid.Clear();
+		for (auto& wall : m_SpawnedWalls)
+			if (wall) wall->MarkForDestroy();
+		m_SpawnedWalls.clear();
+
+		for (auto& enemy : m_SpawnedEnemies)
+			if (enemy) enemy->MarkForDestroy();
+		m_SpawnedEnemies.clear();
+
+		auto colComp = m_SpawnedPlayer ? m_SpawnedPlayer->GetComponent<CollisionComponent>() : nullptr;
+
+		ServiceLocator::GetCollisionSystem().Unregister(colComp);
 
 		if (m_SpawnedPlayer)
 			m_SpawnedPlayer->MarkForDestroy();
 
-		m_SpawnedPlayer = nullptr;
 		m_EggPositions.clear();
 		m_EggHatched.clear();
 		m_Model.Initialize(600, 800);
@@ -48,9 +56,6 @@ namespace dae {
 
 		int w = m_Model.GetWidth();
 		int h = m_Model.GetHeight();
-		m_WallGrid = SpatialPartitionGrid(w, h);
-		m_EnemyGrid = SpatialPartitionGrid(w, h);
-		m_PlayerGrid = SpatialPartitionGrid(w, h);
 
 		for (int x = 0; x < w; ++x)
 			for (int y = 0; y < h; ++y)
@@ -60,13 +65,15 @@ namespace dae {
 		for (const auto& tile : level.tiles) {
 			switch (tile.type) {
 			case TileType::Player: m_SpawnedPlayer = CreatePlayerAt(tile.x, tile.y); break;
-			case TileType::Enemy: CreateEnemyAt(tile.x, tile.y); break;
+			case TileType::Enemy: m_SpawnedEnemies.push_back(CreateEnemyAt(tile.x, tile.y)); break;
 			case TileType::Egg: m_EggPositions.emplace_back(tile.x, tile.y); break;
-			default: break;
+			default: 
+				break;
 			}
 		}
 
 		m_EggHatched.assign(m_EggPositions.size(), false);
+		HatchInitialEggs(1);
 	}
 
 	std::shared_ptr<GameObject> GridViewComponent::CreateWallAt(int x, int y) {
@@ -78,7 +85,7 @@ namespace dae {
 		wall->AddComponent<CollisionComponent>(wall.get());
 		wall->AddComponent<WallComponent>(wall.get(), this, x, y);
 
-		m_WallGrid.Register(wall, x, y);
+		m_SpawnedWalls.push_back(wall);
 		SceneManager::GetInstance().GetActiveScene().Add(wall);
 		return wall;
 	}
@@ -102,7 +109,6 @@ namespace dae {
 		colComp->AttachObserver(listener);
 
 		m_SpawnedPlayer = player;
-		m_PlayerGrid.Register(player, x, y);
 		SceneManager::GetInstance().GetActiveScene().Add(player);
 		return player;
 	}
@@ -120,77 +126,104 @@ namespace dae {
 		ServiceLocator::GetCollisionSystem().Register(colComp);
 
 		enemy->AddComponent<EnemyAIComponent>(enemy.get(), &m_Logic, this, float(m_TileSize), 75.f);
-		m_EnemyGrid.Register(enemy, x, y);
+		m_SpawnedEnemies.push_back(enemy);
 
 		SceneManager::GetInstance().GetActiveScene().Add(enemy);
 		return enemy;
 	}
 
 	void GridViewComponent::OnWallPushed(int oldX, int oldY, int newX, int newY) {
-		auto walls = m_WallGrid.GetObjectsAt(oldX, oldY);
-		if (walls.empty()) return;
+		m_Model.ClearWall(oldX, oldY);
 
-		auto wall = walls.front();
-		m_WallGrid.Move(wall, oldX, oldY, newX, newY);
+		for (auto& wall : m_SpawnedWalls) {
+			if (!wall) continue;
+			auto* wallComp = wall->GetComponent<WallComponent>();
+			if (wallComp && wallComp->m_GridX == oldX && wallComp->m_GridY == oldY) {
+				glm::vec3 center = m_Logic.GridToWorld(newX, newY) + glm::vec3(m_TileSize / 2.0f);
+				if (auto* move = wall->GetComponent<MoveComponent>()) move->SetTarget(center);
+				else wall->SetLocalPosition(center);
 
-		auto center = m_Logic.GridToWorld(newX, newY) + glm::vec3(m_TileSize / 2.0f);
-		if (auto* move = wall->GetComponent<MoveComponent>()) move->SetTarget(center);
-		else wall->SetLocalPosition(center);
-
-		if (auto* wc = wall->GetComponent<WallComponent>()) {
-			wc->SetGridPosition(newX, newY);
-			wc->m_State = WallComponent::State::Sliding;
-			wc->m_PushDirection = glm::ivec2(newX - oldX, newY - oldY);
-		}
-
-		auto enemy = GetEnemyAt(newX, newY);
-		if (enemy)
-		{
-			if (auto* ai = enemy->GetComponent<EnemyAIComponent>()) ai->Die();
-			m_EnemyGrid.Unregister(enemy, newX, newY);
-		}
-	}
-
-	void GridViewComponent::OnWallBroken(int x, int y) {
-		auto walls = m_WallGrid.GetObjectsAt(x, y);
-		if (!walls.empty()) {
-			auto wall = walls.front();
-			if (wall) {
-				wall->MarkForDestroy();
-				m_WallGrid.Unregister(wall, x, y);
+				wallComp->SetGridPosition(newX, newY);
+				wallComp->m_State = WallComponent::State::Sliding;
+				wallComp->m_PushDirection = glm::ivec2(newX - oldX, newY - oldY);
+				break;
 			}
 		}
 	}
 
-	std::shared_ptr<GameObject> GridViewComponent::GetEnemyAt(int x, int y) const {
-		if (!m_EnemyGrid.IsInBounds(x, y)) return nullptr;
+	void GridViewComponent::OnWallBroken(int x, int y) {
+		if (!m_Model.IsInBounds(x, y)) {
+			std::cerr << "[GridViewComponent] Attempted to break wall out of bounds: (" << x << "," << y << ")\n";
+			return;
+		}
+		m_Model.ClearWall(x, y);
 
-		auto occupants = m_EnemyGrid.GetObjectsAt(x, y);
-		for (const auto& obj : occupants) {
-			if (obj && !obj->IsMarkedForDestroy() && obj->GetTag() == "enemy") {
-				return obj;
+		for (auto it = m_SpawnedWalls.begin(); it != m_SpawnedWalls.end(); ++it) {
+			auto& wall = *it;
+			if (!wall) continue;
+			auto* wallComp = wall->GetComponent<WallComponent>();
+			if (wallComp && wallComp->m_GridX == x && wallComp->m_GridY == y) {
+				wall->MarkForDestroy();
+				m_SpawnedWalls.erase(it);
+				break;
+			}
+		}
+	}
+
+
+
+	std::shared_ptr<GameObject> GridViewComponent::GetEnemyAt(int x, int y) const {
+		for (const auto& enemy : m_SpawnedEnemies) {
+			if (enemy && !enemy->IsMarkedForDestroy()) {
+				glm::vec3 pos = enemy->GetWorldPosition();
+				glm::vec3 topLeft = pos - glm::vec3(m_TileSize / 2.0f);
+				int ex, ey;
+				m_Logic.WorldToGrid(topLeft, ex, ey);
+				if (ex == x && ey == y)
+					return enemy;
 			}
 		}
 		return nullptr;
 	}
 
-
 	TileType GridViewComponent::GetTileType(int x, int y) const {
 		if (!m_Model.IsInBounds(x, y)) return TileType::Empty;
 		if (m_Model.HasWall(x, y)) return TileType::Wall;
-		if (!m_EnemyGrid.GetObjectsAt(x, y).empty()) return TileType::Enemy;
-		if (!m_PlayerGrid.GetObjectsAt(x, y).empty()) return TileType::Player;
+		for (const auto& enemy : m_SpawnedEnemies) {
+			if (enemy && !enemy->IsMarkedForDestroy()) {
+				glm::vec3 pos = enemy->GetWorldPosition();
+				glm::vec3 topLeft = pos - glm::vec3(m_TileSize / 2.0f);
+				int ex, ey;
+				m_Logic.WorldToGrid(topLeft, ex, ey);
+				if (ex == x && ey == y)
+					return TileType::Enemy;
+			}
+		}
+		if (m_SpawnedPlayer && !m_SpawnedPlayer->IsMarkedForDestroy()) {
+			glm::vec3 pos = m_SpawnedPlayer->GetWorldPosition();
+			glm::vec3 topLeft = pos - glm::vec3(m_TileSize / 2.0f);
+			int px, py;
+			m_Logic.WorldToGrid(topLeft, px, py);
+			if (px == x && py == y)
+				return TileType::Player;
+		}
 		return TileType::Empty;
 	}
 
 	std::vector<std::shared_ptr<GameObject>> GridViewComponent::GetSpawnedEnemies() const {
 		std::vector<std::shared_ptr<GameObject>> enemies;
-		for (int x = 0; x < m_Model.GetWidth(); ++x)
-			for (int y = 0; y < m_Model.GetHeight(); ++y)
-				for (const auto& e : m_EnemyGrid.GetObjectsAt(x, y))
-					if (e && !e->IsMarkedForDestroy())
-						enemies.push_back(e);
+		for (const auto& enemy : m_SpawnedEnemies)
+			if (enemy && !enemy->IsMarkedForDestroy())
+				enemies.push_back(enemy);
 		return enemies;
+	}
+
+	std::vector<std::shared_ptr<GameObject>> GridViewComponent::GetSpawnedWalls() const {
+		std::vector<std::shared_ptr<GameObject>> walls;
+		for (const auto& wall : m_SpawnedWalls)
+			if (wall && !wall->IsMarkedForDestroy())
+				walls.push_back(wall);
+		return walls;
 	}
 
 	void GridViewComponent::HatchInitialEggs(int count) {
@@ -201,7 +234,7 @@ namespace dae {
 		for (int i = 0; i < std::min(count, int(indices.size())); ++i) {
 			int idx = indices[i];
 			m_EggHatched[idx] = true;
-			CreateEnemyAt(m_EggPositions[idx].x, m_EggPositions[idx].y);
+			m_SpawnedEnemies.push_back(CreateEnemyAt(m_EggPositions[idx].x, m_EggPositions[idx].y));
 		}
 	}
 
@@ -209,27 +242,16 @@ namespace dae {
 		for (size_t i = 0; i < m_EggPositions.size(); ++i) {
 			if (!m_EggHatched[i]) {
 				m_EggHatched[i] = true;
-				CreateEnemyAt(m_EggPositions[i].x, m_EggPositions[i].y);
+				m_SpawnedEnemies.push_back(CreateEnemyAt(m_EggPositions[i].x, m_EggPositions[i].y));
 				return;
 			}
 		}
 	}
 
 	bool GridViewComponent::HasEnemiesRemaining() const {
-		for (int x = 0; x < m_Model.GetWidth(); ++x)
-			for (int y = 0; y < m_Model.GetHeight(); ++y)
-				for (const auto& e : m_EnemyGrid.GetObjectsAt(x, y))
-					if (e && !e->IsMarkedForDestroy()) return true;
+		for (const auto& enemy : m_SpawnedEnemies)
+			if (enemy && !enemy->IsMarkedForDestroy())
+				return true;
 		return false;
-	}
-
-	std::vector<std::shared_ptr<GameObject>> GridViewComponent::GetSpawnedWalls() const {
-		std::vector<std::shared_ptr<GameObject>> walls;
-		for (int x = 0; x < m_Model.GetWidth(); ++x)
-			for (int y = 0; y < m_Model.GetHeight(); ++y)
-				for (const auto& w : m_WallGrid.GetObjectsAt(x, y))
-					if (w && !w->IsMarkedForDestroy())
-						walls.push_back(w);
-		return walls;
 	}
 }

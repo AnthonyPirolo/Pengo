@@ -30,8 +30,14 @@ namespace dae
             if (event == Event::playerDied)
             {
                 auto& soundSystem = ServiceLocator::GetSoundSystem();
+				soundSystem.StopMusic();
                 soundSystem.Play(3, 1.0f);
             }
+			if (event == Event::play)
+			{
+				auto& soundSystem = ServiceLocator::GetSoundSystem();
+				soundSystem.PlayMusic("PengoMain.ogg", 0.5f, true);
+			}
         }
 
     private:

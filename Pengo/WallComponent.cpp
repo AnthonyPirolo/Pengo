@@ -52,12 +52,17 @@ namespace dae {
             auto* moveComponent = GetOwner()->GetComponent<MoveComponent>();
             if (moveComponent && !moveComponent->IsMovingToTarget()) {
                 m_State = State::Idle;
+                // Set the wall in the grid model at the new position
+                if (m_pGridView) {
+                    m_pGridView->GetModel().SetWall(m_GridX, m_GridY);
+                }
                 if (m_DestroyAfterSlide && m_pGridView) {
                     m_pGridView->OnWallBroken(m_GridX, m_GridY);
                     m_DestroyAfterSlide = false;
                 }
                 return;
             }
+
             auto* wallRigidbody = GetOwner()->GetComponent<RigidbodyComponent>();
             if (!wallRigidbody) return;
 

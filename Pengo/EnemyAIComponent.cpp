@@ -5,6 +5,7 @@
 #include "GameTime.h"
 #include "CharacterComponent.h"
 #include <chrono>
+#include <CollisionSystem.h>
 
 namespace dae {
 
@@ -159,7 +160,12 @@ namespace dae {
 
 		m_State = EnemyState::Dead;
 		Notify(Observer::Event::EnemyDied);
+		auto* colComp = GetOwner()->GetComponent<CollisionComponent>();
+		ServiceLocator::GetCollisionSystem().Unregister(colComp);
 		GetOwner()->MarkForDestroy();
+		if (m_pGridView) {
+			m_pGridView->HatchNextEgg();
+		}
 	}
 
 	void EnemyAIComponent::SetPushed(const glm::vec3& dir, float speed)

@@ -32,6 +32,9 @@ namespace dae {
 
 		glm::ivec2 m_PushDirection{};
 
+		int m_GridX = -1;
+		int m_GridY = -1;
+
 	private:
 		State m_PrevState = State::Idle;
 		bool m_HasEgg = false;
@@ -41,8 +44,6 @@ namespace dae {
 		const float m_BreakDuration = 3.0f;
 
 		GridViewComponent* m_pGridView = nullptr;
-		int m_GridX = -1;
-		int m_GridY = -1;
 
 		bool m_DestroyAfterSlide;
 	};

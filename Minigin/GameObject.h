@@ -58,6 +58,16 @@ namespace dae
 			return rawPtr;
 		}
 
+		template <typename T>
+		T* AddComponent(std::unique_ptr<T> component)
+		{
+			static_assert(std::is_base_of<BaseComponent, T>::value, "T must derive from BaseComponent");
+			component->SetOwner(this);
+			T* rawPtr = component.get();
+			m_pComponents.push_back(std::move(component));
+			return rawPtr;
+		}
+
 		void RemoveComponent(BaseComponent* pComponent);
 
 		//---------------------------------

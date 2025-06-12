@@ -22,13 +22,18 @@ namespace dae
 
 			breakWall,
 			moveWall,
-			pointsPickup
+			pointsPickup,
+			play
 		};
 
 		virtual ~Observer();
 		virtual void OnNotify(BaseComponent* entity, Event event) = 0;
 
 		void AddSubject(BaseComponent* subject);
+
+		void OnSubjectRemoved(BaseComponent* subject);
+
+		void RemoveSubject(BaseComponent* subject);
 
 	private:
 		std::vector<BaseComponent*> m_Subjects;

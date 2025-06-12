@@ -168,9 +168,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Minigin\FpsComponent.cpp" />
-    <ClCompile Include="..\Minigin\HealthComponent.cpp" />
     <ClCompile Include="..\Minigin\MoveComponent.cpp" />
-    <ClCompile Include="..\Minigin\PointsComponent.cpp" />
     <ClCompile Include="..\Minigin\RotationComponent.cpp" />
     <ClCompile Include="CoOpState.cpp" />
     <ClCompile Include="CreateEntity.cpp" />
@@ -197,15 +195,12 @@
     <ClCompile Include="GameStateManager.cpp" />
     <ClCompile Include="ScoreComponent.cpp" />
     <ClCompile Include="SinglePlayerState.cpp" />
-    <ClCompile Include="SpacialPartitioning.cpp" />
     <ClCompile Include="WallComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Minigin\FpsComponent.h" />
-    <ClInclude Include="..\Minigin\HealthComponent.h" />
     <ClInclude Include="..\Minigin\LivesDisplay.h" />
     <ClInclude Include="..\Minigin\MoveComponent.h" />
-    <ClInclude Include="..\Minigin\PointsComponent.h" />
     <ClInclude Include="..\Minigin\PointsDisplay.h" />
     <ClInclude Include="..\Minigin\RotationComponent.h" />
     <ClInclude Include="CharacterComponent.h" />
@@ -232,9 +227,9 @@
     <ClInclude Include="RunningState.h" />
     <ClInclude Include="GameStateManager.h" />
     <ClInclude Include="ScoreComponent.h" />
+    <ClInclude Include="ScoreObserver.h" />
     <ClInclude Include="SinglePlayerState.h" />
     <ClInclude Include="SoundPlayer.h" />
-    <ClInclude Include="SpatialPartitioning.h" />
     <ClInclude Include="StateComponent.h" />
     <ClInclude Include="WallComponent.h" />
   </ItemGroup>

@@ -22,6 +22,10 @@ namespace dae {
 		void FixedUpdate(float deltaTime) override { deltaTime; }
 		void Render() const override {}
 		void LateUpdate() override {}
+
+		void Die(float delay = 3.0f);
+
+		float m_DeathTimer;
 	private:
 		void AttemptStep();
 		void MoveTowardsTarget();
@@ -42,7 +46,6 @@ namespace dae {
 
 		bool m_IsMoving;
 		bool m_IsAlive;
-		float m_DeathTimer;
 		glm::vec3 m_SpawnPosition;
 
 		std::shared_ptr<PlayerCollisionListener> m_Listener;

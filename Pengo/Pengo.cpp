@@ -18,16 +18,19 @@ void load()
 {
     auto& sceneMgr = dae::SceneManager::GetInstance();
     auto& myScene = sceneMgr.CreateScene("SinglePlayerTest");
-    auto* spState = new SinglePlayerState(&myScene);
 
-    dae::GameStateManager::GetInstance().ChangeState(
-		spState
-    );
+    // Create the shared GameObject with GridViewComponent and ScoreComponent
+    auto grid = std::make_shared<dae::GameObject>();
+    grid->AddComponent<dae::GridViewComponent>(grid.get(), 32, glm::vec3{ -16.0f, 30.0f, 0.0f });
+    myScene.Add(grid);
+
+    // Pass the GameObject to the state
+    auto* spState = new SinglePlayerState(&myScene, grid);
+
+    dae::GameStateManager::GetInstance().ChangeState(spState);
 
     auto stateGO = std::make_shared<dae::GameObject>();
-
     stateGO->AddComponent<dae::StateComponent>(stateGO.get(), spState);
-
     sceneMgr.GetActiveScene().Add(stateGO);
 }
 

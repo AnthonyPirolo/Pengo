@@ -17,15 +17,4 @@ namespace dae
     {
         m_Score = 0;
     }
-
-    void ScoreComponent::OnNotify(BaseComponent* entity, Event event)
-    {
-        if (event == Observer::Event::EnemyDied) {
-            AddPoints(100);
-		}
-        else if (event == Observer::Event::subjectAttached) 
-        {
-            AddSubject(entity);
-        }
-    }
 }
