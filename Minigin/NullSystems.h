@@ -40,17 +40,17 @@ namespace dae {
 
     class NullFileService final : public IFileService {
     public:
-        std::string ReadFile(const std::string& path) const override 
+        std::string ReadFile(const std::string& ) const override 
         {
             return {};
         }
 
-        void WriteFile(const std::string& path, const std::string& content) const override 
+        void WriteFile(const std::string& , const std::string& ) const override 
         {
 
         }
 
-        void AppendToFile(const std::string& path, const std::string& content) const override 
+        void AppendToFile(const std::string& , const std::string& ) const override 
         {
 
         }
