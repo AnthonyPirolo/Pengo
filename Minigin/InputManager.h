@@ -7,7 +7,7 @@
 
 namespace dae
 {
-    class InputManager final : public Singleton<InputManager>
+    class InputManager : public Singleton<InputManager>
     {
     public:
         enum class KeyState
@@ -23,11 +23,13 @@ namespace dae
             KeyState state;
         };
 
-        void BindCommand(SDL_KeyCode key, KeyState state, std::shared_ptr<Command> command);
-        bool ProcessInput();
-        void UnbindCommand(SDL_KeyCode key) {
-			if (m_KeyBindings.find(key) == m_KeyBindings.end())
-				return;
+        virtual void BindCommand(SDL_KeyCode key, KeyState state, std::shared_ptr<Command> command);
+        virtual bool ProcessInput();
+        virtual void UnbindCommand(SDL_KeyCode key) {
+            if (m_KeyBindings.empty())
+                return;
+            if (m_KeyBindings.find(key) == m_KeyBindings.end())
+                return;
             m_KeyBindings.erase(key);
             m_PreviousKeyStates.erase(key);
         }

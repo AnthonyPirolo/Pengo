@@ -1,5 +1,7 @@
 #include "MainMenuState.h"
-#include "MenuCommands.h"
+#include "Scene.h"
+#include "GameObject.h"
+#include "TextComponent.h"
 #include "InputManager.h"
 #include "XInputManager.h"
 #include "GameStateManager.h"
@@ -7,14 +9,12 @@
 //#include "CoOpState.h"
 //#include "VersusState.h"
 //#include "HighscoreState.h"
-#include <SDL.h>
-#include <Xinput.h>
-#include <iostream>
-#include "GameTime.h"
+#include "ResourceManager.h"
+#include "GameCommands.h"
+#include "StateComponent.h"
 
 MainMenuState::MainMenuState(dae::Scene* scene)
     : m_Scene(scene)
-    , m_SelectedIndex(0)
 {
 }
 
@@ -22,110 +22,116 @@ void MainMenuState::OnEnter()
 {
     m_Scene->RemoveAll();
 
-    std::vector<std::string> texts = {
-        "Single Player",
-        "Co-Op (2 Players)",
-        "Versus (Pengo vs SnoBee)",
-        "Highscores",
-        "Quit"
-    };
+    auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 20);
 
-    int startY = 100;
-    for (int i = 0; i < (int)texts.size(); ++i) {
-        auto go = std::make_shared<dae::GameObject>();
-        //auto txt = go->AddComponent<dae::TextComponent>(go.get(), texts[i], );
-        go->SetLocalPosition(glm::vec3(100, startY + i * 30, 0));
-        m_Scene->Add(go);
-        m_MenuItems.push_back(go);
-    }
+    m_ModeText = std::make_shared<dae::GameObject>();
+    m_ModeText->AddComponent<dae::TextComponent>(m_ModeText.get(), "", font);
+    m_ModeText->SetLocalPosition({ 70.f, 100.f, 0.f });
+    m_Scene->Add(m_ModeText);
 
-    //m_MenuItems[0]->GetComponent<dae::TextComponent>()->SetColor({ 255,255,0 });
+    m_PromptText = std::make_shared<dae::GameObject>();
+    m_PromptText->AddComponent<dae::TextComponent>(m_PromptText.get(), "Press A/Enter to start", font);
+    m_PromptText->SetLocalPosition({ 70.f, 150.f, 0.f });
+    m_Scene->Add(m_PromptText);
 
-    m_CmdUp = std::make_shared<MenuUpCommand>(this);
-    m_CmdDown = std::make_shared<MenuDownCommand>(this);
-    m_CmdSelect = std::make_shared<MenuSelectCommand>(this);
+    UpdateTexts();
 
-    dae::InputManager::GetInstance().BindCommand(SDLK_UP, dae::InputManager::KeyState::Pressed, m_CmdUp);
-    dae::InputManager::GetInstance().BindCommand(SDLK_DOWN, dae::InputManager::KeyState::Pressed, m_CmdDown);
-    dae::InputManager::GetInstance().BindCommand(SDLK_RETURN, dae::InputManager::KeyState::Pressed, m_CmdSelect);
+    auto& inputMgr = ServiceLocator::GetInputManager();
+    auto& xi = ServiceLocator::GetXInputManager();
 
-    dae::XInputManager::GetInstance().BindCommand(XINPUT_GAMEPAD_DPAD_UP, dae::XInputManager::ButtonState::Pressed, m_CmdUp);
-    dae::XInputManager::GetInstance().BindCommand(XINPUT_GAMEPAD_DPAD_DOWN, dae::XInputManager::ButtonState::Pressed, m_CmdDown);
-    dae::XInputManager::GetInstance().BindCommand(XINPUT_GAMEPAD_A, dae::XInputManager::ButtonState::Pressed, m_CmdSelect);
+    inputMgr.BindCommand(SDLK_LEFT, dae::InputManager::KeyState::Pressed, std::make_shared<LambdaCommand>([this] { PrevMode(); }));
+    inputMgr.BindCommand(SDLK_RIGHT, dae::InputManager::KeyState::Pressed, std::make_shared<LambdaCommand>([this] { NextMode(); }));
+    inputMgr.BindCommand(SDLK_RETURN, dae::InputManager::KeyState::Pressed, std::make_shared<LambdaCommand>([this] { Confirm(); }));
 
-    // dae::XInputManager::GetInstance().SetControllerIndex(1);
-
+    xi.BindCommand(XINPUT_GAMEPAD_DPAD_LEFT, dae::XInputManager::ButtonState::Pressed, std::make_shared<LambdaCommand>([this] { PrevMode(); }));
+    xi.BindCommand(XINPUT_GAMEPAD_DPAD_RIGHT, dae::XInputManager::ButtonState::Pressed, std::make_shared<LambdaCommand>([this] { NextMode(); }));
+    xi.BindCommand(XINPUT_GAMEPAD_A, dae::XInputManager::ButtonState::Pressed, std::make_shared<LambdaCommand>([this] { Confirm(); }));
 }
 
 void MainMenuState::OnExit()
 {
-    dae::InputManager::GetInstance().UnbindCommand(SDLK_UP);
-    dae::InputManager::GetInstance().UnbindCommand(SDLK_DOWN);
-    dae::InputManager::GetInstance().UnbindCommand(SDLK_RETURN);
+    auto& inputMgr = ServiceLocator::GetInputManager();
+    auto& xi = ServiceLocator::GetXInputManager();
 
-    dae::XInputManager::GetInstance().UnbindCommand(XINPUT_GAMEPAD_DPAD_UP);
-    dae::XInputManager::GetInstance().UnbindCommand(XINPUT_GAMEPAD_DPAD_DOWN);
-    dae::XInputManager::GetInstance().UnbindCommand(XINPUT_GAMEPAD_A);
+    inputMgr.UnbindCommand(SDLK_LEFT);
+    inputMgr.UnbindCommand(SDLK_RIGHT);
+    inputMgr.UnbindCommand(SDLK_RETURN);
 
-    for (auto& go : m_MenuItems) {
-        go->MarkForDestroy();
-    }
-    m_MenuItems.clear();
+    xi.UnbindCommand(XINPUT_GAMEPAD_DPAD_LEFT);
+    xi.UnbindCommand(XINPUT_GAMEPAD_DPAD_RIGHT);
+    xi.UnbindCommand(XINPUT_GAMEPAD_A);
 
-    m_CmdUp.reset();
-    m_CmdDown.reset();
-    m_CmdSelect.reset();
+    m_ModeText->MarkForDestroy();
+    m_PromptText->MarkForDestroy();
 }
 
-void MainMenuState::Update(float deltaTime)
+void MainMenuState::Update(float)
 {
-    deltaTime;
-
-    m_Scene->FixedUpdate(dae::GameTime::GetInstance().GetDeltaTime());
-    m_Scene->Update();
-    m_Scene->LateUpdate();
 }
 
 void MainMenuState::Render()
 {
-    m_Scene->Render();
 }
 
-void MainMenuState::MoveSelectionUp()
+void MainMenuState::NextMode()
 {
-    //m_MenuItems[m_SelectedIndex]->GetComponent<dae::TextComponent>()->SetColor({ 255,255,255 });
-
-    m_SelectedIndex = (m_SelectedIndex - 1 + (int)m_MenuItems.size()) % (int)m_MenuItems.size();
-
-    //m_MenuItems[m_SelectedIndex]->GetComponent<dae::TextComponent>()->SetColor({ 255,255,0 });
+    m_SelectedMode = (m_SelectedMode + 1) % static_cast<int>(m_GameModes.size());
+    UpdateTexts();
 }
 
-void MainMenuState::MoveSelectionDown()
+void MainMenuState::PrevMode()
 {
-    //m_MenuItems[m_SelectedIndex]->GetComponent<dae::TextComponent>()->SetColor({ 255,255,255 });
-
-    m_SelectedIndex = (m_SelectedIndex + 1) % (int)m_MenuItems.size();
-
-    //m_MenuItems[m_SelectedIndex]->GetComponent<dae::TextComponent>()->SetColor({ 255,255,0 });
+    m_SelectedMode = (m_SelectedMode - 1 + static_cast<int>(m_GameModes.size())) % static_cast<int>(m_GameModes.size());
+    UpdateTexts();
 }
 
-void MainMenuState::ConfirmSelection()
+void MainMenuState::Confirm()
 {
-    switch (m_SelectedIndex) {
+    switch (m_SelectedMode)
+    {
     case 0:
-        //dae::GameStateManager::GetInstance().ChangeState(new SinglePlayerState(m_Scene));
-        break;
-    case 1:
-        //dae::GameStateManager::GetInstance().ChangeState(new CoOpState(m_Scene));
-        break;
-    case 2:
-        //dae::GameStateManager::GetInstance().ChangeState(new VersusState(m_Scene));
-        break;
-    case 3:
-        //dae::GameStateManager::GetInstance().ChangeState(new HighscoreState(m_Scene, &m_HighscoreMgr));
-        break;
-    case 4:
-        std::exit(0);
+    {
+        auto& inputMgr = ServiceLocator::GetInputManager();
+        auto& xi = ServiceLocator::GetXInputManager();
+
+        inputMgr.UnbindCommand(SDLK_LEFT);
+        inputMgr.UnbindCommand(SDLK_RIGHT);
+        inputMgr.UnbindCommand(SDLK_RETURN);
+
+        xi.UnbindCommand(XINPUT_GAMEPAD_DPAD_LEFT);
+        xi.UnbindCommand(XINPUT_GAMEPAD_DPAD_RIGHT);
+        xi.UnbindCommand(XINPUT_GAMEPAD_A);
+
+        auto& sceneMgr = dae::SceneManager::GetInstance();
+        auto& newScene = sceneMgr.CreateScene("SinglePlayer");
+
+        auto grid = std::make_shared<dae::GameObject>();
+        grid->AddComponent<dae::GridViewComponent>(grid.get(), 32, glm::vec3{ -16.0f, 30.0f, 0.0f });
+        newScene.Add(grid);
+
+        auto* spState = new SinglePlayerState(&newScene, grid);
+        dae::GameStateManager::GetInstance().ChangeState(spState);
+
+        auto state = std::make_shared<dae::GameObject>();
+        state->AddComponent<dae::StateComponent>(state.get(), spState);
+        newScene.Add(state);
+
         break;
     }
+    case 1: // Co-Op
+        // dae::GameStateManager::GetInstance().ChangeState(new CoOpState(m_Scene, ...));
+        break;
+    case 2: // Versus
+        // dae::GameStateManager::GetInstance().ChangeState(new VersusState(m_Scene, ...));
+        break;
+    case 3: // High Score
+        // dae::GameStateManager::GetInstance().ChangeState(new HighscoreState(m_Scene, ...));
+        break;
+    }
+}
+
+void MainMenuState::UpdateTexts()
+{
+    auto modeText = "Game Mode: " + m_GameModes[m_SelectedMode];
+    m_ModeText->GetComponent<dae::TextComponent>()->SetText(modeText);
 }

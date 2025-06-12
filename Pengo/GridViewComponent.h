@@ -1,5 +1,5 @@
+// GridViewComponent.h
 #pragma once
-
 #include "BaseComponent.h"
 #include "GridLogic.h"
 #include "GridModel.h"
@@ -10,56 +10,55 @@
 #include "ScoreComponent.h"
 
 namespace dae {
-	class GameObject;
+    class GameObject;
 
-	class GridViewComponent final : public BaseComponent {
-	public:
-		GridViewComponent(GameObject* owner, int tileSize, const glm::vec3& offset);
+    class GridViewComponent final : public BaseComponent {
+    public:
+        GridViewComponent(GameObject* owner, int tileSize, const glm::vec3& offset);
 
-		void LoadFromLevelData(const LevelData& level);
-		void ClearLevel();
+        void LoadFromLevelData(const LevelData& level);
+        void ClearLevel();
 
-		std::shared_ptr<GameObject> GetPlayerGameObject() const { return m_SpawnedPlayer; }
-		std::vector<std::shared_ptr<GameObject>> GetSpawnedEnemies() const;
-		std::vector<std::shared_ptr<GameObject>> GetSpawnedWalls() const;
+        virtual void FixedUpdate(float deltaTime) override { deltaTime; }
+		virtual void Update() override { }
+		virtual void Render() const override {} // Rendering is handled by the GameObject's render component
+		virtual void LateUpdate() override {}
 
-		TileType GetTileType(int x, int y) const;
-		std::shared_ptr<GameObject> GetEnemyAt(int x, int y) const;
+        std::shared_ptr<GameObject> GetPlayerGameObject() const { return m_SpawnedPlayer; }
+        std::vector<std::shared_ptr<GameObject>> GetSpawnedEnemies() const;
+        std::vector<std::shared_ptr<GameObject>> GetSpawnedWalls() const;
 
-		void OnWallPushed(int oldX, int oldY, int newX, int newY);
-		void OnWallBroken(int x, int y);
+        TileType GetTileType(int x, int y) const;
+        std::shared_ptr<GameObject> GetEnemyAt(int x, int y) const;
 
-		void HatchInitialEggs(int count);
-		void HatchNextEgg();
+        void OnWallPushed(int oldX, int oldY, int newX, int newY);
+        void OnWallBroken(int x, int y);
 
-		bool HasEnemiesRemaining() const;
+        void HatchInitialEggs(int count);
+        void HatchNextEgg();
 
-		void FixedUpdate(float) override {}
-		void Update() override {}
-		void LateUpdate() override {}
-		void Render() const override {}
+        bool HasEnemiesRemaining() const;
 
-		GridLogic m_Logic;
-		GridModel m_Model;
+        GridLogic m_Logic;
+        GridModel m_Model;
 
-		GridModel& GetModel() { return m_Model; }
+        int m_TileSize;
 
-		ScoreComponent* GetScoreComponent() const { return m_ScoreComp; }
+        ScoreComponent* GetScoreComponent() const { return m_ScoreComp; }
 
-	private:
-		std::shared_ptr<GameObject> CreateWallAt(int x, int y);
-		std::shared_ptr<GameObject> CreatePlayerAt(int x, int y);
-		std::shared_ptr<GameObject> CreateEnemyAt(int x, int y);
+    private:
+        std::shared_ptr<GameObject> CreateWallAt(int x, int y, bool hasEgg);
+        std::shared_ptr<GameObject> CreatePlayerAt(int x, int y);
+        std::shared_ptr<GameObject> CreateEnemyAt(int x, int y);
 
-		int m_TileSize;
-		glm::vec3 m_GridOffset;
+        void HatchEgg(std::shared_ptr<GameObject> eggGO);
 
-		std::shared_ptr<GameObject> m_SpawnedPlayer;
-		std::vector<std::shared_ptr<GameObject>> m_SpawnedEnemies;
-		std::vector<std::shared_ptr<GameObject>> m_SpawnedWalls;
-		std::vector<glm::ivec2> m_EggPositions;
-		std::vector<bool> m_EggHatched;
+        glm::vec3 m_GridOffset;
 
-		ScoreComponent* m_ScoreComp;
-	};
+        std::shared_ptr<GameObject>     m_SpawnedPlayer;
+        std::vector<std::shared_ptr<GameObject>> m_SpawnedEnemies;
+        std::vector<std::shared_ptr<GameObject>> m_SpawnedWalls;
+
+        ScoreComponent* m_ScoreComp;
+    };
 }

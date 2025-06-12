@@ -1,6 +1,6 @@
 #pragma once
 #include "BaseComponent.h"
-#include "SinglePlayerState.h"
+#include "BaseState.h"
 #include "GameTime.h"
 
 namespace dae
@@ -8,7 +8,7 @@ namespace dae
     class StateComponent final : public BaseComponent
     {
     public:
-        StateComponent(GameObject* owner, SinglePlayerState* state)
+        StateComponent(GameObject* owner, BaseState* state)
             : BaseComponent{ owner }
             , m_State{ state }
         {
@@ -20,22 +20,22 @@ namespace dae
                 m_State->Update(dae::GameTime::GetInstance().GetDeltaTime());
         }
 
-		void Render() const override
-		{
-			if (m_State)
-				m_State->Render();
-		}
+        void Render() const override
+        {
+            if (m_State)
+                m_State->Render();
+        }
 
-		void FixedUpdate(float deltaTime) override
-		{
-            deltaTime;
-		}
+        void FixedUpdate(float deltaTime) override
+        {
+            (void)deltaTime;
+        }
 
-		void LateUpdate() override
-		{
-		}
+        void LateUpdate() override
+        {
+        }
 
     private:
-        SinglePlayerState* m_State;
+        BaseState* m_State;
     };
 }

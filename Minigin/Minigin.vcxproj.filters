@@ -22,6 +22,15 @@
     <Filter Include="Components\Source">
       <UniqueIdentifier>{495f8072-e45b-4555-882a-1da15e43b16d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ServiceLocator">
+      <UniqueIdentifier>{88c4b318-09f6-413e-899d-9956cb8a39e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ServiceLocator\Source Files">
+      <UniqueIdentifier>{76f42554-856f-431a-9345-6ef2fade40d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ServiceLocator\Header Files">
+      <UniqueIdentifier>{22b9fb42-6383-47c4-ad8d-3503108e087e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Singleton.h">
@@ -34,9 +43,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Texture2D.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="InputManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GameObject.h">
@@ -78,15 +84,6 @@
     <ClInclude Include="TestOverlap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ISoundSystem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ServiceLocator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SDLSoundSystem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ThreadTask.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -94,9 +91,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Command.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="XInputManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LevelLoader.h">
@@ -108,14 +102,38 @@
     <ClInclude Include="RigidbodyComponent.h">
       <Filter>Components\Header</Filter>
     </ClInclude>
-    <ClInclude Include="ICollisionSystem.h">
-      <Filter>Components\Header</Filter>
-    </ClInclude>
     <ClInclude Include="CollisionComponent.h">
       <Filter>Components\Header</Filter>
     </ClInclude>
     <ClInclude Include="CollisionSystem.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ICollisionSystem.h">
+      <Filter>ServiceLocator\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InputManager.h">
+      <Filter>ServiceLocator\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ISoundSystem.h">
+      <Filter>ServiceLocator\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NullSystems.h">
+      <Filter>ServiceLocator\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ServiceLocator.h">
+      <Filter>ServiceLocator\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="XInputManager.h">
+      <Filter>ServiceLocator\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SDLSoundSystem.h">
+      <Filter>ServiceLocator\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IFileService.h">
+      <Filter>ServiceLocator\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FileService.h">
+      <Filter>ServiceLocator\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -126,9 +144,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Texture2D.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="InputManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GameObject.cpp">
@@ -170,22 +185,10 @@
     <ClCompile Include="Observer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TestOverlap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SDLSoundSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ServiceLocator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ThreadTask.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="BaseState.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="XInputManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LevelLoader.cpp">
@@ -194,14 +197,26 @@
     <ClCompile Include="RigidbodyComponent.cpp">
       <Filter>Components\Source</Filter>
     </ClCompile>
-    <ClCompile Include="ICollisionSystem.cpp">
-      <Filter>Components\Source</Filter>
-    </ClCompile>
     <ClCompile Include="CollisionComponent.cpp">
       <Filter>Components\Source</Filter>
     </ClCompile>
+    <ClCompile Include="ICollisionSystem.cpp">
+      <Filter>ServiceLocator\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="InputManager.cpp">
+      <Filter>ServiceLocator\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ServiceLocator.cpp">
+      <Filter>ServiceLocator\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="XInputManager.cpp">
+      <Filter>ServiceLocator\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SDLSoundSystem.cpp">
+      <Filter>ServiceLocator\Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="CollisionSystem.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>ServiceLocator\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

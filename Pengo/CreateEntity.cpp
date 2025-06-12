@@ -46,4 +46,12 @@ namespace dae
         return enemy;
     }
 
+    std::shared_ptr<GameObject> CreateEgg(const glm::vec3& worldPosition)
+    {
+        auto egg = std::make_shared<GameObject>();
+        egg->SetLocalPosition(worldPosition);
+        egg->SetTag("Egg");
+
+        return egg;
+    }
 }

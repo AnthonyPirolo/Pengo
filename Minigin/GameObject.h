@@ -75,16 +75,18 @@ namespace dae
 		//---------------------------------
 		GameObject* GetParent() const { return m_pParent; }
 		void SetParent(GameObject* parent, bool keepWorldPosition);
-
-		int GetChildCount() const { return int(m_pChildren.size()); }
-		GameObject* GetChild(int index) const { return m_pChildren.at(index).get(); }
+		int GetChildCount() const { return static_cast<int>(m_pChildren.size()); }
+		GameObject* GetChild(int index) const;
+		void AddChild(GameObject* child);
+		void RemoveChild(GameObject* child);
+		bool IsChild(GameObject* child) const;
+		void SetPositionDirty();
 
 		//---------------------------------
 		// Destruction/Tagging
 		//---------------------------------
-		void MarkForDestroy() { m_MarkedForDestroy = true; }
+		void MarkForDestroy(){ m_MarkedForDestroy = true; }
 		bool IsMarkedForDestroy() const { return m_MarkedForDestroy; }
-
 		void SetTag(const std::string& tag) { m_Tag = tag; }
 		const std::string& GetTag() const { return m_Tag; }
 
@@ -98,28 +100,18 @@ namespace dae
 		GameObject& operator=(const GameObject& other) = delete;
 		GameObject& operator=(GameObject&& other) = delete;
 
-	private:
-		void AddChild(std::unique_ptr<GameObject> child);
-		void RemoveChild(GameObject* child);
-		bool IsChild(GameObject* parent) const;
-
-		void SetPositionDirty();
-
-		//---------------------------------
-		// Members
-		//---------------------------------
 		bool m_MarkedForDestroy = false;
 		std::string m_Tag;
-
 		glm::vec3 m_WorldPosition{};
 		glm::vec3 m_LocalPosition{};
 		bool m_PositionIsDirty{ true };
 		float m_Scale = 1.0f;
-
 		std::vector<std::unique_ptr<BaseComponent>> m_pComponents;
 		std::vector<std::unique_ptr<BaseComponent>> m_pDeleteComponents;
 
+	private:
 		GameObject* m_pParent = nullptr;
-		std::vector<std::unique_ptr<GameObject>> m_pChildren;
+		std::vector<GameObject*> m_pChildren;
+
 	};
 }

@@ -13,25 +13,19 @@
 #include "GameStateManager.h"
 #include "SinglePlayerState.h"
 #include "StateComponent.h"
+#include "MainMenuState.h"
 
 void load()
 {
     auto& sceneMgr = dae::SceneManager::GetInstance();
-    auto& myScene = sceneMgr.CreateScene("SinglePlayerTest");
+    auto& myScene = sceneMgr.CreateScene("MainMenu");
 
-    // Create the shared GameObject with GridViewComponent and ScoreComponent
-    auto grid = std::make_shared<dae::GameObject>();
-    grid->AddComponent<dae::GridViewComponent>(grid.get(), 32, glm::vec3{ -16.0f, 30.0f, 0.0f });
-    myScene.Add(grid);
-
-    // Pass the GameObject to the state
-    auto* spState = new SinglePlayerState(&myScene, grid);
-
-    dae::GameStateManager::GetInstance().ChangeState(spState);
+    auto* menuState = new MainMenuState(&myScene);
+    dae::GameStateManager::GetInstance().ChangeState(menuState);
 
     auto stateGO = std::make_shared<dae::GameObject>();
-    stateGO->AddComponent<dae::StateComponent>(stateGO.get(), spState);
-    sceneMgr.GetActiveScene().Add(stateGO);
+    stateGO->AddComponent<dae::StateComponent>(stateGO.get(), menuState);
+    myScene.Add(stateGO);
 }
 
 int main(int, char* [])

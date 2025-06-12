@@ -48,8 +48,7 @@ namespace dae {
 		}
 	}
 
-	SlideResult GridModel::SlideOrBreak(int x, int y, int dx, int dy)
-	{
+	SlideResult GridModel::SlideOrBreak(int x, int y, int dx, int dy) {
 		if (!IsWall(x, y)) return SlideResult::None;
 
 		int nextX = x + dx;
@@ -63,15 +62,9 @@ namespace dae {
 		int slideX = nextX;
 		int slideY = nextY;
 
-		while (true) {
-			int furtherX = slideX + dx;
-			int furtherY = slideY + dy;
-
-			if (!IsInBounds(furtherX, furtherY) || IsWall(furtherX, furtherY))
-				break;
-
-			slideX = furtherX;
-			slideY = furtherY;
+		while (IsInBounds(slideX + dx, slideY + dy) && !IsWall(slideX + dx, slideY + dy)) {
+			slideX += dx;
+			slideY += dy;
 		}
 
 		ClearWall(x, y);

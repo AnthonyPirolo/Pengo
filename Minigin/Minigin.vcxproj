@@ -190,16 +190,19 @@
     <ClInclude Include="BaseState.h" />
     <ClInclude Include="CollisionComponent.h" />
     <ClInclude Include="CollisionSystem.h" />
+    <ClInclude Include="FileService.h" />
     <ClInclude Include="ICollisionSystem.h" />
     <ClInclude Include="Command.h" />
     <ClInclude Include="Components.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="IFileService.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="ISoundSystem.h" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="LevelLoader.h" />
     <ClInclude Include="Minigin.h" />
+    <ClInclude Include="NullSystems.h" />
     <ClInclude Include="Observer.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="ResourceManager.h" />
@@ -239,7 +242,6 @@
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="SDLSoundSystem.cpp" />
     <ClCompile Include="ServiceLocator.cpp" />
-    <ClCompile Include="TestOverlap.cpp" />
     <ClCompile Include="TextComponent.cpp" />
     <ClCompile Include="Texture2D.cpp" />
     <ClCompile Include="TextureComponent.cpp" />

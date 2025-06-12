@@ -18,8 +18,18 @@ bool dae::InputManager::ProcessInput()
 
     const Uint8* keyState = SDL_GetKeyboardState(nullptr);
 
-    for (auto& [key, binding] : m_KeyBindings)
+    std::vector<SDL_KeyCode> keys;
+    keys.reserve(m_KeyBindings.size());
+    for (const auto& [key, _] : m_KeyBindings)
+        keys.push_back(key);
+
+    for (auto key : keys)
     {
+        auto it = m_KeyBindings.find(key);
+        if (it == m_KeyBindings.end())
+            continue;
+
+        auto& binding = it->second;
         bool isPressed = keyState[SDL_GetScancodeFromKey(key)];
         bool wasPressed = m_PreviousKeyStates[key];
 

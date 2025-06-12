@@ -35,8 +35,7 @@ namespace dae {
         m_BreakTimer = 0.0f;
     }
 
-    void WallComponent::FixedUpdate(float deltaTime)
-    {
+    void WallComponent::FixedUpdate(float deltaTime) {
         switch (m_State) {
         case State::BeingBroken:
             if (!m_CurrentBreaker) return;
@@ -47,26 +46,18 @@ namespace dae {
             }
             break;
 
-        case State::Sliding: {
+        case State::Sliding:
+        {
             if (!m_pGridView) return;
-            auto* moveComponent = GetOwner()->GetComponent<MoveComponent>();
-            if (moveComponent && !moveComponent->IsMovingToTarget()) {
-                m_State = State::Idle;
-                // Set the wall in the grid model at the new position
-                if (m_pGridView) {
-                    m_pGridView->GetModel().SetWall(m_GridX, m_GridY);
-                }
-                if (m_DestroyAfterSlide && m_pGridView) {
-                    m_pGridView->OnWallBroken(m_GridX, m_GridY);
-                    m_DestroyAfterSlide = false;
-                }
-                return;
-            }
+
+            glm::vec3 currentPos = GetOwner()->GetWorldPosition();
+            glm::vec3 targetPos = m_pGridView->m_Logic.GridToWorld(m_GridX, m_GridY) + glm::vec3(m_pGridView->m_TileSize / 2.0f);
+            glm::vec3 direction = glm::normalize(targetPos - currentPos);
+            float moveSpeed = 300.0f * deltaTime;
 
             auto* wallRigidbody = GetOwner()->GetComponent<RigidbodyComponent>();
             if (!wallRigidbody) return;
 
-            glm::vec3 direction = glm::normalize(glm::vec3(m_PushDirection, 0.0f));
             float pushDistance = 300.0f * deltaTime;
             AABB wallAABB = wallRigidbody->GetAABB();
             wallAABB.center += glm::vec2(direction.x, direction.y) * pushDistance;
@@ -74,13 +65,34 @@ namespace dae {
             EnemyPushSystem pushSystem(m_pGridView);
             pushSystem.HandleEnemyPush(direction, pushDistance, wallAABB);
 
+            if (glm::length(targetPos - currentPos) <= moveSpeed) {
+                GetOwner()->SetLocalPosition(targetPos);
+                m_State = State::Idle;
+
+                if (m_pGridView) {
+                    m_pGridView->m_Model.SetWall(m_GridX, m_GridY);
+                }
+
+                if (m_DestroyAfterSlide && m_pGridView) {
+                    m_pGridView->OnWallBroken(m_GridX, m_GridY);
+                    m_DestroyAfterSlide = false;
+                }
+            }
+            else {
+                GetOwner()->SetLocalPosition(currentPos + direction * moveSpeed);
+            }
             break;
+
         }
         case State::Broken:
+			return;
+            break;
         case State::Idle:
+            return;
+            break;
         default:
+            return;
             break;
         }
     }
 }
-

@@ -56,6 +56,7 @@ void Scene::LateUpdate()
     {
         object->LateUpdate();
     }
+
     m_objects.erase(
         std::remove_if(
             m_objects.begin(),
@@ -80,4 +81,20 @@ void Scene::Render() const
 std::vector<std::shared_ptr<GameObject>> Scene::GetGameObjects() const
 {
     return m_objects;
+}
+
+std::vector<std::shared_ptr<GameObject>> Scene::GetObjectsWithTag(const std::string& tag) const
+{
+    std::vector<std::shared_ptr<GameObject>> matches;
+    matches.reserve(m_objects.size());
+
+    for (const auto& obj : m_objects)
+    {
+        if (!obj) continue;
+        if (obj->GetTag() == tag)
+        {
+            matches.push_back(obj);
+        }
+    }
+    return matches;
 }

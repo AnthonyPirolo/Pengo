@@ -16,7 +16,7 @@
 
 namespace dae
 {
-    class XInputManager final : public Singleton<XInputManager>
+    class XInputManager
     {
     public:
         using ButtonID = WORD;
@@ -34,19 +34,17 @@ namespace dae
             ButtonState state;
         };
 
-        void SetControllerIndex(int index);
+        virtual void SetControllerIndex(int index);
 
-        void BindCommand(ButtonID button, ButtonState state, std::shared_ptr<Command> command);
+        virtual void BindCommand(ButtonID button, ButtonState state, std::shared_ptr<Command> command);
 
-        void UnbindCommand(ButtonID button);
+        virtual void UnbindCommand(ButtonID button);
 
-        bool ProcessInput();
+        virtual bool ProcessInput();
 
-    private:
         XInputManager();
         ~XInputManager();
-
-        friend class Singleton<XInputManager>;
+    protected:
 
         class XInputManagerImpl;
         XInputManagerImpl* m_pImpl;

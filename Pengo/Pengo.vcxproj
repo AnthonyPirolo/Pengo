@@ -173,6 +173,7 @@
     <ClCompile Include="CoOpState.cpp" />
     <ClCompile Include="CreateEntity.cpp" />
     <ClCompile Include="DeadState.cpp" />
+    <ClCompile Include="EggComponent.cpp" />
     <ClCompile Include="EnemyAIComponent.cpp" />
     <ClCompile Include="EnemyPushSystem.cpp" />
     <ClCompile Include="GameCommands.cpp" />
@@ -208,6 +209,7 @@
     <ClInclude Include="CoOpState.h" />
     <ClInclude Include="CreateEntity.h" />
     <ClInclude Include="DeadState.h" />
+    <ClInclude Include="EggComponent.h" />
     <ClInclude Include="EnemyAIComponent.h" />
     <ClInclude Include="EnemyPushSystem.h" />
     <ClInclude Include="GameComponents.h" />

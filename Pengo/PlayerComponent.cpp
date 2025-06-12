@@ -114,18 +114,19 @@ namespace dae {
 		int newX = -1, newY = -1;
 
 		bool pushed = m_pLogic->SlideOrBreakAt(wallTopLeft, m_PendingDX, m_PendingDY, newX, newY);
-		if (pushed) 
-		{
-			if (newX < 0 || newY < 0)
-			{
+		if (pushed) {
+			if (newX < 0 || newY < 0) {
 				m_pView->OnWallBroken(wallX, wallY);
 			}
-			else m_pView->OnWallPushed(wallX, wallY, newX, newY);
-			
+			else {
+				m_pView->OnWallPushed(wallX, wallY, newX, newY);
+			}
+
 			StartMoveTo(wallX, wallY);
-						
 		}
-		m_PendingDX = m_PendingDY = 0;
+		else {
+			m_PendingDX = m_PendingDY = 0;
+		}
 	}
 
 	void PlayerComponent::StartMoveTo(int gx, int gy) {

@@ -12,6 +12,7 @@
 #include <glm.hpp>
 #include <cmath>
 #include "LevelManager.h"
+#include <functional>
 
 class GameObjectCommand : public Command
 {
@@ -226,5 +227,22 @@ public:
 private:
     LevelManager* m_Mgr;
     dae::GridViewComponent* m_View;
+};
+
+class LambdaCommand final : public Command
+{
+public:
+    explicit LambdaCommand(std::function<void()> func)
+        : m_Func(std::move(func)) 
+    {
+    }
+
+    virtual void Execute() override
+    {
+        if (m_Func) m_Func();
+    }
+
+private:
+    std::function<void()> m_Func;
 };
 

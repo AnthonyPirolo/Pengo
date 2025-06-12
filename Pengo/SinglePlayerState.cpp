@@ -120,8 +120,8 @@ void SinglePlayerState::InitPlayerComponents()
 
 void SinglePlayerState::InitInput()
 {
-    auto& inputMgr = dae::InputManager::GetInstance();
-    auto& xi = dae::XInputManager::GetInstance();
+    auto& inputMgr = ServiceLocator::GetInputManager();
+    auto& xi = ServiceLocator::GetXInputManager();
 
     const float speed = 100.0f;
     const std::vector<std::pair<SDL_KeyCode, glm::vec3>> keyDirections = {
@@ -255,8 +255,8 @@ void SinglePlayerState::ToggleMute()
 
 void SinglePlayerState::UnbindKeys()
 {
-    auto& inputMgr = dae::InputManager::GetInstance();
-    auto& xi = dae::XInputManager::GetInstance();
+    auto& inputMgr = ServiceLocator::GetInputManager();
+    auto& xi = ServiceLocator::GetXInputManager();
 
     inputMgr.UnbindCommand(SDLK_UP);
     inputMgr.UnbindCommand(SDLK_DOWN);

@@ -18,6 +18,7 @@
 #include "GameTime.h"
 #include "XInputManager.h"
 #include "CollisionSystem.h"
+#include "FileService.h"
 
 SDL_Window* g_window{};
 SDL_GLContext g_glContext{};
@@ -84,7 +85,10 @@ dae::Minigin::Minigin(const std::string& dataPath)
     Renderer::GetInstance().Init(g_window);
     ResourceManager::GetInstance().Init(dataPath);
     ServiceLocator::RegisterSoundSystem(std::make_unique<SDLSoundSystem>());
-	ServiceLocator::RegisterCollisionSystem(std::make_unique<CollisionSystem>());
+    ServiceLocator::RegisterCollisionSystem(std::make_unique<CollisionSystem>());
+    ServiceLocator::RegisterInputManager(std::make_unique<dae::InputManager>());
+    ServiceLocator::RegisterXInputManager(std::make_unique<dae::XInputManager>());
+    ServiceLocator::RegisterFileService(std::make_unique<dae::FileService>());
 }
 
 dae::Minigin::~Minigin()
@@ -101,12 +105,12 @@ void dae::Minigin::Run(const std::function<void()>& load)
 
     auto& renderer = Renderer::GetInstance();
     auto& sceneManager = SceneManager::GetInstance();
-    auto& input = InputManager::GetInstance();
     auto& time = GameTime::GetInstance();
-    auto& xi = dae::XInputManager::GetInstance();
+    auto& inputMgr = ServiceLocator::GetInputManager();
+    auto& xi = ServiceLocator::GetXInputManager();
 
     constexpr float fixed_time_step = 0.016f; // 60 FPS
-    constexpr int   ms_per_frame = 16;     // ~16 ms
+    constexpr int ms_per_frame = 16;     // ~16 ms
 
     bool doContinue = true;
     auto last_time = std::chrono::high_resolution_clock::now();
@@ -122,7 +126,7 @@ void dae::Minigin::Run(const std::function<void()>& load)
 
         bool xiOk = xi.ProcessInput();
 
-        bool sdlOk = input.ProcessInput();
+        bool sdlOk = inputMgr.ProcessInput();
 
         doContinue = (sdlOk && xiOk);
 
