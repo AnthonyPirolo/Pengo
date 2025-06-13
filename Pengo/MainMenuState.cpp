@@ -6,7 +6,7 @@
 #include "XInputManager.h"
 #include "GameStateManager.h"
 #include "SinglePlayerState.h"
-//#include "CoOpState.h"
+#include "CoOpState.h"
 //#include "VersusState.h"
 //#include "HighscoreState.h"
 #include "ResourceManager.h"
@@ -119,8 +119,34 @@ void MainMenuState::Confirm()
         break;
     }
     case 1: // Co-Op
-        // dae::GameStateManager::GetInstance().ChangeState(new CoOpState(m_Scene, ...));
+    {
+        auto& inputMgr = ServiceLocator::GetInputManager();
+        auto& xi = ServiceLocator::GetXInputManager();
+
+        inputMgr.UnbindCommand(SDLK_LEFT);
+        inputMgr.UnbindCommand(SDLK_RIGHT);
+        inputMgr.UnbindCommand(SDLK_RETURN);
+
+        xi.UnbindCommand(XINPUT_GAMEPAD_DPAD_LEFT);
+        xi.UnbindCommand(XINPUT_GAMEPAD_DPAD_RIGHT);
+        xi.UnbindCommand(XINPUT_GAMEPAD_A);
+
+        auto& sceneMgr = dae::SceneManager::GetInstance();
+        auto& newScene = sceneMgr.CreateScene("CoOp");
+
+        auto grid = std::make_shared<dae::GameObject>();
+        grid->AddComponent<dae::GridViewComponent>(grid.get(), 32, glm::vec3{ -16.0f, 30.0f, 0.0f });
+        newScene.Add(grid);
+
+        auto* coopState = new CoOpState(&newScene, grid);
+        dae::GameStateManager::GetInstance().ChangeState(coopState);
+
+        auto state = std::make_shared<dae::GameObject>();
+        state->AddComponent<dae::StateComponent>(state.get(), coopState);
+        newScene.Add(state);
+
         break;
+    }
     case 2: // Versus
         // dae::GameStateManager::GetInstance().ChangeState(new VersusState(m_Scene, ...));
         break;

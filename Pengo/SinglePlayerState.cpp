@@ -62,13 +62,12 @@ void SinglePlayerState::InitHUD()
 
 void SinglePlayerState::InitGridAndLevel()
 {
-    // Use the existing grid and gridview
     if (!m_LevelMgr->LoadNextLevel(m_GridView)) {
         std::cerr << "[SinglePlayerState] Failed to load first level!\n";
         return;
     }
 
-    m_PlayerGO = m_GridView->GetPlayerGameObject();
+	m_PlayerGO = m_GridView->GetSpawnedPlayers()[0];
     m_EnemyGOs = m_GridView->GetSpawnedEnemies();
 
     m_GameManager = std::make_shared<dae::GameObject>();
@@ -107,7 +106,6 @@ void SinglePlayerState::InitPlayerComponents()
     if (auto playerComp = m_PlayerGO->GetComponent<dae::PlayerComponent>())
         gameManagerComp->RegisterPlayer(playerComp);
 
-    // Attach the ScoreObserver to each enemy
     for (const auto& enemyGO : m_EnemyGOs) {
         if (enemyGO) {
             auto eComp = enemyGO->GetComponent<dae::EnemyAIComponent>();
@@ -216,7 +214,7 @@ void SinglePlayerState::OnLevelComplete()
         gameManagerComp->UnregisterEnemies();
         m_LevelTimer = 0.0f;
         m_TimerRunning = true;
-        m_PlayerGO = m_GridView->GetPlayerGameObject();
+		m_PlayerGO = m_GridView->GetSpawnedPlayers()[0];
         m_EnemyGOs = m_GridView->GetSpawnedEnemies();
 
         gameManagerComp->RegisterPlayer(m_PlayerGO->GetComponent<dae::PlayerComponent>());

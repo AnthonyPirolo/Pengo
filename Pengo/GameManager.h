@@ -33,7 +33,7 @@ namespace dae
 
         void RegisterPlayer(PlayerComponent* player)
         {
-            m_Player = player;
+			m_Players.push_back(player);
         }
 
         void RegisterEnemy(EnemyAIComponent* enemy)
@@ -55,13 +55,14 @@ namespace dae
 
 		void UnregisterPlayer()
 		{
-			m_Player = nullptr;
+			m_Players.clear();   
 		}
 
         void ResetRound()
         {
-            if (m_Player)
-                m_Player->ResetToStart();
+            for (auto p : m_Players)
+                if (p)
+                    p->ResetToStart();
 
             for (auto e : m_Enemies)
                 if (e)
@@ -69,7 +70,7 @@ namespace dae
         }
 
     private:
-        PlayerComponent* m_Player{ nullptr };
+        std::vector<PlayerComponent*> m_Players;
         std::vector<EnemyAIComponent*> m_Enemies;
     };
 }

@@ -76,7 +76,7 @@ namespace dae {
 		if (!m_pGridLogic->GetModel()->IsInBounds(nextX, nextY))
 			return;
 
-		TileType tile = m_pGridView->GetTileType(nextX, nextY);
+		TileType tile = m_pGridView->GetTileTypeAt(nextX, nextY);
 		if (tile == TileType::Wall) {
 			HandleWallPush(nextX, nextY);
 			return;

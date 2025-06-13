@@ -101,7 +101,7 @@ namespace dae {
 			return;
 		}
 
-		if (m_pView->GetTileType(nextX, nextY) == TileType::Wall) {
+		if (m_pView->GetTileTypeAt(nextX, nextY) == TileType::Wall) {
 			HandleWallPush(nextX, nextY);
 			return;
 		}
