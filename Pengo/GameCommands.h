@@ -185,7 +185,6 @@ private:
     float m_AttackRange;
     float m_Damage;
 
-    dae::GameObject* FindClosestEnemy();
 };
 
 class SoundCommand : public GameObjectCommand

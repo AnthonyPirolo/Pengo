@@ -31,7 +31,8 @@
 #include "SoundPlayer.h"
 
 SinglePlayerState::SinglePlayerState(dae::Scene* scene, std::shared_ptr<dae::GameObject> grid, std::shared_ptr<HighscoreManager> highscoreMgr)
-    : m_Scene(scene), m_Grid(std::move(grid)), m_GridView(nullptr), m_ScoreComp(nullptr), m_HighscoreMgr(std::move(highscoreMgr))
+    : m_Scene(scene), m_Grid(std::move(grid)), m_GridView(nullptr), m_ScoreComp(nullptr), m_HighscoreMgr(std::move(highscoreMgr)), m_LevelTimer(0),
+    m_LivesComp(nullptr), m_TimerRunning(false)
 {
     m_GridView = m_Grid->GetComponent<dae::GridViewComponent>();
     m_ScoreComp = m_GridView->GetScoreComponent();
@@ -300,6 +301,7 @@ void SinglePlayerState::UnbindKeys()
     inputMgr.UnbindCommand(SDLK_RIGHT);
 
     inputMgr.UnbindCommand(SDLK_F2);
+	inputMgr.UnbindCommand(SDLK_F1);
 
     xi.UnbindCommand(XINPUT_GAMEPAD_DPAD_UP);
     xi.UnbindCommand(XINPUT_GAMEPAD_DPAD_DOWN);

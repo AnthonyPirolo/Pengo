@@ -217,6 +217,7 @@ void CoOpState::UnbindKeys()
     in.UnbindCommand(SDLK_a);
     in.UnbindCommand(SDLK_d);
     in.UnbindCommand(SDLK_F2);
+	in.UnbindCommand(SDLK_F1);
 
     xi.UnbindCommand(XINPUT_GAMEPAD_DPAD_UP);
     xi.UnbindCommand(XINPUT_GAMEPAD_DPAD_DOWN);
