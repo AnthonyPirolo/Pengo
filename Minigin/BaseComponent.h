@@ -32,7 +32,7 @@ namespace dae
         //Constructor & Destructor
         //---------------------------------
         BaseComponent(GameObject* owner) : m_pOwner(owner) {};
-        virtual ~BaseComponent() = default;
+        virtual ~BaseComponent();
         BaseComponent(const BaseComponent& other()) = delete;
         BaseComponent(BaseComponent&& other) = delete;
         virtual BaseComponent& operator=(const BaseComponent& other) = delete;

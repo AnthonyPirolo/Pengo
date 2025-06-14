@@ -141,6 +141,9 @@
     <ClCompile Include="EggComponent.cpp">
       <Filter>Components\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="HighScoreState.cpp">
+      <Filter>GameStates\Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Minigin\LivesDisplay.h">
@@ -247,6 +250,9 @@
     </ClInclude>
     <ClInclude Include="EggComponent.h">
       <Filter>Components\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HighScoreState.h">
+      <Filter>GameStates\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

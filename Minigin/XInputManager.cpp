@@ -72,7 +72,11 @@ namespace dae
                     case ButtonState::Held:
                         shouldExecute = IsPressed(button);
                         break;
+                    default:
+                        std::cerr << "[XInputManager] Warning: Invalid ButtonState for button " << button << "\n";
+                        continue;
                     }
+                
 
                     if (shouldExecute && binding.command)
                         binding.command->Execute();

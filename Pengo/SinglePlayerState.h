@@ -6,6 +6,7 @@
 #include <string>
 #include "GameManager.h"
 #include "ScoreObserver.h"
+#include "HighscoreManager.h"
 
 namespace dae {
     class Scene;
@@ -16,12 +17,11 @@ namespace dae {
 }
 
 class LevelManager;
-class HighscoreManager;
 
 class SinglePlayerState final : public BaseState
 {
 public:
-    explicit SinglePlayerState(dae::Scene* scene, std::shared_ptr<dae::GameObject> grid);
+    explicit SinglePlayerState(dae::Scene* scene, std::shared_ptr<dae::GameObject> grid, std::shared_ptr<HighscoreManager> highscoreMgr);
 
     void OnEnter() override;
     void OnExit() override;
@@ -35,7 +35,7 @@ private:
     void InitGridAndLevel();
     void InitPlayerComponents();
     void InitInput();
-	void UnbindKeys();
+    void UnbindKeys();
 
     void OnPlayerDead();
     void OnLevelComplete();
@@ -46,16 +46,16 @@ private:
 
     dae::LivesComponent* m_LivesComp;
 
-	std::shared_ptr<ScoreObserver> m_ScoreObserver;
+    std::shared_ptr<ScoreObserver> m_ScoreObserver;
 
     std::unique_ptr<LevelManager> m_LevelMgr;
-    std::unique_ptr<HighscoreManager> m_HighscoreMgr;
+    std::shared_ptr<HighscoreManager> m_HighscoreMgr;
 
     float m_LevelTimer;
     bool m_TimerRunning;
     float m_ResetTimer{ 0.0f };
 
-	std::shared_ptr<dae::GameObject> m_GameManager;
+    std::shared_ptr<dae::GameObject> m_GameManager;
     std::shared_ptr<dae::GameObject> m_ScoreText;
 
     std::shared_ptr<dae::GameObject> m_Grid;

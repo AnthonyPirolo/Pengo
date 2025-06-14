@@ -248,7 +248,7 @@ namespace dae {
                     return TileType::Enemy;
             }
         }
-        if (!m_SpawnedPlayers.empty() && !m_SpawnedPlayers[0]->IsMarkedForDestroy() && !m_SpawnedPlayers[1]->IsMarkedForDestroy()) 
+        if (!m_SpawnedPlayers.empty()) 
         {
             for (auto player : m_SpawnedPlayers)
             {

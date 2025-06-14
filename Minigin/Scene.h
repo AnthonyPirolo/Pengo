@@ -29,6 +29,8 @@ namespace dae
 	private: 
 		explicit Scene(const std::string& name);
 
+		bool m_PendingClear = false;
+
 		std::string m_name;
 		std::vector < std::shared_ptr<GameObject>> m_objects{};
 

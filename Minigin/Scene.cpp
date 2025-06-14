@@ -18,7 +18,7 @@ Scene::~Scene()
 
 void Scene::Add(std::shared_ptr<GameObject> object)
 {
-    m_objects.emplace_back(std::move(object));
+    m_objects.push_back(std::move(object));
 }
 
 void Scene::Remove(const std::shared_ptr<GameObject>& object)
@@ -27,11 +27,6 @@ void Scene::Remove(const std::shared_ptr<GameObject>& object)
         std::remove(m_objects.begin(), m_objects.end(), object),
         m_objects.end()
     );
-}
-
-void Scene::RemoveAll()
-{
-    m_objects.clear();
 }
 
 void Scene::FixedUpdate(float deltaTime)
@@ -48,6 +43,11 @@ void Scene::Update()
     {
         object->Update();
     }
+}
+
+void Scene::RemoveAll()
+{
+    m_PendingClear = true;
 }
 
 void Scene::LateUpdate()
@@ -68,6 +68,12 @@ void Scene::LateUpdate()
         ),
         m_objects.end()
     );
+
+    if (m_PendingClear)
+    {
+        m_objects.clear();
+        m_PendingClear = false;
+    }
 }
 
 void Scene::Render() const

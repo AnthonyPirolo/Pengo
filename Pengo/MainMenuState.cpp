@@ -8,7 +8,7 @@
 #include "SinglePlayerState.h"
 #include "CoOpState.h"
 //#include "VersusState.h"
-//#include "HighscoreState.h"
+#include "HighscoreState.h"
 #include "ResourceManager.h"
 #include "GameCommands.h"
 #include "StateComponent.h"
@@ -16,11 +16,12 @@
 MainMenuState::MainMenuState(dae::Scene* scene)
     : m_Scene(scene)
 {
+    m_HighscoreManager = std::make_shared<HighscoreManager>();
 }
 
 void MainMenuState::OnEnter()
 {
-    m_Scene->RemoveAll();
+    //m_Scene->RemoveAll();
 
     auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 20);
 
@@ -109,7 +110,7 @@ void MainMenuState::Confirm()
         grid->AddComponent<dae::GridViewComponent>(grid.get(), 32, glm::vec3{ -16.0f, 30.0f, 0.0f });
         newScene.Add(grid);
 
-        auto* spState = new SinglePlayerState(&newScene, grid);
+        auto* spState = new SinglePlayerState(&newScene, grid, m_HighscoreManager);
         dae::GameStateManager::GetInstance().ChangeState(spState);
 
         auto state = std::make_shared<dae::GameObject>();
@@ -138,7 +139,7 @@ void MainMenuState::Confirm()
         grid->AddComponent<dae::GridViewComponent>(grid.get(), 32, glm::vec3{ -16.0f, 30.0f, 0.0f });
         newScene.Add(grid);
 
-        auto* coopState = new CoOpState(&newScene, grid);
+        auto* coopState = new CoOpState(&newScene, grid, m_HighscoreManager);
         dae::GameStateManager::GetInstance().ChangeState(coopState);
 
         auto state = std::make_shared<dae::GameObject>();
@@ -148,11 +149,22 @@ void MainMenuState::Confirm()
         break;
     }
     case 2: // Versus
-        // dae::GameStateManager::GetInstance().ChangeState(new VersusState(m_Scene, ...));
+
         break;
     case 3: // High Score
-        // dae::GameStateManager::GetInstance().ChangeState(new HighscoreState(m_Scene, ...));
+    {
+        auto& sceneMgr = dae::SceneManager::GetInstance();
+        auto& newScene = sceneMgr.CreateScene("HighScore");
+
+        auto* hsState = new HighScoreState(0, m_HighscoreManager, true);
+        dae::GameStateManager::GetInstance().ChangeState(hsState);
+
+        auto state = std::make_shared<dae::GameObject>();
+        state->AddComponent<dae::StateComponent>(state.get(), hsState);
+        newScene.Add(state);
+
         break;
+    }
     }
 }
 

@@ -13,6 +13,16 @@ namespace dae
 		return m_pOwner;
 	}
 
+	BaseComponent::~BaseComponent()
+	{
+		for (auto& observer : m_Observers)
+		{
+			if (observer)
+				observer->OnSubjectRemoved(this);
+		}
+		m_Observers.clear();
+	}
+
 	void BaseComponent::AttachObserver(std::shared_ptr<Observer> observer)
 	{
 		if (!observer)

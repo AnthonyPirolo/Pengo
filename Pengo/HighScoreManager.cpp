@@ -1,33 +1,45 @@
 #include "HighscoreManager.h"
-#include "json.hpp"
 #include <fstream>
 #include <iostream>
 #include <algorithm>
-#include <thread>
-#include <chrono>
-
-using json = nlohmann::json;
+#include <sstream>
+#include <iomanip>
+#include "ResourceManager.h"
 
 HighscoreManager::HighscoreManager(const std::string& saveFilename)
     : m_Filename(saveFilename)
+    , m_FileService(std::make_unique<dae::FileService>())
 {
+    dae::ResourceManager& resourceManager = dae::ResourceManager::GetInstance();
+    auto path = resourceManager.m_dataPath;
+    const auto fullPath = path / m_Filename;
+    m_FilePath = fullPath;
+
+    EnsureFileExists();
+}
+
+void HighscoreManager::EnsureFileExists() const
+{
+    std::ifstream file(m_FilePath);
+
+    if (!file.good()) {
+        m_FileService->WriteFile(m_FilePath, "");
+    }
 }
 
 void HighscoreManager::Load()
 {
     std::lock_guard<std::mutex> lock(m_Mutex);
     m_Entries.clear();
-    std::ifstream file(m_Filename);
-    if (!file.is_open()) {
-        return;
-    }
-    json j;
-    file >> j;
-    for (auto& entry : j) {
-        HighscoreEntry e;
-        e.initials = entry.value("initials", "");
-        e.score = entry.value("score", 0);
-        m_Entries.push_back(e);
+    std::istringstream iss(m_FileService->ReadFile(m_FilePath));
+    std::string line;
+    while (std::getline(iss, line)) {
+        std::istringstream lineStream(line);
+        std::string initials;
+        int score;
+        if (lineStream >> initials >> score) {
+            m_Entries.push_back({ initials, score });
+        }
     }
     std::sort(m_Entries.begin(), m_Entries.end(), [](auto& a, auto& b) {
         return a.score > b.score;
@@ -36,21 +48,24 @@ void HighscoreManager::Load()
 
 void HighscoreManager::AddEntry(const HighscoreEntry& entry)
 {
-    {
-        std::lock_guard<std::mutex> lock(m_Mutex);
-        m_Entries.push_back(entry);
-        std::sort(m_Entries.begin(), m_Entries.end(), [](auto& a, auto& b) {
-            return a.score > b.score;
-            });
-        if (m_Entries.size() > 100) {
-            m_Entries.resize(100);
-        }
-    }
-    std::thread saveThread([this]() {
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        SaveToDisk();
+    std::lock_guard<std::mutex> lock(m_Mutex);
+    m_Entries.push_back(entry);
+    std::sort(m_Entries.begin(), m_Entries.end(), [](auto& a, auto& b) {
+        return a.score > b.score;
         });
-    saveThread.detach();
+    if (m_Entries.size() > 100) {
+        m_Entries.resize(100);
+    }
+    SaveToDisk_NoLock();
+}
+
+void HighscoreManager::SaveToDisk_NoLock() const
+{
+    std::ostringstream oss;
+    for (const auto& e : m_Entries) {
+        oss << std::setw(3) << std::left << e.initials << " " << e.score << "\n";
+    }
+    m_FileService->WriteFile(m_FilePath, oss.str());
 }
 
 std::vector<HighscoreEntry> HighscoreManager::GetTopN(int n) const
@@ -65,14 +80,9 @@ std::vector<HighscoreEntry> HighscoreManager::GetTopN(int n) const
 void HighscoreManager::SaveToDisk() const
 {
     std::lock_guard<std::mutex> lock(m_Mutex);
-    json j = json::array();
-    for (auto& e : m_Entries) {
-        j.push_back({ {"initials", e.initials}, {"score", e.score} });
+    std::ostringstream oss;
+    for (const auto& e : m_Entries) {
+        oss << std::setw(3) << std::left << e.initials << " " << e.score << "\n";
     }
-    std::ofstream file(m_Filename);
-    if (!file.is_open()) {
-        std::cerr << "[HighscoreManager] Failed to open file for writing: " << m_Filename << std::endl;
-        return;
-    }
-    file << std::setw(4) << j << std::endl;
+    m_FileService->WriteFile(m_FilePath, oss.str());
 }

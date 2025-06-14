@@ -184,6 +184,7 @@
     <ClCompile Include="GridModel.cpp" />
     <ClCompile Include="GridViewComponent.cpp" />
     <ClCompile Include="HighScoreManager.cpp" />
+    <ClCompile Include="HighScoreState.cpp" />
     <ClCompile Include="IdleState.cpp" />
     <ClCompile Include="LevelManager.cpp" />
     <ClCompile Include="LivesComponent.cpp" />
@@ -219,6 +220,7 @@
     <ClInclude Include="GridModel.h" />
     <ClInclude Include="GridViewComponent.h" />
     <ClInclude Include="HighScoreManager.h" />
+    <ClInclude Include="HighScoreState.h" />
     <ClInclude Include="IdleState.h" />
     <ClInclude Include="LevelManager.h" />
     <ClInclude Include="LivesComponent.h" />

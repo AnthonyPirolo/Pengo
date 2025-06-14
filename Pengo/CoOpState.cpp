@@ -22,17 +22,17 @@
 #include "PlayerCollisionListener.h"
 #include <TextureComponent.h>
 
-CoOpState::CoOpState(dae::Scene* scene, std::shared_ptr<dae::GameObject> grid)
+CoOpState::CoOpState(dae::Scene* scene, std::shared_ptr<dae::GameObject> grid, std::shared_ptr<HighscoreManager> highscoreMgr)
     : m_Scene(scene)
     , m_Grid(std::move(grid))
     , m_GridView(m_Grid->GetComponent<dae::GridViewComponent>())
     , m_ScoreComp(m_GridView->GetScoreComponent())
     , m_LevelTimer(0.f)
     , m_TimerRunning(false)
+    , m_HighscoreMgr(std::move(highscoreMgr))
 {
     m_LevelMgr = std::make_unique<LevelManager>(
         std::vector<std::string>{ "Level1Co.json", "Level2Co.json", "Level3Co.json" });
-    m_HighscoreMgr = std::make_unique<HighscoreManager>();
 }
 
 void CoOpState::OnEnter()

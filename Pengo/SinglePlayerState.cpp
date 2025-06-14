@@ -25,9 +25,12 @@
 #include "GameManager.h"
 #include "ScoreObserver.h"
 #include "TextureComponent.h"
+#include "HighscoreManager.h"
+#include "HighScoreState.h"
+#include "StateComponent.h"
 
-SinglePlayerState::SinglePlayerState(dae::Scene* scene, std::shared_ptr<dae::GameObject> grid)
-    : m_Scene(scene), m_Grid(std::move(grid)), m_GridView(nullptr), m_ScoreComp(nullptr)
+SinglePlayerState::SinglePlayerState(dae::Scene* scene, std::shared_ptr<dae::GameObject> grid, std::shared_ptr<HighscoreManager> highscoreMgr)
+    : m_Scene(scene), m_Grid(std::move(grid)), m_GridView(nullptr), m_ScoreComp(nullptr), m_HighscoreMgr(std::move(highscoreMgr))
 {
     m_GridView = m_Grid->GetComponent<dae::GridViewComponent>();
     m_ScoreComp = m_GridView->GetScoreComponent();
@@ -35,7 +38,6 @@ SinglePlayerState::SinglePlayerState(dae::Scene* scene, std::shared_ptr<dae::Gam
     m_LevelMgr = std::make_unique<LevelManager>(std::vector<std::string>{
         "Level1.json", "Level2.json", "Level3.json"
     });
-    m_HighscoreMgr = std::make_unique<HighscoreManager>();
 }
 
 void SinglePlayerState::OnEnter()
@@ -67,7 +69,7 @@ void SinglePlayerState::InitGridAndLevel()
         return;
     }
 
-	m_PlayerGO = m_GridView->GetSpawnedPlayers()[0];
+    m_PlayerGO = m_GridView->GetSpawnedPlayers()[0];
     m_EnemyGOs = m_GridView->GetSpawnedEnemies();
 
     m_GameManager = std::make_shared<dae::GameObject>();
@@ -154,7 +156,7 @@ void SinglePlayerState::InitInput()
 
 void SinglePlayerState::OnExit()
 {
-    m_Scene->RemoveAll();
+    ServiceLocator::GetSoundSystem().StopMusic();
     m_PlayerGO.reset();
     m_EnemyGOs.clear();
     m_LivesComp = nullptr;
@@ -214,8 +216,24 @@ void SinglePlayerState::OnLevelComplete()
         gameManagerComp->UnregisterEnemies();
         m_LevelTimer = 0.0f;
         m_TimerRunning = true;
-		m_PlayerGO = m_GridView->GetSpawnedPlayers()[0];
+        m_PlayerGO = m_GridView->GetSpawnedPlayers().empty() ? nullptr : m_GridView->GetSpawnedPlayers()[0];
         m_EnemyGOs = m_GridView->GetSpawnedEnemies();
+
+        // Fallback: If no player or enemies, end the game
+        if (!m_PlayerGO || m_EnemyGOs.empty()) {
+            m_TimerRunning = false;
+            m_Scene->RemoveAll();
+            int finalScore = m_ScoreComp ? m_ScoreComp->GetScore() : 0;
+            auto& sceneMgr = dae::SceneManager::GetInstance();
+            auto& newScene = sceneMgr.CreateScene("HighScore");
+
+            auto* hSState = new HighScoreState(finalScore, m_HighscoreMgr);
+            dae::GameStateManager::GetInstance().ChangeState(hSState);
+
+            auto stateGO = std::make_shared<dae::GameObject>();
+            stateGO->AddComponent<dae::StateComponent>(stateGO.get(), hSState);
+            newScene.Add(stateGO);
+        }
 
         gameManagerComp->RegisterPlayer(m_PlayerGO->GetComponent<dae::PlayerComponent>());
 
@@ -235,12 +253,19 @@ void SinglePlayerState::OnLevelComplete()
         InitInput();
     }
     else {
+        m_Scene->RemoveAll();
         m_TimerRunning = false;
         int finalScore = m_ScoreComp ? m_ScoreComp->GetScore() : 0;
-        m_HighscoreMgr->AddEntry({ "AAA", finalScore });
-        dae::GameStateManager::GetInstance().ChangeState(
-            new GameOverState(m_Scene, finalScore, m_HighscoreMgr.get())
-        );
+
+        auto& sceneMgr = dae::SceneManager::GetInstance();
+        auto& newScene = sceneMgr.CreateScene("HighScore");
+
+        auto* hSState = new HighScoreState(finalScore, m_HighscoreMgr);
+        dae::GameStateManager::GetInstance().ChangeState(hSState);
+
+        auto stateGO = std::make_shared<dae::GameObject>();
+        stateGO->AddComponent<dae::StateComponent>(stateGO.get(), hSState);
+        newScene.Add(stateGO);
     }
 }
 

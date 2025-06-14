@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <memory>
+#include "HighscoreManager.h"
 
 namespace dae {
     class Scene;
@@ -29,6 +30,8 @@ private:
     dae::Scene* m_Scene;
     std::vector<std::string> m_GameModes{ "Single Player", "Co-Op", "Versus", "High Score" };
     int m_SelectedMode{ 0 };
+
+    std::shared_ptr<HighscoreManager> m_HighscoreManager;
 
     std::shared_ptr<dae::GameObject> m_ModeText;
     std::shared_ptr<dae::GameObject> m_PromptText;

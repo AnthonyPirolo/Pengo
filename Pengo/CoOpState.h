@@ -6,6 +6,7 @@
 #include <string>
 #include "GameManager.h"
 #include "ScoreObserver.h"
+#include "HighscoreManager.h"
 
 namespace dae {
     class Scene;
@@ -16,12 +17,11 @@ namespace dae {
 }
 
 class LevelManager;
-class HighscoreManager;
 
 class CoOpState final : public BaseState
 {
 public:
-    explicit CoOpState(dae::Scene* scene, std::shared_ptr<dae::GameObject> grid);
+    explicit CoOpState(dae::Scene* scene, std::shared_ptr<dae::GameObject> grid, std::shared_ptr<HighscoreManager> highscoreMgr);
 
     void OnEnter() override;
     void OnExit() override;
@@ -57,7 +57,7 @@ private:
     std::shared_ptr<ScoreObserver> m_ScoreObserver;
 
     std::unique_ptr<LevelManager> m_LevelMgr;
-    std::unique_ptr<HighscoreManager> m_HighscoreMgr;
+    std::shared_ptr<HighscoreManager> m_HighscoreMgr;
 
     float m_LevelTimer;
     bool m_TimerRunning;

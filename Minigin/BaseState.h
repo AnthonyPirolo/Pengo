@@ -1,7 +1,9 @@
 #pragma once
 
+
 class BaseState
 {
+
 public:
 	BaseState() = default;
 	virtual ~BaseState() = default;
