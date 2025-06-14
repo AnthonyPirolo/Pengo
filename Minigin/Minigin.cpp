@@ -23,6 +23,13 @@
 SDL_Window* g_window{};
 SDL_GLContext g_glContext{};
 
+std::vector<std::function<void(float)>> dae::Minigin::s_GlobalUpdates;
+
+void dae::Minigin::RegisterGlobalUpdate(const std::function<void(float)>& callback)
+{
+    s_GlobalUpdates.push_back(callback);
+}
+
 void PrintSDLVersion()
 {
     SDL_version version{};
@@ -133,6 +140,10 @@ void dae::Minigin::Run(const std::function<void()>& load)
         while (lag >= fixed_time_step)
         {
             sceneManager.FixedUpdate(fixed_time_step);
+
+            for (const auto& cb : s_GlobalUpdates)
+                cb(fixed_time_step);
+
             lag -= fixed_time_step;
         }
 

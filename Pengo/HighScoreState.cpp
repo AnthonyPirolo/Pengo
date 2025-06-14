@@ -153,14 +153,8 @@ void HighScoreState::SubmitScore()
 
 void HighScoreState::BackToMenu()
 {
-    auto& sceneMgr = dae::SceneManager::GetInstance();
-    auto& newScene = sceneMgr.CreateScene("MainMenu");
-    auto* menuState = new MainMenuState(&newScene);
-    dae::GameStateManager::GetInstance().ChangeState(menuState);
 
-    auto state = std::make_shared<dae::GameObject>();
-    state->AddComponent<dae::StateComponent>(state.get(), menuState);
-    newScene.Add(state);
+    m_RequestedTransition = StateTransition::ToMainMenu;
 }
 
 void HighScoreState::Render()

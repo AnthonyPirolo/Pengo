@@ -7,6 +7,7 @@
 #include "GameManager.h"
 #include "ScoreObserver.h"
 #include "HighscoreManager.h"
+#include "LevelManager.h"
 
 namespace dae {
     class Scene;
@@ -29,6 +30,11 @@ public:
     void Render() override;
 
     void ToggleMute();
+
+    StateTransition GetRequestedTransition() const override { return m_RequestedTransition; }
+    void ClearTransitionRequest() override { m_RequestedTransition = StateTransition::None; }
+
+    dae::ScoreComponent* m_ScoreComp;
 
 private:
     void InitHUD();
@@ -60,5 +66,6 @@ private:
 
     std::shared_ptr<dae::GameObject> m_Grid;
     dae::GridViewComponent* m_GridView;
-    dae::ScoreComponent* m_ScoreComp;
+
+    StateTransition m_RequestedTransition{ StateTransition::None };
 };

@@ -214,27 +214,12 @@ void SinglePlayerState::OnLevelComplete()
         auto gameManagerComp = m_GameManager->GetComponent<dae::GameManager>();
         gameManagerComp->UnregisterPlayer();
         gameManagerComp->UnregisterEnemies();
+
         m_LevelTimer = 0.0f;
         m_TimerRunning = true;
         m_PlayerGO = m_GridView->GetSpawnedPlayers().empty() ? nullptr : m_GridView->GetSpawnedPlayers()[0];
         m_EnemyGOs = m_GridView->GetSpawnedEnemies();
-
-        // Fallback: If no player or enemies, end the game
-        if (!m_PlayerGO || m_EnemyGOs.empty()) {
-            m_TimerRunning = false;
-            m_Scene->RemoveAll();
-            int finalScore = m_ScoreComp ? m_ScoreComp->GetScore() : 0;
-            auto& sceneMgr = dae::SceneManager::GetInstance();
-            auto& newScene = sceneMgr.CreateScene("HighScore");
-
-            auto* hSState = new HighScoreState(finalScore, m_HighscoreMgr);
-            dae::GameStateManager::GetInstance().ChangeState(hSState);
-
-            auto stateGO = std::make_shared<dae::GameObject>();
-            stateGO->AddComponent<dae::StateComponent>(stateGO.get(), hSState);
-            newScene.Add(stateGO);
-        }
-
+        
         gameManagerComp->RegisterPlayer(m_PlayerGO->GetComponent<dae::PlayerComponent>());
 
         for (const auto& enemyGO : m_EnemyGOs) {
@@ -245,27 +230,16 @@ void SinglePlayerState::OnLevelComplete()
                     eComp->AttachObserver(m_ScoreObserver);
             }
         }
-
-        if (m_LivesComp)
-            m_LivesComp->ResetLives(4);
-
         UnbindKeys();
         InitInput();
     }
     else {
         m_Scene->RemoveAll();
         m_TimerRunning = false;
-        int finalScore = m_ScoreComp ? m_ScoreComp->GetScore() : 0;
+        if (m_ScoreComp)
+            HighscoreManager::SetPendingScore(m_ScoreComp->GetScore());
 
-        auto& sceneMgr = dae::SceneManager::GetInstance();
-        auto& newScene = sceneMgr.CreateScene("HighScore");
-
-        auto* hSState = new HighScoreState(finalScore, m_HighscoreMgr);
-        dae::GameStateManager::GetInstance().ChangeState(hSState);
-
-        auto stateGO = std::make_shared<dae::GameObject>();
-        stateGO->AddComponent<dae::StateComponent>(stateGO.get(), hSState);
-        newScene.Add(stateGO);
+        m_RequestedTransition = StateTransition::ToHighScore;
     }
 }
 

@@ -11,7 +11,7 @@ namespace dae {
     class GameObject;
 }
 
-class HighScoreState : public BaseState
+class HighScoreState final : public BaseState
 {
 public:
     HighScoreState(int score, std::shared_ptr<HighscoreManager> highscoreMgr, bool viewOnly = false);
@@ -20,6 +20,9 @@ public:
     void Update(float) override;
     void Render() override;
     void OnExit() override;
+
+    StateTransition GetRequestedTransition() const override { return m_RequestedTransition; }
+    void ClearTransitionRequest() override { m_RequestedTransition = StateTransition::None; }
 
 private:
     enum class EntryPhase { EnterInitials, ShowTopScores };
@@ -50,4 +53,6 @@ private:
     void ShowTopScoresUI();
 
     bool m_ViewOnly = false;
+
+    StateTransition m_RequestedTransition{ StateTransition::None };
 };

@@ -18,6 +18,9 @@ public:
     void AddEntry(const HighscoreEntry& entry);
     std::vector<HighscoreEntry> GetTopN(int n = 10) const;
 
+    static void SetPendingScore(int score);
+    static int GetPendingScore();
+
 private:
     std::string m_Filename;
     std::filesystem::path m_FilePath;
@@ -28,4 +31,6 @@ private:
     void SaveToDisk() const;
     void EnsureFileExists() const;
     void SaveToDisk_NoLock() const;
+
+    static int s_PendingScore;
 };

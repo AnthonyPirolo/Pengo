@@ -6,6 +6,16 @@
 #include <iomanip>
 #include "ResourceManager.h"
 
+int HighscoreManager::s_PendingScore = 0;
+
+void HighscoreManager::SetPendingScore(int score) {
+    s_PendingScore = score;
+}
+
+int HighscoreManager::GetPendingScore() {
+    return s_PendingScore;
+}
+
 HighscoreManager::HighscoreManager(const std::string& saveFilename)
     : m_Filename(saveFilename)
     , m_FileService(std::make_unique<dae::FileService>())

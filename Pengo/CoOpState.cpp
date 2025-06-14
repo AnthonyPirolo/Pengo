@@ -249,11 +249,10 @@ void CoOpState::OnPlayerDead(size_t idx)
 
     if (!anyLeft) {
         m_TimerRunning = false;
-        int finalScore = m_ScoreComp ? m_ScoreComp->GetScore() : 0;
-        m_HighscoreMgr->AddEntry({ "AAA", finalScore });
-        dae::GameStateManager::GetInstance().ChangeState(
-            new GameOverState(m_Scene, finalScore, m_HighscoreMgr.get())
-        );
+
+        if (m_ScoreComp)
+            HighscoreManager::SetPendingScore(m_ScoreComp->GetScore());
+        m_RequestedTransition = StateTransition::ToHighScore;
     }
 }
 
@@ -283,9 +282,9 @@ void CoOpState::OnLevelComplete()
         m_TimerRunning = false;
         int finalScore = m_ScoreComp ? m_ScoreComp->GetScore() : 0;
         m_HighscoreMgr->AddEntry({ "AAA", finalScore });
-        dae::GameStateManager::GetInstance().ChangeState(
-            new GameOverState(m_Scene, finalScore, m_HighscoreMgr.get())
-        );
+
+        m_RequestedTransition = StateTransition::ToHighScore;
+
     }
 }
 

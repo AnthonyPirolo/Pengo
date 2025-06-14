@@ -1,5 +1,13 @@
 #pragma once
 
+enum class StateTransition
+{
+	None,
+	ToMainMenu,
+	ToSinglePlayer,
+	ToCoOp,
+	ToHighScore
+};
 
 class BaseState
 {
@@ -11,6 +19,8 @@ public:
 	virtual void Update(float deltaTime) = 0;
 	virtual void OnExit() = 0;
 	virtual void Render() = 0;
+	virtual StateTransition GetRequestedTransition() const { return StateTransition::None; }
+	virtual void ClearTransitionRequest() {}
 
 private:
 	BaseState(const BaseState&) = delete;

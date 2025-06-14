@@ -30,6 +30,11 @@ public:
 
     void ToggleMute();
 
+    StateTransition GetRequestedTransition() const override { return m_RequestedTransition; }
+    void ClearTransitionRequest() override { m_RequestedTransition = StateTransition::None; }
+
+    dae::ScoreComponent* m_ScoreComp;
+
 private:
     void InitHUD();
     void InitGridAndLevel();
@@ -43,7 +48,6 @@ private:
     dae::Scene* m_Scene;
     std::shared_ptr<dae::GameObject> m_Grid;
     dae::GridViewComponent* m_GridView;
-    dae::ScoreComponent* m_ScoreComp;
 
     std::shared_ptr<dae::GameObject> m_GameManager;
     std::shared_ptr<dae::GameObject> m_ScoreText;
@@ -61,4 +65,6 @@ private:
 
     float m_LevelTimer;
     bool m_TimerRunning;
+
+    StateTransition m_RequestedTransition{ StateTransition::None };
 };

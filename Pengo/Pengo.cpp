@@ -20,12 +20,11 @@ void load()
     auto& sceneMgr = dae::SceneManager::GetInstance();
     auto& myScene = sceneMgr.CreateScene("MainMenu");
 
-    auto* menuState = new MainMenuState(&myScene);
-    dae::GameStateManager::GetInstance().ChangeState(menuState);
+    GameStateManager::GetInstance().Init(&myScene);
 
-    auto stateGO = std::make_shared<dae::GameObject>();
-    stateGO->AddComponent<dae::StateComponent>(stateGO.get(), menuState);
-    myScene.Add(stateGO);
+    dae::Minigin::RegisterGlobalUpdate([](float dt) {
+        GameStateManager::GetInstance().Update(dt);
+        });
 }
 
 int main(int, char* [])
