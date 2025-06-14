@@ -1,18 +1,41 @@
-# Minigin
+# Pengo
 
-Minigin is a very small project using [SDL2](https://www.libsdl.org/) and [glm](https://github.com/g-truc/glm) for 2D c++ game projects. It is in no way a game engine, only a barebone start project where everything sdl related has been set up. It contains glm for vector math, to aleviate the need to write custom vector and matrix classes.
+A simple C++ tile-based arcade game inspired by classic Pengo. Supports single-player, local co-op, data-driven levels, and a basic scoring & high-score system.
 
-[![Build Status](https://github.com/avadae/minigin/actions/workflows/msbuild.yml/badge.svg)](https://github.com/avadae/msbuild/actions)
-[![GitHub Release](https://img.shields.io/github/v/release/avadae/minigin?logo=github&sort=semver)](https://github.com/avadae/minigin/releases/latest)
+---
 
-# Goal
+## What Pengo Is
 
-Minigin can/may be used as a start project for the exam assignment in the course [Programming 4](https://youtu.be/j96Oh6vzhmg) at DAE. In that assignment students need to recreate a popular 80's arcade game with a game engine they need to program themselves. During the course we discuss several game programming patterns, using the book '[Game Programming Patterns](https://gameprogrammingpatterns.com/)' by [Robert Nystrom](https://github.com/munificent) as reading material. 
+- **Tile-based** game world loaded from JSON  
+- **Single-player** & **local co-op** mode  
+- **Sliding/breaking walls**, moving/killing enemies 
+- **Score tracking** with high-score screen  
+- **Audio** & **input** via a central Service Locator
 
-# Disclaimer
+---
 
-Minigin is, despite perhaps the suggestion in its name, **not** a game engine. It is just a very simple sdl2 ready project with some of the scaffolding in place to get started. None of the patterns discussed in the course are used yet (except singleton which use we challenge during the course). It is up to the students to implement their own vision for their engine, apply patterns as they see fit, create their game as efficient as possible.
+## Key Design Choices
 
-# Use
+1. **Component-Based GameObjects**  
+   - Every entity (player, wall, egg, enemy) is a `GameObject` with components (Sprite, Collision, AI, etc.).  
+   - Mix-and-match behaviors without deep inheritance trees.
 
-Either download the latest release of this project and compile/run in visual studio or, since students need to have their work on github too, they can use this repository as a template (see the "Use this template" button at the top right corner). There is no point in forking this project.
+2. **Data-Driven Levels**  
+   - Levels defined in JSON (`width`, `height`, list of tiles).  
+
+3. **Loose Coupling with Patterns**  
+   - **Observer**: Enemies fire events to a `ScoreObserver`, which updates the HUD.  
+   - **Command**: Keyboard / gamepad input creates `MoveCommand` and `SoundCommand` objects that can be rebound at runtime.  
+   - **Service Locator**: Single access point for systems (audio, input, collision) instead of scattered globals.
+
+4. **State Machine for Scenes**  
+   - States: `MainMenuState`, `SinglePlayerState`, `CoOpState`, `HighScoreState`.  
+   - `GameStateManager` handles transitions via `OnEnter` / `Update` / `OnExit`.
+
+---
+
+## Why?
+
+- **Flexibility**: Components let me add new behaviors without rewriting core classes.  
+- **Modularity**: Patterns separate concerns—collision code doesn’t touch scoring, input code doesn’t touch rendering.  
+- **Fast Iteration**: JSON levels speed up testing and balance tweaks.
