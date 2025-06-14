@@ -46,6 +46,8 @@ private:
     void OnPlayerDead();
     void OnLevelComplete();
 
+    void SkipToNextLevel();
+
     dae::Scene* m_Scene;
     std::shared_ptr<dae::GameObject> m_PlayerGO;
     std::vector<std::shared_ptr<dae::GameObject>> m_EnemyGOs;

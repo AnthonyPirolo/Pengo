@@ -178,6 +178,9 @@ void SinglePlayerState::InitInput()
 
     auto soundMuteCmd = std::make_shared<SoundCommand>(m_PlayerGO.get(), 0, 0.f);
     inputMgr.BindCommand(SDLK_F2, dae::InputManager::KeyState::Pressed, soundMuteCmd);
+
+    inputMgr.BindCommand(SDLK_F1, dae::InputManager::KeyState::Pressed,
+        std::make_shared<LambdaCommand>([this]() { this->SkipToNextLevel(); }));
 }
 
 void SinglePlayerState::OnExit()
@@ -302,4 +305,41 @@ void SinglePlayerState::UnbindKeys()
     xi.UnbindCommand(XINPUT_GAMEPAD_DPAD_DOWN);
     xi.UnbindCommand(XINPUT_GAMEPAD_DPAD_LEFT);
     xi.UnbindCommand(XINPUT_GAMEPAD_DPAD_RIGHT);
+}
+
+void SinglePlayerState::SkipToNextLevel()
+{
+    if (m_LevelMgr->LoadNextLevel(m_GridView)) {
+        auto gameManagerComp = m_GameManager->GetComponent<dae::GameManager>();
+        gameManagerComp->UnregisterPlayer();
+        gameManagerComp->UnregisterEnemies();
+
+        m_LevelTimer = 0.0f;
+        m_TimerRunning = true;
+        m_PlayerGO = m_GridView->GetSpawnedPlayers().empty() ? nullptr : m_GridView->GetSpawnedPlayers()[0];
+        m_EnemyGOs = m_GridView->GetSpawnedEnemies();
+
+        InitPlayerComponents();
+
+        gameManagerComp->RegisterPlayer(m_PlayerGO->GetComponent<dae::PlayerComponent>());
+
+        for (const auto& enemyGO : m_EnemyGOs) {
+            if (enemyGO) {
+                auto eComp = enemyGO->GetComponent<dae::EnemyAIComponent>();
+                gameManagerComp->RegisterEnemy(eComp);
+                if (eComp && m_ScoreObserver)
+                    eComp->AttachObserver(m_ScoreObserver);
+            }
+        }
+        UnbindKeys();
+        InitInput();
+    }
+    else {
+        m_Scene->RemoveAll();
+        m_TimerRunning = false;
+        if (m_ScoreComp)
+            HighscoreManager::SetPendingScore(m_ScoreComp->GetScore());
+
+        m_RequestedTransition = StateTransition::ToHighScore;
+    }
 }

@@ -43,6 +43,8 @@ private:
     void OnPlayerDead();
     void OnLevelComplete();
 
+    void SkipToNextLevel();
+
     dae::Scene* m_Scene;
     std::shared_ptr<dae::GameObject> m_Grid;
     dae::GridViewComponent* m_GridView;

@@ -202,6 +202,9 @@ void CoOpState::InitInput()
         auto mute = std::make_shared<SoundCommand>(m_Player1GO.get(), 0, 0.f);
         in.BindCommand(SDLK_F2, dae::InputManager::KeyState::Pressed, mute);
     }
+
+    in.BindCommand(SDLK_F1, dae::InputManager::KeyState::Pressed,
+        std::make_shared<LambdaCommand>([this]() { this->SkipToNextLevel(); }));
 }
 
 void CoOpState::UnbindKeys()
@@ -324,4 +327,35 @@ void CoOpState::ToggleMute()
     static bool muted = false;
     muted = !muted;
     ServiceLocator::GetSoundSystem().SetMasterVolume(muted ? 0.f : 1.f);
+}
+
+void CoOpState::SkipToNextLevel()
+{
+    if (m_LevelMgr->LoadNextLevel(m_GridView)) {
+        auto gmComp = m_GameManager->GetComponent<dae::GameManager>();
+        for (auto& pGO : m_PlayerGOs) {
+            if (auto pc = pGO->GetComponent<dae::PlayerComponent>())
+                gmComp->UnregisterPlayer();
+        }
+        gmComp->UnregisterEnemies();
+
+        m_LevelTimer = 0.f;
+        m_TimerRunning = true;
+
+        InitGridAndLevel();
+        InitPlayerComponents();
+        InitInput();
+
+        if (m_ScoreText && m_ScoreComp)
+            m_ScoreText->GetComponent<dae::TextComponent>()->SetText("Score: " + std::to_string(m_ScoreComp->GetScore()));
+        if (m_LivesText)
+            m_LivesText->GetComponent<dae::TextComponent>()->SetText("Lives: " + std::to_string(m_SharedLives));
+    }
+    else {
+        m_TimerRunning = false;
+
+        if (m_ScoreComp)
+            HighscoreManager::SetPendingScore(m_ScoreComp->GetScore());
+        m_RequestedTransition = StateTransition::ToHighScore;
+    }
 }

@@ -45,11 +45,11 @@
     { "x": 6,  "y": 13, "type": "player" },
      { "x": 7,  "y": 13, "type": "player" },
 
-    { "x": 6,  "y": 7,  "type": "egg" }, { "x": 6,  "y": 8, "type": "egg" }, { "x": 5,  "y": 9, "type": "egg" },
+    { "x": 6,  "y": 7,  "type": "egg" }, { "x": 6,  "y": 8, "type": "egg" }, { "x": 5,  "y": 7, "type": "egg" },
 
-    { "x": 1,  "y": 7,  "type": "egg" },
+    { "x": 1,  "y": 2,  "type": "egg" },
     { "x": 11, "y": 2,  "type": "egg" },
-    { "x": 1,  "y": 1, "type": "egg" },
-    { "x": 11, "y": 1, "type": "egg" }
+    { "x": 1,  "y": 12, "type": "egg" },
+    { "x": 11, "y": 12, "type": "egg" }
   ]
 }
