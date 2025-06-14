@@ -107,7 +107,14 @@ namespace dae {
         auto player = CreatePlayer(m_Logic.GridToWorld(x, y) + glm::vec3(m_TileSize / 2.f));
         player->SetTag("player");
         player->AddComponent<RigidbodyComponent>(player.get(), m_TileSize, m_TileSize);
-        player->AddComponent<TextureComponent>(player.get(), "SinglePenguin.png");
+        if (m_SpawnedPlayers.size() == 1)
+        {
+            player->AddComponent<TextureComponent>(player.get(), "SinglePenguin.png");
+        }
+        else
+        {
+            player->AddComponent<TextureComponent>(player.get(), "SinglePenguin2.png");
+        }
 
         auto* colComp = player->AddComponent<CollisionComponent>(player.get());
         colComp->m_Tag = CollisionTag::Player;
@@ -130,7 +137,7 @@ namespace dae {
         auto enemy = CreateEnemy(m_Logic.GridToWorld(x, y) + glm::vec3(m_TileSize / 2.f));
         enemy->SetTag("enemy");
         enemy->AddComponent<RigidbodyComponent>(enemy.get(), m_TileSize, m_TileSize);
-        enemy->AddComponent<TextureComponent>(enemy.get(), "SinglePenguin2.png");
+        enemy->AddComponent<TextureComponent>(enemy.get(), "Enemy.png");
         enemy->AddComponent<CharacterComponent>(enemy.get());
         enemy->AddComponent<MoveComponent>(enemy.get(), 150.0f);
 

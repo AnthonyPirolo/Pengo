@@ -28,6 +28,7 @@
 #include "HighscoreManager.h"
 #include "HighScoreState.h"
 #include "StateComponent.h"
+#include "SoundPlayer.h"
 
 SinglePlayerState::SinglePlayerState(dae::Scene* scene, std::shared_ptr<dae::GameObject> grid, std::shared_ptr<HighscoreManager> highscoreMgr)
     : m_Scene(scene), m_Grid(std::move(grid)), m_GridView(nullptr), m_ScoreComp(nullptr), m_HighscoreMgr(std::move(highscoreMgr))
@@ -87,21 +88,45 @@ void SinglePlayerState::InitGridAndLevel()
 
 void SinglePlayerState::InitPlayerComponents()
 {
+    auto soundObserver = std::make_shared<dae::SoundPlayer>();
+
+    if (m_ScoreText) {
+        m_ScoreText->MarkForDestroy();
+        m_ScoreText = nullptr;
+    }
+    if (m_LivesText) {
+        m_LivesText->MarkForDestroy();
+        m_LivesText = nullptr;
+    }
     if (!m_PlayerGO) return;
 
     m_LivesComp = m_PlayerGO->GetComponent<dae::LivesComponent>();
-    if (m_LivesComp)
-        m_LivesComp->AddGameOverObserver([this]() { OnPlayerDead(); });
+    if (!m_LivesComp) {
+        m_LivesComp = m_PlayerGO->AddComponent<dae::LivesComponent>(m_PlayerGO.get(), m_Lives);
+    }
+
+    m_LivesComp->AddGameOverObserver([this]() { OnPlayerDead(); });
+
+    m_LivesComp->AddObserver([this](int lives) {
+        if (m_LivesText)
+            m_LivesText->GetComponent<dae::TextComponent>()->SetText("Lives: " + std::to_string(lives));
+        });
 
     if (!m_ScoreObserver)
-    {
         m_ScoreObserver = std::make_shared<ScoreObserver>(m_ScoreComp);
-    }
+
+    if (auto playerComp = m_PlayerGO->GetComponent<dae::CollisionComponent>())
+        playerComp->AttachObserver(soundObserver);
 
     m_ScoreText = std::make_shared<dae::GameObject>();
     m_ScoreText->AddComponent<dae::TextComponent>(m_ScoreText.get(), "Score: 0", dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36));
     m_ScoreText->SetLocalPosition({ 10.f, 10.f, 0.f });
     m_Scene->Add(m_ScoreText);
+
+    m_LivesText = std::make_shared<dae::GameObject>();
+    m_LivesText->AddComponent<dae::TextComponent>(m_LivesText.get(), "Lives: " + std::to_string(m_LivesComp->GetLives()), dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36));
+    m_LivesText->SetLocalPosition({ 200.f, 10.f, 0.f });
+    m_Scene->Add(m_LivesText);
 
     auto gameManagerComp = m_GameManager->GetComponent<dae::GameManager>();
 
@@ -113,6 +138,7 @@ void SinglePlayerState::InitPlayerComponents()
             auto eComp = enemyGO->GetComponent<dae::EnemyAIComponent>();
             if (eComp) {
                 eComp->AttachObserver(m_ScoreObserver);
+				eComp->AttachObserver(soundObserver);
             }
         }
     }
@@ -157,6 +183,7 @@ void SinglePlayerState::InitInput()
 void SinglePlayerState::OnExit()
 {
     ServiceLocator::GetSoundSystem().StopMusic();
+    if (m_LivesText) m_LivesText->MarkForDestroy();
     m_PlayerGO.reset();
     m_EnemyGOs.clear();
     m_LivesComp = nullptr;
@@ -197,10 +224,17 @@ void SinglePlayerState::Render() {}
 
 void SinglePlayerState::OnPlayerDead()
 {
-    if (m_LivesComp)
+    if (m_LivesComp) {
         m_LivesComp->LoseLife();
-
-    m_TimerRunning = false;
+		m_Lives = m_LivesComp->GetLives();
+        if (m_LivesComp->GetLives() <= 0) {
+            if (m_ScoreComp)
+                HighscoreManager::SetPendingScore(m_ScoreComp->GetScore());
+            m_RequestedTransition = StateTransition::ToHighScore;
+        } else {
+            m_TimerRunning = false;
+        }
+    }
 }
 
 void SinglePlayerState::OnLevelComplete()
@@ -219,7 +253,9 @@ void SinglePlayerState::OnLevelComplete()
         m_TimerRunning = true;
         m_PlayerGO = m_GridView->GetSpawnedPlayers().empty() ? nullptr : m_GridView->GetSpawnedPlayers()[0];
         m_EnemyGOs = m_GridView->GetSpawnedEnemies();
-        
+
+        InitPlayerComponents();
+
         gameManagerComp->RegisterPlayer(m_PlayerGO->GetComponent<dae::PlayerComponent>());
 
         for (const auto& enemyGO : m_EnemyGOs) {

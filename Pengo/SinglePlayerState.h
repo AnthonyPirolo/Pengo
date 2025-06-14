@@ -51,6 +51,8 @@ private:
     std::vector<std::shared_ptr<dae::GameObject>> m_EnemyGOs;
 
     dae::LivesComponent* m_LivesComp;
+    std::shared_ptr<dae::GameObject> m_LivesText;
+    int m_Lives{ 4 };
 
     std::shared_ptr<ScoreObserver> m_ScoreObserver;
 

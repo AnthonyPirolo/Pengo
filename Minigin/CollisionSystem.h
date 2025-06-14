@@ -42,10 +42,8 @@ namespace dae
                             return;
                         }
 
-                        // Handle wall collisions
                         if ((tagA == CollisionTag::Wall && tagB == CollisionTag::Enemy) ||
                             (tagA == CollisionTag::Enemy && tagB == CollisionTag::Wall)) {
-                            // Add logic to handle wall-enemy collisions
                         }
                     }
                 }

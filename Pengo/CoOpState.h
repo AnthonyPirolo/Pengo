@@ -33,8 +33,6 @@ public:
     StateTransition GetRequestedTransition() const override { return m_RequestedTransition; }
     void ClearTransitionRequest() override { m_RequestedTransition = StateTransition::None; }
 
-    dae::ScoreComponent* m_ScoreComp;
-
 private:
     void InitHUD();
     void InitGridAndLevel();
@@ -42,7 +40,7 @@ private:
     void InitInput();
     void UnbindKeys();
 
-    void OnPlayerDead(size_t playerIdx);
+    void OnPlayerDead();
     void OnLevelComplete();
 
     dae::Scene* m_Scene;
@@ -59,6 +57,8 @@ private:
 
     std::vector<dae::LivesComponent*> m_LivesComps;
     std::shared_ptr<ScoreObserver> m_ScoreObserver;
+    int m_SharedLives{ 4 };
+    std::shared_ptr<dae::GameObject> m_LivesText;
 
     std::unique_ptr<LevelManager> m_LevelMgr;
     std::shared_ptr<HighscoreManager> m_HighscoreMgr;
@@ -67,4 +67,5 @@ private:
     bool m_TimerRunning;
 
     StateTransition m_RequestedTransition{ StateTransition::None };
+    dae::ScoreComponent* m_ScoreComp;
 };

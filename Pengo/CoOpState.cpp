@@ -21,6 +21,7 @@
 #include "CollisionSystem.h"
 #include "PlayerCollisionListener.h"
 #include <TextureComponent.h>
+#include "SoundPlayer.h"
 
 CoOpState::CoOpState(dae::Scene* scene, std::shared_ptr<dae::GameObject> grid, std::shared_ptr<HighscoreManager> highscoreMgr)
     : m_Scene(scene)
@@ -39,6 +40,8 @@ void CoOpState::OnEnter()
 {
     m_HighscoreMgr->Load();
     ServiceLocator::GetSoundSystem().PlayMusic("PengoMain.ogg", 0.5f, true);
+
+    m_SharedLives = 4;
 
     InitHUD();
     InitGridAndLevel();
@@ -98,6 +101,16 @@ void CoOpState::InitGridAndLevel()
 void CoOpState::InitPlayerComponents()
 {
     m_LivesComps.clear();
+    auto soundObserver = std::make_shared<dae::SoundPlayer>();
+
+    if (m_ScoreText) {
+        m_ScoreText->MarkForDestroy();
+        m_ScoreText = nullptr;
+    }
+    if (m_LivesText) {
+        m_LivesText->MarkForDestroy();
+        m_LivesText = nullptr;
+    }
     auto gmComp = m_GameManager->GetComponent<dae::GameManager>();
 
     for (size_t i = 0; i < m_PlayerGOs.size(); ++i) {
@@ -105,10 +118,9 @@ void CoOpState::InitPlayerComponents()
         if (!pGO) continue;
 
         auto lives = pGO->GetComponent<dae::LivesComponent>();
-        m_LivesComps.push_back(lives);
-        if (lives)
-            lives->AddGameOverObserver([this, i]() { OnPlayerDead(i); });
+        if (lives) pGO->RemoveComponent(lives);
 
+        m_LivesComps.push_back(nullptr);
         if (auto pc = pGO->GetComponent<dae::PlayerComponent>())
             gmComp->RegisterPlayer(pc);
     }
@@ -125,10 +137,29 @@ void CoOpState::InitPlayerComponents()
     m_ScoreText->SetLocalPosition({ 10.f, 10.f, 0.f });
     m_Scene->Add(m_ScoreText);
 
+    m_LivesText = std::make_shared<dae::GameObject>();
+    m_LivesText->AddComponent<dae::TextComponent>(
+        m_LivesText.get(),
+        "Lives: " + std::to_string(m_SharedLives),
+        dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36)
+    );
+    m_LivesText->SetLocalPosition({ 200.f, 10.f, 0.f });
+    m_Scene->Add(m_LivesText);
+
     for (auto& eGO : m_EnemyGOs) {
         if (auto eComp = eGO->GetComponent<dae::EnemyAIComponent>())
+        {
             eComp->AttachObserver(m_ScoreObserver);
+            eComp->AttachObserver(soundObserver);
+        }
+
     }
+    for (auto& p : m_PlayerGOs)
+    {
+    if (auto playerComp = p->GetComponent<dae::CollisionComponent>())
+        playerComp->AttachObserver(soundObserver);
+    }
+
 }
 
 void CoOpState::InitInput()
@@ -192,7 +223,9 @@ void CoOpState::UnbindKeys()
 
 void CoOpState::OnExit()
 {
+    ServiceLocator::GetSoundSystem().StopMusic();
     UnbindKeys();
+    if (m_LivesText) m_LivesText->MarkForDestroy();
     m_Scene->RemoveAll();
 
     m_PlayerGOs.clear();
@@ -209,7 +242,7 @@ void CoOpState::Update(float)
     for (size_t i = 0; i < m_PlayerGOs.size(); ++i) {
         if (auto pc = m_PlayerGOs[i]->GetComponent<dae::PlayerComponent>()) {
             if (!pc->IsAlive()) {
-                OnPlayerDead(i);
+                OnPlayerDead();
                 gmComp->ResetRound();
                 InitInput();
                 return;
@@ -233,26 +266,20 @@ void CoOpState::Update(float)
     ServiceLocator::GetCollisionSystem().CheckAll();
 }
 
-void CoOpState::OnPlayerDead(size_t idx)
+void CoOpState::OnPlayerDead()
 {
-    if (idx < m_LivesComps.size() && m_LivesComps[idx]) {
-        m_LivesComps[idx]->LoseLife();
-    }
+    m_SharedLives--;
+    if (m_LivesText)
+        m_LivesText->GetComponent<dae::TextComponent>()->SetText("Lives: " + std::to_string(m_SharedLives));
 
-    bool anyLeft = false;
-    for (auto& pGO : m_PlayerGOs) {
-        if (auto pc = pGO->GetComponent<dae::PlayerComponent>(); pc && pc->IsAlive()) {
-            anyLeft = true;
-            break;
-        }
-    }
-
-    if (!anyLeft) {
+    if (m_SharedLives <= 0) {
         m_TimerRunning = false;
-
         if (m_ScoreComp)
             HighscoreManager::SetPendingScore(m_ScoreComp->GetScore());
         m_RequestedTransition = StateTransition::ToHighScore;
+    }
+    else {
+        m_TimerRunning = false;
     }
 }
 
@@ -277,14 +304,18 @@ void CoOpState::OnLevelComplete()
 
         InitPlayerComponents();
         InitInput();
+
+        if (m_ScoreText && m_ScoreComp)
+            m_ScoreText->GetComponent<dae::TextComponent>()->SetText("Score: " + std::to_string(m_ScoreComp->GetScore()));
+        if (m_LivesText)
+            m_LivesText->GetComponent<dae::TextComponent>()->SetText("Lives: " + std::to_string(m_SharedLives));
     }
     else {
         m_TimerRunning = false;
-        int finalScore = m_ScoreComp ? m_ScoreComp->GetScore() : 0;
-        m_HighscoreMgr->AddEntry({ "AAA", finalScore });
 
+        if (m_ScoreComp)
+            HighscoreManager::SetPendingScore(m_ScoreComp->GetScore());
         m_RequestedTransition = StateTransition::ToHighScore;
-
     }
 }
 
